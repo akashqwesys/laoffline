@@ -381,3 +381,19 @@ Route::group(['middleware' => ['auth', 'permission:modify-sale-bill-agent']], fu
     Route::get('/settings/companyType/edit-companyType/{id}', [App\Http\Controllers\settings\CompanyTypeController::class, 'editCompanyType']);
     Route::delete('/settings/companyType/delete/{id}', [App\Http\Controllers\settings\CompanyTypeController::class, 'deleteCompanyType'])->name('delete');
 // });
+
+
+// Routes for Settings / Permissions
+// Route::group(['middleware' => ['auth', 'permission:access-permission']], function() {
+    Route::get('/settings/permission', [App\Http\Controllers\settings\PermissionController::class, 'index'])->name('permission');
+    Route::get('/settings/permission/list', [App\Http\Controllers\settings\PermissionController::class, 'listPermission'])->name('list');
+    Route::get('/settings/permission/fetch-permission/{id}', [App\Http\Controllers\settings\PermissionController::class, 'fetchPermission']);
+// });
+
+// Route::group(['middleware' => ['auth', 'permission:modify-permission']], function() {
+    Route::get('/settings/permission/create-permission', [App\Http\Controllers\settings\PermissionController::class, 'createPermission']);
+    Route::post('/settings/permission/create', [App\Http\Controllers\settings\PermissionController::class, 'insertPermissionData']);
+    Route::post('/settings/permission/update', [App\Http\Controllers\settings\PermissionController::class, 'updatePermissionData']);
+    Route::get('/settings/permission/edit-permission/{id}', [App\Http\Controllers\settings\PermissionController::class, 'editPermission']);
+    Route::delete('/settings/permission/delete/{id}', [App\Http\Controllers\settings\PermissionController::class, 'deletePermission'])->name('delete');
+// });

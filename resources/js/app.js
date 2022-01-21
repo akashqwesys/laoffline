@@ -94,6 +94,9 @@ Vue.component('create-fabric-group-component', require('./components/settings/fa
 Vue.component('company-type-component', require('./components/settings/companyTypeComponents/CompanyTypeComponent.vue').default);
 Vue.component('create-company-type-component', require('./components/settings/companyTypeComponents/CreateCompanyTypeComponent.vue').default);
 
+Vue.component('permission-component', require('./components/settings/permissionsComponents/PermissionComponent.vue').default);
+Vue.component('create-permission-component', require('./components/settings/permissionsComponents/CreatePermissionComponent.vue').default);
+
 /**type-of-address
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

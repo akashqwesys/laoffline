@@ -144,7 +144,10 @@
                                 <a href="{{ route('fabricGroup') }}" class="nk-menu-link"><span class="nk-menu-text">Fabric Group</span></a>
                             </li>
                             <li class="nk-menu-item">
-                                <a href="{{ route('companyType') }}" class="nk-menu-link"><span class="nk-menu-text">Company Type</span></a>
+                                <a href="{{ route('companyType') }}" class="nk-menu-link"><span class="nk-menu-text">Company Types</span></a>
+                            </li>
+                            <li class="nk-menu-item">
+                                <a href="{{ route('permission') }}" class="nk-menu-link"><span class="nk-menu-text">Permissions</span></a>
                             </li>
                         </ul><!-- .nk-menu-sub -->
                     </li><!-- .nk-menu-item -->
