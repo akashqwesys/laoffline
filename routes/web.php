@@ -309,6 +309,7 @@ Route::group(['middleware' => ['auth', 'permission:modify-designation']], functi
 // Routes for Settings / SMS Settings
 Route::group(['middleware' => ['auth', 'permission:access-sms-settings']], function() {
     Route::get('/settings/sms-settings', [App\Http\Controllers\settings\SmsSettingsController::class, 'index'])->name('sms-settings');
+    Route::get('/settings/sms-settings/list-designation', [App\Http\Controllers\settings\SmsSettingsController::class, 'listDesignation'])->name('list-designation');
     Route::get('/settings/sms-settings/fetch-sms-settings/{id}', [App\Http\Controllers\settings\SmsSettingsController::class, 'fetchSmsSettings']);
 });
 

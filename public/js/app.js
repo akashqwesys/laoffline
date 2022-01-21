@@ -13250,90 +13250,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 var smsSettings = [];
-var designations = [];
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'create-sms-settings',
+  props: {
+    scope: String,
+    id: Number
+  },
   components: {
     Multiselect: (vue_multiselect__WEBPACK_IMPORTED_MODULE_0___default())
   },
   data: function data() {
     return {
       designationList: [],
-      enquiryGeneral: [],
       form: new Form({
         id: '',
         enquiry_general: [],
@@ -13389,14 +13319,12 @@ var designations = [];
   created: function created() {
     var _this = this;
 
-    axios.get('/settings/designation/list').then(function (response) {
+    axios.get('/settings/sms-settings/list-designation').then(function (response) {
       _this.designationList = response.data;
-      console.log(_this.designationList);
     });
   },
   methods: {
     register: function register() {
-      this.form.enquiry_general = this.enquiryGeneral;
       this.form.post('/settings/sms-settings/update').then(function (response) {
         window.location.href = '/settings/sms-settings';
       });
@@ -13407,7 +13335,8 @@ var designations = [];
 
     axios.get("/settings/sms-settings/fetch-sms-settings/".concat(this.id)).then(function (response) {
       smsSettings = response.data;
-      _this2.form.id = smsSettings.employee_id;
+      console.log(smsSettings);
+      _this2.form.id = _this2.id;
       _this2.form.enquiry_general = smsSettings.enquiry_general;
       _this2.form.enquiry_supplier = smsSettings.enquiry_supplier;
       _this2.form.enquiry_footer_message = smsSettings.enquiry_footer_message;
@@ -61189,124 +61118,63 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.enquiryGeneral,
-                                      expression: "enquiryGeneral",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.enquiryGeneral = $event.target
-                                        .multiple
-                                        ? $$selectedVal
-                                        : $$selectedVal[0]
+                                  model: {
+                                    value: _vm.form.enquiry_general,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.form, "enquiry_general", $$v)
                                     },
+                                    expression: "form.enquiry_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.enquiry_supplier,
-                                      expression: "form.enquiry_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.enquiry_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "enquiry_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.enquiry_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -61350,129 +61218,68 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.enquiry_followup_general,
-                                      expression:
-                                        "form.enquiry_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.enquiry_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "enquiry_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.enquiry_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.enquiry_followup_supplier,
-                                      expression:
-                                        "form.enquiry_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.enquiry_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "enquiry_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.enquiry_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -61484,127 +61291,59 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.order_general,
-                                      expression: "form.order_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        _vm.form,
-                                        "order_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
+                                  model: {
+                                    value: _vm.form.order_general,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.form, "order_general", $$v)
                                     },
+                                    expression: "form.order_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.order_supplier,
-                                      expression: "form.order_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        _vm.form,
-                                        "order_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
+                                  model: {
+                                    value: _vm.form.order_supplier,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.form, "order_supplier", $$v)
                                     },
+                                    expression: "form.order_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -61648,128 +61387,67 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.order_followup_general,
-                                      expression: "form.order_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.order_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "order_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.order_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.order_followup_supplier,
-                                      expression:
-                                        "form.order_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.order_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "order_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.order_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -61781,127 +61459,67 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.complain_general,
-                                      expression: "form.complain_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.complain_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "complain_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.complain_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.complain_supplier,
-                                      expression: "form.complain_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.complain_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "complain_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.complain_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -61945,130 +61563,69 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.complain_followup_general,
-                                      expression:
-                                        "form.complain_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.complain_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "complain_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.complain_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form.complain_followup_supplier,
-                                      expression:
-                                        "form.complain_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.complain_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "complain_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.complain_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -62080,127 +61637,63 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.general_general,
-                                      expression: "form.general_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        _vm.form,
-                                        "general_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
+                                  model: {
+                                    value: _vm.form.general_general,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.form, "general_general", $$v)
                                     },
+                                    expression: "form.general_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.general_supplier,
-                                      expression: "form.general_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.general_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "general_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.general_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -62244,129 +61737,68 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.general_followup_general,
-                                      expression:
-                                        "form.general_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.general_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "general_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.general_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.general_followup_supplier,
-                                      expression:
-                                        "form.general_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.general_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "general_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.general_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -62378,129 +61810,67 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.salebill_inward_general,
-                                      expression:
-                                        "form.salebill_inward_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.salebill_inward_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "salebill_inward_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.salebill_inward_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.salebill_inward_supplier,
-                                      expression:
-                                        "form.salebill_inward_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.salebill_inward_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "salebill_inward_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.salebill_inward_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -62547,133 +61917,73 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .salebill_outward_followup_general,
-                                      expression:
-                                        "form.salebill_outward_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .salebill_outward_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "salebill_outward_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.salebill_outward_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .salebill_outward_followup_supplier,
-                                      expression:
-                                        "form.salebill_outward_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .salebill_outward_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "salebill_outward_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.salebill_outward_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -62722,130 +62032,69 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.salebill_followup_general,
-                                      expression:
-                                        "form.salebill_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.salebill_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "salebill_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.salebill_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form.salebill_followup_supplier,
-                                      expression:
-                                        "form.salebill_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.salebill_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
-                                        "salebill_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        "salebill_followup_general",
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.salebill_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -62857,127 +62106,63 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.payment_general,
-                                      expression: "form.payment_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
-                                      _vm.$set(
-                                        _vm.form,
-                                        "payment_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
-                                      )
+                                  model: {
+                                    value: _vm.form.payment_general,
+                                    callback: function ($$v) {
+                                      _vm.$set(_vm.form, "payment_general", $$v)
                                     },
+                                    expression: "form.payment_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.payment_supplier,
-                                      expression: "form.payment_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.payment_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "payment_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.payment_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -63021,133 +62206,72 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .payment_outward_followup_general,
-                                      expression:
-                                        "form.payment_outward_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form.payment_outward_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "payment_outward_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.payment_outward_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .payment_outward_followup_supplier,
-                                      expression:
-                                        "form.payment_outward_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .payment_outward_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "payment_outward_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.payment_outward_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -63194,129 +62318,72 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.payment_followup_general,
-                                      expression:
-                                        "form.payment_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form.payment_outward_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
-                                        "payment_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        "payment_outward_followup_general",
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.payment_outward_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.payment_followup_supplier,
-                                      expression:
-                                        "form.payment_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .payment_outward_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
-                                        "payment_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        "payment_outward_followup_supplier",
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.payment_outward_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -63328,127 +62395,67 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.commission_general,
-                                      expression: "form.commission_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.commission_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "commission_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.commission_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.commission_supplier,
-                                      expression: "form.commission_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.commission_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "commission_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression: "form.commission_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -63493,131 +62500,70 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form.commission_followup_general,
-                                      expression:
-                                        "form.commission_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.commission_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "commission_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.commission_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form.commission_followup_supplier,
-                                      expression:
-                                        "form.commission_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form.commission_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "commission_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.commission_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                       ]),
@@ -63629,130 +62575,69 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.form.automated_payment_general,
-                                      expression:
-                                        "form.automated_payment_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.automated_payment_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "automated_payment_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.automated_payment_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form.automated_payment_supplier,
-                                      expression:
-                                        "form.automated_payment_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value: _vm.form.automated_payment_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "automated_payment_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.automated_payment_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
@@ -63799,133 +62684,73 @@ var render = function () {
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .automated_commission_followup_general,
-                                      expression:
-                                        "form.automated_commission_followup_general",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .automated_commission_followup_general,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "automated_commission_followup_general",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.automated_commission_followup_general",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-lg-3" }, [
                           _c("div", { staticClass: "form-group" }, [
-                            _c("div", { staticClass: "form-control-wrap" }, [
-                              _c(
-                                "select",
-                                {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value:
-                                        _vm.form
-                                          .automated_commission_followup_supplier,
-                                      expression:
-                                        "form.automated_commission_followup_supplier",
-                                    },
-                                  ],
-                                  staticClass: "form-select",
+                            _c(
+                              "div",
+                              [
+                                _c("multiselect", {
                                   attrs: {
-                                    multiple: "multiple",
-                                    "data-placeholder":
-                                      "Select Multiple options",
+                                    "tag-placeholder": "Select Designation",
+                                    placeholder: "Search Designation",
+                                    label: "name",
+                                    "track-by": "name",
+                                    options: _vm.designationList,
+                                    multiple: true,
+                                    taggable: true,
                                   },
-                                  on: {
-                                    change: function ($event) {
-                                      var $$selectedVal = Array.prototype.filter
-                                        .call(
-                                          $event.target.options,
-                                          function (o) {
-                                            return o.selected
-                                          }
-                                        )
-                                        .map(function (o) {
-                                          var val =
-                                            "_value" in o ? o._value : o.value
-                                          return val
-                                        })
+                                  model: {
+                                    value:
+                                      _vm.form
+                                        .automated_commission_followup_supplier,
+                                    callback: function ($$v) {
                                       _vm.$set(
                                         _vm.form,
                                         "automated_commission_followup_supplier",
-                                        $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        $$v
                                       )
                                     },
+                                    expression:
+                                      "form.automated_commission_followup_supplier",
                                   },
-                                },
-                                _vm._l(
-                                  _vm.designationList,
-                                  function (designation) {
-                                    return _c(
-                                      "option",
-                                      {
-                                        key: designation.id,
-                                        domProps: { value: designation.id },
-                                      },
-                                      [_vm._v(_vm._s(designation.name))]
-                                    )
-                                  }
-                                ),
-                                0
-                              ),
-                            ]),
+                                }),
+                              ],
+                              1
+                            ),
                           ]),
                         ]),
                         _vm._v(" "),

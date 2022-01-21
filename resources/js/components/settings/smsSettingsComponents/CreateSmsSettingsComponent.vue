@@ -50,18 +50,14 @@
                                             <div class="col-lg-3">
                                                 <div class="form-group">
                                                     <div>
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="enquiryGeneral">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="form.enquiry_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>                                                        
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.enquiry_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.enquiry_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -81,19 +77,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.enquiry_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.enquiry_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.enquiry_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.enquiry_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -107,19 +99,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.order_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.order_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.order_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.order_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -139,19 +127,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.order_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.order_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.order_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.order_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,19 +149,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.complain_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.complain_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.complain_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.complain_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -197,19 +177,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.complain_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.complain_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.complain_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.complain_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -223,19 +199,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.general_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.general_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.general_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.general_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,19 +227,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.general_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.general_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.general_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.general_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -281,19 +249,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_inward_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_inward_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_inward_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_inward_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -313,19 +277,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_outward_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_outward_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_outward_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_outward_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -345,19 +305,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.salebill_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.salebill_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -371,19 +327,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -403,19 +355,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_outward_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_outward_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_outward_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_outward_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -435,19 +383,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_outward_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.payment_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.payment_outward_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -461,19 +405,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.commission_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.commission_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.commission_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.commission_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -493,19 +433,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.commission_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.commission_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.commission_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.commission_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -519,19 +455,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.automated_payment_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.automated_payment_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.automated_payment_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.automated_payment_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -551,19 +483,15 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.automated_commission_followup_general">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.automated_commission_followup_general" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <div class="form-control-wrap">
-                                                        <select class="form-select" multiple="multiple" data-placeholder="Select Multiple options" v-model="form.automated_commission_followup_supplier">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                    <div>
+                                                        <multiselect v-model="form.automated_commission_followup_supplier" tag-placeholder="Select Designation" placeholder="Search Designation" label="name" track-by="name" :options="designationList" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -603,16 +531,18 @@
     import Multiselect from 'vue-multiselect';
 
     var smsSettings = [];
-    var designations = [];
     export default {
         name: 'create-sms-settings',
+        props: {
+            scope: String,
+            id: Number,
+        },
         components: { 
             Multiselect
         },
         data() {
             return {
                 designationList: [],
-                enquiryGeneral: [],
                 form: new Form({
                     id: '',
                     enquiry_general: [],
@@ -666,15 +596,13 @@
             }
         },
         created() {
-            axios.get('/settings/designation/list')
+            axios.get('/settings/sms-settings/list-designation')
             .then(response => {
                 this.designationList = response.data;
-                console.log(this.designationList);
             });
         },
         methods: {
             register () {
-                this.form.enquiry_general = this.enquiryGeneral;
                 this.form.post('/settings/sms-settings/update')
                     .then(( response ) => {
                         window.location.href = '/settings/sms-settings';
@@ -685,8 +613,8 @@
             axios.get(`/settings/sms-settings/fetch-sms-settings/${this.id}`)
             .then(response => {
                 smsSettings = response.data;
-
-                this.form.id = smsSettings.employee_id;
+                console.log(smsSettings);
+                this.form.id = this.id;
                 this.form.enquiry_general = smsSettings.enquiry_general;
                 this.form.enquiry_supplier = smsSettings.enquiry_supplier;
                 this.form.enquiry_footer_message = smsSettings.enquiry_footer_message;
