@@ -1,5 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/akashs/public_html/
+    - export DEPLOYPATH=/home/akashs/public_html/laoffline.qwesys.com/
     - /bin/cp * $DEPLOYPATH
