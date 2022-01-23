@@ -132,15 +132,13 @@
             },
         },
         mounted() {
-            console.log("This is about component");
             switch (this.scope) {
                 case 'edit' :
                     axios.get(`/databank/users-group/fetch-user-group/${this.id}`)
                     .then(response => {
                         gData = response.data;
-                        console.log(gData);
-                        var accessPermission = JSON.parse(gData.access_permission);
-                        var modifyPermission = JSON.parse(gData.modify_permission);
+                        var accessPermission = JSON.parse(gData.access_permissions);
+                        var modifyPermission = JSON.parse(gData.modify_permissions);
 
                         this.form.id = gData.id;
                         this.form.name = gData.name;

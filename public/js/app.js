@@ -10548,15 +10548,12 @@ var gData = [];
   mounted: function mounted() {
     var _this2 = this;
 
-    console.log("This is about component");
-
     switch (this.scope) {
       case 'edit':
         axios.get("/databank/users-group/fetch-user-group/".concat(this.id)).then(function (response) {
           gData = response.data;
-          console.log(gData);
-          var accessPermission = JSON.parse(gData.access_permission);
-          var modifyPermission = JSON.parse(gData.modify_permission);
+          var accessPermission = JSON.parse(gData.access_permissions);
+          var modifyPermission = JSON.parse(gData.modify_permissions);
           _this2.form.id = gData.id;
           _this2.form.name = gData.name;
           _this2.form.access_permission = accessPermission;

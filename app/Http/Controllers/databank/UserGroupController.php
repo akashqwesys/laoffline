@@ -101,8 +101,8 @@ class UserGroupController extends Controller
         $userGroup = new UserGroup;
         $userGroup->name = $request->name;
         $userGroup->roles_id = $role->id;
-        $userGroup->access_permission = json_encode($request->access_permission);
-        $userGroup->modify_permission = json_encode($request->modify_permission);
+        $userGroup->access_permissions = json_encode($request->access_permission);
+        $userGroup->modify_permissions = json_encode($request->modify_permission);
         $userGroup->save();
         
         $logs = new Logs;

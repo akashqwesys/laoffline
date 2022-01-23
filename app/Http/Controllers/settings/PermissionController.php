@@ -59,6 +59,8 @@ class PermissionController extends Controller
     public function deletePermission($id){
         $permission = Permission::where('id', $id)->first();
 
+        $user->revokePermissionTo($permission->name);
+
         $logs = new Logs;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company Type / Delete';
@@ -75,7 +77,8 @@ class PermissionController extends Controller
         ]);
 
         $permission = new Permission;
-        $permission->name = strtolower(str_replace(' ', '-', $request->name));
+        $permission->name = 'access-'.strtolower(str_replace(' ', '-', $request->name));
+        $permission->name = 'modify-'.strtolower(str_replace(' ', '-', $request->name));
         $permission->save();
 
         $logs = new Logs;
