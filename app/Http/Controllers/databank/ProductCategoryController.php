@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Employee;
 use App\Models\ProductCategory;
+use App\Models\ProductDefaultCategory;
 use App\Models\Logs;
 use Illuminate\Support\Facades\Session;
 
@@ -43,6 +44,12 @@ class ProductCategoryController extends Controller
                                             get(['product_default_categories.name as default_category', 'product_categories.name as category_name', 'product_categories.id as category_id']);
 
         return $productCategory;
+    }
+
+    public function listProductDefaultCategoriesCategory() {
+        $productDfaultCategory = ProductDefaultCategory::get(['id', 'name']);
+
+        return $productDfaultCategory;
     }
 
     public function editProductCategory($id) {

@@ -8848,13 +8848,7 @@ var productCategories = [];
     return {
       cancel_url: '/databank/product-category',
       default_categories: [],
-      defaultCategories: [{
-        id: '1',
-        name: 'Product'
-      }, {
-        id: '2',
-        name: 'Fabric'
-      }],
+      defaultCategories: [],
       form: new Form({
         id: '',
         default_category: '',
@@ -8862,6 +8856,13 @@ var productCategories = [];
         sort_order: ''
       })
     };
+  },
+  created: function created() {
+    var _this = this;
+
+    axios.get('/databank/product-category/list-default-category').then(function (response) {
+      _this.defaultCategories = response.data;
+    });
   },
   methods: {
     register: function register() {
@@ -8877,16 +8878,16 @@ var productCategories = [];
     }
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     switch (this.scope) {
       case 'edit':
         axios.get("/databank/product-category/fetch-product-category/".concat(this.id)).then(function (response) {
           productCategories = response.data;
-          _this.form.id = productCategories.id;
-          _this.form.default_category = productCategories.defaultCategory;
-          _this.form.name = productCategories.name;
-          _this.form.sort_order = productCategories.sort_order;
+          _this2.form.id = productCategories.id;
+          _this2.form.default_category = productCategories.defaultCategory;
+          _this2.form.name = productCategories.name;
+          _this2.form.sort_order = productCategories.sort_order;
         });
         break;
 

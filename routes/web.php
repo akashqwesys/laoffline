@@ -68,6 +68,7 @@ Route::get('/logs/list', [App\Http\Controllers\LogsController::class, 'listLogs'
 Route::group(['middleware' => ['auth', 'permission:access-product-category']], function() {
     Route::get('/databank/product-category', [App\Http\Controllers\databank\ProductCategoryController::class, 'index'])->name('product-category');
     Route::get('/databank/product-category/list', [App\Http\Controllers\databank\ProductCategoryController::class, 'listProductCategory'])->name('list');
+    Route::get('/databank/product-category/list-default-category', [App\Http\Controllers\databank\ProductCategoryController::class, 'listProductDefaultCategoriesCategory'])->name('list-default-category');
     Route::get('/databank/product-category/fetch-product-category/{id}', [App\Http\Controllers\databank\ProductCategoryController::class, 'fetchProductCategory']);
 });
 

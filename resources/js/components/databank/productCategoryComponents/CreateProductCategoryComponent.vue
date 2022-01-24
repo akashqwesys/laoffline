@@ -83,14 +83,7 @@
             return {
                 cancel_url: '/databank/product-category',
                 default_categories: [],
-                defaultCategories: [{
-                    id: '1',
-                    name: 'Product',
-                },{
-                    id: '2',
-                    name: 'Fabric',
-                }
-                ],
+                defaultCategories: [],
                 form: new Form({
                     id: '',
                     default_category: '',
@@ -98,6 +91,12 @@
                     sort_order: '',
                 })
             }
+        },
+        created() {
+            axios.get('/databank/product-category/list-default-category')
+            .then(response => {
+                this.defaultCategories = response.data;
+            });
         },
         methods: {
             register () {
