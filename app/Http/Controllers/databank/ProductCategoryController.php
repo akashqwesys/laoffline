@@ -92,6 +92,7 @@ class ProductCategoryController extends Controller
         $productCategory = new ProductCategory;
         $productCategory->product_default_category_id = $request->default_category['id'];
         $productCategory->name = $request->name;
+        $productCategory->main_category_id = 0;
         $productCategory->sort_order = $request->sort_order;
         $productCategory->save();
 
