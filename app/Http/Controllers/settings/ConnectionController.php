@@ -21,5 +21,9 @@ class ConnectionController extends Controller
         die("Connection failed: " . $conn->connect_error);
         }
         echo "Connected successfully";
+
+
+        $sql = "SELECT * FROM employe";
+        // $result = mysqli_fetch_assoc($sql, $conn);
     }
 }
