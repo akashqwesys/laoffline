@@ -64,6 +64,7 @@
                 cancel_url: '/settings/permission',
                 form: new Form({
                     id: '',
+                    type: '',
                     name: '',
                 })
             }
@@ -99,7 +100,8 @@
                         pname = arr.join(" ");
 
                         this.form.id = permission.id;
-                        this.form.name = pname;
+                        this.form.type = pname.substring(0, 7);
+                        this.form.name = pname.substring(7);
                     });
                     break;
                 default:

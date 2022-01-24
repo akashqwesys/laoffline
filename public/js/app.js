@@ -10532,8 +10532,6 @@ var gData = [];
   },
   methods: {
     register: function register() {
-      console.log(this.form);
-
       if (this.scope == 'edit') {
         this.form.post('/databank/users-group/update').then(function (response) {
           window.location.href = '/databank/users-group';
@@ -10552,12 +10550,10 @@ var gData = [];
       case 'edit':
         axios.get("/databank/users-group/fetch-user-group/".concat(this.id)).then(function (response) {
           gData = response.data;
-          var accessPermission = JSON.parse(gData.access_permissions);
-          var modifyPermission = JSON.parse(gData.modify_permissions);
           _this2.form.id = gData.id;
           _this2.form.name = gData.name;
-          _this2.form.access_permission = accessPermission;
-          _this2.form.modify_permission = modifyPermission;
+          _this2.form.access_permission = JSON.parse(gData.access_permissions);
+          _this2.form.modify_permission = JSON.parse(gData.modify_permissions);
         });
         break;
 
@@ -12537,6 +12533,7 @@ var permission = [];
       cancel_url: '/settings/permission',
       form: new Form({
         id: '',
+        type: '',
         name: ''
       })
     };
@@ -12570,7 +12567,8 @@ var permission = [];
 
           pname = arr.join(" ");
           _this.form.id = permission.id;
-          _this.form.name = pname;
+          _this.form.type = pname.substring(0, 7);
+          _this.form.name = pname.substring(7);
         });
         break;
 

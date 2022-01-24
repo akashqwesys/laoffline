@@ -117,7 +117,6 @@
         },
         methods: {
             register () {
-                console.log(this.form);
                 if (this.scope == 'edit') {
                     this.form.post('/databank/users-group/update')
                         .then(( response ) => {
@@ -137,13 +136,11 @@
                     axios.get(`/databank/users-group/fetch-user-group/${this.id}`)
                     .then(response => {
                         gData = response.data;
-                        var accessPermission = JSON.parse(gData.access_permissions);
-                        var modifyPermission = JSON.parse(gData.modify_permissions);
 
                         this.form.id = gData.id;
                         this.form.name = gData.name;
-                        this.form.access_permission = accessPermission;
-                        this.form.modify_permission = modifyPermission;
+                        this.form.access_permission = JSON.parse(gData.access_permissions);
+                        this.form.modify_permission = JSON.parse(gData.modify_permissions);
                     });
                     break;
                 default:

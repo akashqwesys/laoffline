@@ -57,14 +57,15 @@ class PermissionController extends Controller
     }
 
     public function deletePermission($id){
+        $user = Session::get('user');
         $permission = Permission::where('id', $id)->first();
 
         $user->revokePermissionTo($permission->name);
 
         $logs = new Logs;
-        $logs->employee_id = Session::get('user')->employee_id;
+        $logs->employee_id = $user->employee_id;
         $logs->log_path = 'Company Type / Delete';
-        $logs->log_subject = 'Company Type - '.$permission->company_name.' was deleted by"'.Session::get('user')->username.'".';
+        $logs->log_subject = 'Company Type - '.$permission->company_name.' was deleted by"'.$user->username.'".';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
@@ -78,6 +79,9 @@ class PermissionController extends Controller
 
         $permission = new Permission;
         $permission->name = 'access-'.strtolower(str_replace(' ', '-', $request->name));
+        $permission->save();
+
+        $permission = new Permission;
         $permission->name = 'modify-'.strtolower(str_replace(' ', '-', $request->name));
         $permission->save();
 
@@ -95,7 +99,12 @@ class PermissionController extends Controller
         ]);
 
         $permission = Permission::where('id', $request->id)->first();
-        $permission->name = strtolower(str_replace(' ', '-', $request->name));
+        if ($request->type == 'Access') {
+            $permission->name = 'access-'.strtolower(str_replace(' ', '-', $request->name));
+
+        } elseif ($request->type == 'Modify') {
+            $permission->name = 'modify-'.strtolower(str_replace(' ', '-', $request->name));
+        }
         $permission->save();
 
         $logs = new Logs;

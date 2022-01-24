@@ -86,7 +86,7 @@ class UserGroupController extends Controller
     }
 
     public function insertUserGroupData(Request $request) {
-
+        
         $this->validate($request, [ 
             'name' => 'required',
             'access_permission' => 'required',
@@ -124,8 +124,8 @@ class UserGroupController extends Controller
         
         $userGroup = UserGroup::where('id', $id)->first();
         $userGroup->name = $request->name;
-        $userGroup->access_permission = json_encode($request->access_permission);
-        $userGroup->modify_permission = json_encode($request->modify_permission);
+        $userGroup->access_permissions = json_encode($request->access_permission);
+        $userGroup->modify_permissions = json_encode($request->modify_permission);
         $userGroup->save();
 
         $role = Role::where('id', $userGroup->roles_id)->first();

@@ -352,48 +352,50 @@ Route::group(['middleware' => ['auth', 'permission:modify-sale-bill-agent']], fu
 
 
 // Routes for Settings / Fabric
-// Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
+Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
     Route::get('/settings/fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'index'])->name('fabricGroup');
     Route::get('/settings/fabricGroup/list', [App\Http\Controllers\settings\FabricGroupController::class, 'listFabricGroup'])->name('list');
     Route::get('/settings/fabricGroup/fetch-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'fetchFabricGroup']);
-// });
+});
 
-// Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
+Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
     Route::get('/settings/fabricGroup/create-fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'createFabricGroup']);
     Route::post('/settings/fabricGroup/create', [App\Http\Controllers\settings\FabricGroupController::class, 'insertFabricGroupData']);
     Route::post('/settings/fabricGroup/update', [App\Http\Controllers\settings\FabricGroupController::class, 'updateFabricGroupData']);
     Route::get('/settings/fabricGroup/edit-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'editFabricGroup']);
     Route::delete('/settings/fabricGroup/delete/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'deleteFabricGroup'])->name('delete');
-// });
+});
 
 
 // Routes for Settings / Company Type
-// Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
+Route::group(['middleware' => ['auth', 'permission:access-companytype']], function() {
     Route::get('/settings/companyType', [App\Http\Controllers\settings\CompanyTypeController::class, 'index'])->name('companyType');
     Route::get('/settings/companyType/list', [App\Http\Controllers\settings\CompanyTypeController::class, 'listCompanyType'])->name('list');
     Route::get('/settings/companyType/fetch-companyType/{id}', [App\Http\Controllers\settings\CompanyTypeController::class, 'fetchCompanyType']);
-// });
+});
 
-// Route::group(['middleware' => ['auth', 'permission:modify-companyType']], function() {
+Route::group(['middleware' => ['auth', 'permission:modify-companytype']], function() {
     Route::get('/settings/companyType/create-companyType', [App\Http\Controllers\settings\CompanyTypeController::class, 'createCompanyType']);
     Route::post('/settings/companyType/create', [App\Http\Controllers\settings\CompanyTypeController::class, 'insertCompanyTypeData']);
     Route::post('/settings/companyType/update', [App\Http\Controllers\settings\CompanyTypeController::class, 'updateCompanyTypeData']);
     Route::get('/settings/companyType/edit-companyType/{id}', [App\Http\Controllers\settings\CompanyTypeController::class, 'editCompanyType']);
     Route::delete('/settings/companyType/delete/{id}', [App\Http\Controllers\settings\CompanyTypeController::class, 'deleteCompanyType'])->name('delete');
-// });
+});
 
 
 // Routes for Settings / Permissions
-// Route::group(['middleware' => ['auth', 'permission:access-permission']], function() {
+Route::group(['middleware' => ['auth', 'permission:access-permission']], function() {
     Route::get('/settings/permission', [App\Http\Controllers\settings\PermissionController::class, 'index'])->name('permission');
     Route::get('/settings/permission/list', [App\Http\Controllers\settings\PermissionController::class, 'listPermission'])->name('list');
     Route::get('/settings/permission/fetch-permission/{id}', [App\Http\Controllers\settings\PermissionController::class, 'fetchPermission']);
-// });
+});
 
-// Route::group(['middleware' => ['auth', 'permission:modify-permission']], function() {
+Route::group(['middleware' => ['auth', 'permission:modify-permission']], function() {
     Route::get('/settings/permission/create-permission', [App\Http\Controllers\settings\PermissionController::class, 'createPermission']);
     Route::post('/settings/permission/create', [App\Http\Controllers\settings\PermissionController::class, 'insertPermissionData']);
     Route::post('/settings/permission/update', [App\Http\Controllers\settings\PermissionController::class, 'updatePermissionData']);
     Route::get('/settings/permission/edit-permission/{id}', [App\Http\Controllers\settings\PermissionController::class, 'editPermission']);
     Route::delete('/settings/permission/delete/{id}', [App\Http\Controllers\settings\PermissionController::class, 'deletePermission'])->name('delete');
-// });
+});
+
+Route::get('/settings/connections', [App\Http\Controllers\settings\ConnectionController::class, 'index'])->name('connections');
