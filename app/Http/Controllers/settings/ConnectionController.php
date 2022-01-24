@@ -14,7 +14,7 @@ class ConnectionController extends Controller
         $database = "akashs_laoffline";
 
         // Create connection
-        $conn = new mysqli($servername, $username, $password, $database);
+        $conn = mysqli_connect($servername, $username, $password, $database);
 
         // Check connection
         if ($conn->connect_error) {
