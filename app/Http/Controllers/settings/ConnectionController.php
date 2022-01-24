@@ -24,6 +24,9 @@ class ConnectionController extends Controller
 
 
         $sql = "SELECT * FROM employe";
-        // $result = mysqli_fetch_assoc($sql, $conn);
+        $result = mysqli_fetch_assoc($sql, $conn);
+
+        echo "<pre>"; 
+        print_r($result);
     }
 }
