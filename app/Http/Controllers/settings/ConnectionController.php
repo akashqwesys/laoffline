@@ -54,9 +54,9 @@ class ConnectionController extends Controller
         $bankDetailData = [];
 
         $servername = "localhost";
-        $username = "root";
-        $password = "";
-        $database = "laoffline-original";
+        $username = "akashs_laoffline123";
+        $password = "laoffline123";
+        $database = "akashs_laoffline";
 
         // Create connection
         $conn = mysqli_connect($servername, $username, $password, $database);
