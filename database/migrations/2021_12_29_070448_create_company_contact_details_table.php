@@ -16,10 +16,10 @@ class CreateCompanyContactDetailsTable extends Migration
         Schema::create('company_contact_details', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id');
-            $table->string('contact_persion_name');
-            $table->string('contact_persion_designation');
-            $table->string('contact_persion_profile_pic');
-            $table->string('contact_persion_mobile');
+            $table->string('contact_person_name');
+            $table->string('contact_person_designation');
+            $table->string('contact_person_profile_pic');
+            $table->string('contact_person_mobile');
             $table->string('contact_person_email');
             $table->timestamps();
         });

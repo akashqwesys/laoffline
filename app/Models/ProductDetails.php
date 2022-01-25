@@ -15,9 +15,7 @@ class ProductDetails extends Model
         'average_price',
         'wholesale_discount',
         'wholesale_brokerage',
-        'total_wholesale_discount',
         'retail_discount',
         'retail_brokerage',
-        'totl_retail_discount',
     ];
 }

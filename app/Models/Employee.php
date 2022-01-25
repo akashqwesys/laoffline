@@ -25,7 +25,5 @@ class Employee extends Model
         'ref_pass_pic',
         'ref_mobile',
         'ref_address',
-        'username',
-        'password',
     ];
 }

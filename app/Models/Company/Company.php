@@ -22,6 +22,8 @@ class Company extends Model
         'company_remark_watchout',
         'company_about',
         'company_category',
+        'product_category',
+        'product_sub_category',
         'company_transport',
         'company_discount',
         'company_payment_terms_in_days',
@@ -32,5 +34,7 @@ class Company extends Model
         'generated_by',
         'updated_by',
         'is_linked',
+        'is_active',
+        'verified_date',
     ];
 }

@@ -14,5 +14,7 @@ class Agent extends Model
         'pan_no',
         'gst_no',
         'default',
+        'include_tax',
+        'inv_prefix',
     ];
 }

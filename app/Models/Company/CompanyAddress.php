@@ -13,6 +13,7 @@ class CompanyAddress extends Model
         'company_id',        
         'address_type',
         'address',
+        'country_code',
         'mobile',
     ];
 }

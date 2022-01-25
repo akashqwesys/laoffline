@@ -16,6 +16,7 @@ class CreateemployeesSeeder extends Seeder
     {
         $employee = [
             [
+                'id' => 2,
                 'firstname' => 'Admin',
                 'middlename' => 'Admin',
                 'lastname' => 'Admin',

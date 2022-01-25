@@ -15,7 +15,6 @@ class CreateCompanyAddressOwnersTable extends Migration
     {
         Schema::create('company_address_owners', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
             $table->integer('company_address_id');
             $table->string('name');
             $table->string('designation');

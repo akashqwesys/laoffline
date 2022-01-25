@@ -19,13 +19,16 @@ class CreateProductsTable extends Migration
             $table->string('catalogue_name');
             $table->string('brand_name');
             $table->string('model');
-            $table->date('launch_date');
+            $table->date('launch_date')->nullable();
             $table->integer('company');
             $table->integer('category');
-            $table->integer('sub_category');
+            $table->string('sub_category');
             $table->string('main_image');
-            $table->string('price_list_iamge');
+            $table->string('price_list_image');
             $table->text('description');
+            $table->string('complete_flag');
+            $table->string('generated_by');
+            $table->string('updated_by');
             $table->timestamps();
         });
     }

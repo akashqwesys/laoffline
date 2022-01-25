@@ -16,10 +16,10 @@ class CreateCompanyReferencesTable extends Migration
         Schema::create('company_references', function (Blueprint $table) {
             $table->id();
             $table->integer('company_id');
-            $table->string('ref_person_name');
-            $table->string('ref_person_mobile');
-            $table->string('ref_person_company');
-            $table->string('ref_person_address');
+            $table->string('ref_person_name')->nullable();
+            $table->string('ref_person_mobile')->nullable();
+            $table->string('ref_person_company')->nullable();
+            $table->string('ref_person_address')->nullable();
             $table->timestamps();
         });
     }

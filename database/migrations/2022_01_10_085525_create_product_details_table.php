@@ -20,10 +20,8 @@ class CreateProductDetailsTable extends Migration
             $table->integer('average_price');
             $table->integer('wholesale_discount');
             $table->integer('wholesale_brokerage');
-            $table->integer('total_wholesale_discount');
             $table->integer('retail_discount');
             $table->integer('retail_brokerage');
-            $table->integer('totl_retail_discount');
             $table->timestamps();
         });
     }

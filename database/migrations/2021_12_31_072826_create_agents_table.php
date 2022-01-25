@@ -19,6 +19,8 @@ class CreateAgentsTable extends Migration
             $table->string('pan_no');
             $table->string('gst_no');
             $table->string('default');
+            $table->string('include_tax');
+            $table->string('inv_prefix');
             $table->timestamps();
         });
     }

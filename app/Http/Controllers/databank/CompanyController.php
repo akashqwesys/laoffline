@@ -300,6 +300,7 @@ class CompanyController extends Controller
                 $companyAddress->company_id = $company->id;
                 $companyAddress->address_type = $multipleAddress->address_type;
                 $companyAddress->address = $multipleAddress->address;
+                $companyAddress->country_code = 0;
                 $companyAddress->mobile = $multipleAddress->mobile;
                 $companyAddress->save();
 

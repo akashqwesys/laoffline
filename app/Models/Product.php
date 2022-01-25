@@ -19,7 +19,10 @@ class Product extends Model
         'category',
         'sub_category',
         'main_image',
-        'price_list_iamge',
+        'price_list_image',
         'description',
+        'complete_flag',
+        'generated_by',
+        'updated_by',
     ];
 }

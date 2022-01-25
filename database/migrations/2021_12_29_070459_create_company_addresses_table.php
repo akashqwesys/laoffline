@@ -18,6 +18,7 @@ class CreateCompanyAddressesTable extends Migration
             $table->integer('company_id');
             $table->string('address_type');
             $table->string('address');
+            $table->string('country_code');
             $table->string('mobile');
             $table->timestamps();
         });

@@ -17,16 +17,18 @@ class CreateCompaniesTable extends Migration
             $table->id();
             $table->string('company_name');
             $table->string('company_type');
-            $table->integer('company_country');
-            $table->integer('company_state');
-            $table->integer('company_city');
+            $table->string('company_country');
+            $table->string('company_state');
+            $table->string('company_city');
             $table->string('company_website');
-            $table->string('company_landline');
+            $table->text('company_landline');
             $table->string('company_mobile');
             $table->string('company_watchout');
-            $table->string('company_remark_watchout');
-            $table->string('company_about');
-            $table->integer('company_category');
+            $table->text('company_remark_watchout');
+            $table->text('company_about');
+            $table->string('company_category');
+            $table->string('product_category')->nullable();
+            $table->string('product_sub_category')->nullable();
             $table->integer('company_transport');
             $table->string('company_discount');
             $table->integer('company_payment_terms_in_days');
@@ -37,6 +39,8 @@ class CreateCompaniesTable extends Migration
             $table->integer('generated_by');
             $table->integer('updated_by');
             $table->integer('is_linked');
+            $table->integer('is_active');
+            $table->timestamp('verified_date')->nullable();
             $table->timestamps();
         });
     }
