@@ -6344,12 +6344,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'company',
   data: function data() {
     return {
       companies: [],
-      create_company: 'companies/create-company'
+      create_company: 'companies/create-company',
+      categoryName: ''
     };
   },
   created: function created() {
@@ -6357,15 +6359,22 @@ __webpack_require__.r(__webpack_exports__);
 
     axios.get('./companies/list').then(function (response) {
       _this.companies = response.data;
-      console.log(_this.companies);
     });
   },
   methods: {
-    getEssentialCompany: function getEssentialCompany() {
+    getCompanyCategory: function getCompanyCategory(id) {
       var _this2 = this;
 
+      axios.get('./companies/category-name/' + id).then(function (response) {
+        _this2.categoryName = response.data;
+      });
+      return this.categoryName;
+    },
+    getEssentialCompany: function getEssentialCompany() {
+      var _this3 = this;
+
       axios.get('./companies/list-essential').then(function (response) {
-        _this2.companies = response.data;
+        _this3.companies = response.data;
       });
     },
     isFavorite: function isFavorite(id) {
@@ -9415,6 +9424,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'productSubCategory',
   data: function data() {
@@ -9428,10 +9439,16 @@ __webpack_require__.r(__webpack_exports__);
 
     axios.get('./productsub-category/list').then(function (response) {
       _this.productSubCategories = response.data;
-      console.log(_this.productSubCategories);
     });
   },
   methods: {
+    getCompanyName: function getCompanyName(id) {
+      axios.get('./productsub-category/company-name/' + id).then(function (response) {
+        var companyName = response.data;
+        console.log(companyName);
+        return companyName;
+      });
+    },
     edit_data: function edit_data(id) {
       window.location.href = './productsub-category/edit-productsub-category/' + id;
     },
@@ -10274,7 +10291,6 @@ __webpack_require__.r(__webpack_exports__);
     getProfilePic: function getProfilePic(pname, name) {
       var d = name.split('_')[0];
       var path = d + '_' + pname.replace(/ /g, "_") + '/' + name;
-      console.log(path);
       return '/upload/products/' + path;
     }
   },
@@ -44197,7 +44213,7 @@ var render = function () {
                 _c(
                   "table",
                   {
-                    staticClass: "datatable-init-export nowrap table",
+                    staticClass: "datatable-init-export table",
                     attrs: { "data-export-title": "Export" },
                   },
                   [
@@ -44278,9 +44294,13 @@ var render = function () {
                           _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(company.company_type))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(company.category_name))]),
+                          _c("td", [_vm._v(_vm._s(company.company_category))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(company.name))]),
+                          company.company_city == 0 ? _c("td") : _vm._e(),
+                          _vm._v(" "),
+                          _c("td", { attrs: { else: "" } }, [
+                            _vm._v(_vm._s(company.company_city)),
+                          ]),
                           _vm._v(" "),
                           _c("td", [
                             _c("div", { staticClass: "dropdown" }, [
@@ -44666,23 +44686,17 @@ var render = function () {
                                         _vm._v("Select Company Type"),
                                       ]),
                                       _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "General" } },
-                                        [_vm._v("General")]
-                                      ),
+                                      _c("option", { attrs: { value: "1" } }, [
+                                        _vm._v("General"),
+                                      ]),
                                       _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "Customer" } },
-                                        [_vm._v("Customer")]
-                                      ),
+                                      _c("option", { attrs: { value: "2" } }, [
+                                        _vm._v("Customer"),
+                                      ]),
                                       _vm._v(" "),
-                                      _c(
-                                        "option",
-                                        { attrs: { value: "Supplier" } },
-                                        [_vm._v("Supplier")]
-                                      ),
+                                      _c("option", { attrs: { value: "3" } }, [
+                                        _vm._v("Supplier"),
+                                      ]),
                                     ]
                                   ),
                                 ]),
@@ -53239,7 +53253,7 @@ var render = function () {
                 _c(
                   "table",
                   {
-                    staticClass: "datatable-init-export nowrap table",
+                    staticClass: "datatable-init-export table",
                     attrs: { "data-export-title": "Export" },
                   },
                   [
@@ -56175,7 +56189,7 @@ var render = function () {
                 _c(
                   "table",
                   {
-                    staticClass: "datatable-init-export nowrap table",
+                    staticClass: "datatable-init-export table",
                     attrs: { "data-export-title": "Export" },
                   },
                   [

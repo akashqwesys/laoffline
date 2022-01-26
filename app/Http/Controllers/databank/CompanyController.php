@@ -5,6 +5,7 @@ namespace App\Http\Controllers\databank;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use App\Models\CompanyCategory;
 use App\Models\Logs;
 use App\Models\Company\Company;
 use App\Models\Company\CompanyAddress;
@@ -44,17 +45,37 @@ class CompanyController extends Controller
     }
 
     public function listCompany() {
-        $company = Company::join('company_addresses', 'companies.id', '=', 'company_addresses.company_id')->
-                            join('company_address_owners', 'companies.id', '=', 'company_address_owners.company_id')->
-                            join('company_bank_details', 'companies.id', '=', 'company_bank_details.company_id')->
-                            join('company_contact_details', 'companies.id', '=', 'company_contact_details.company_id')->
-                            join('company_emails', 'companies.id', '=', 'company_emails.company_id')->
-                            join('company_packaging_details', 'companies.id', '=', 'company_packaging_details.company_id')->
-                            join('company_references', 'companies.id', '=', 'company_references.company_id')->
-                            join('company_swot_details', 'companies.id', '=', 'company_swot_details.company_id')->
-                            join('company_categories', 'companies.company_category', '=', 'company_categories.id')->
-                            join('cities', 'companies.company_city', '=', 'cities.id')->
-                            get();
+        $company = Company::all();
+
+        foreach($company as $cmp) {
+            if($cmp->company_type == 1) {
+                $cmp['company_type'] = 'General';
+            } elseif($cmp->company_type == 2) {
+                $cmp['company_type'] = 'Customer';
+            } elseif($cmp->company_type == 3) {
+                $cmp['company_type'] = 'Supplier';
+            }
+
+            if(!empty($cmp->company_category)) {
+                if(is_array(json_decode($cmp->company_category))) {
+                    $companyName = [];
+                    $companyArr = json_decode($cmp->company_category);
+        
+                    foreach($companyArr as $key => $c) {
+                        $companyCat = CompanyCategory::where('id', $c)->first('category_name');
+                        $companyName[$key] = $companyCat->category_name;
+                    }
+
+                } else {
+                    $companyCat = CompanyCategory::where('id', $cmp->company_category)->first('category_name');
+                    $companyName = $companyCat->category_name;
+                }
+                $cmp['company_category'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+            } else {
+                $cmp['company_category'] = '';
+            }
+        }
+
         return $company;
     }
 

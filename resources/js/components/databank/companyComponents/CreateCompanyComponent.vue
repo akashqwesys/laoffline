@@ -36,9 +36,9 @@
                                                     <div>
                                                         <select v-model="company.company_type" class="form-control" id="fv-company_type" data-placeholder="Select a option">
                                                             <option>Select Company Type</option>
-                                                            <option value="General">General</option>
-                                                            <option value="Customer">Customer</option>
-                                                            <option value="Supplier">Supplier</option>
+                                                            <option value="1">General</option>
+                                                            <option value="2">Customer</option>
+                                                            <option value="3">Supplier</option>
                                                         </select>
                                                     </div>
                                                 </div>

@@ -54,9 +54,12 @@ class ConnectionController extends Controller
         $bankDetailData = [];
 
         $servername = "localhost";
-        $username = "akashs_laoffline123";
-        $password = "laoffline123";
-        $database = "akashs_laoffline";
+        $username = "root";
+        $password = "";
+        $database = "laoffline-original";
+        // $username = "akashs_laoffline123";
+        // $password = "laoffline123";
+        // $database = "akashs_laoffline";
 
         // Create connection
         $conn = mysqli_connect($servername, $username, $password, $database);
@@ -116,18 +119,18 @@ class ConnectionController extends Controller
                         } else {
                             $result['company_id'] = '';                            
                         }
-
-                        $productCategoryData[$i]['id'] = $result['product_category_id'];
-                        $productCategoryData[$i]['product_default_category_id'] = $result['product_default_category_id'];
-                        $productCategoryData[$i]['name'] = $result['name'];
-                        $productCategoryData[$i]['main_category_id'] = $result['main_category_id'];
-                        $productCategoryData[$i]['company_id'] = $result['company_id'];
-                        $productCategoryData[$i]['product_fabric_id'] = $result['product_fabric_id'];
-                        $productCategoryData[$i]['sort_order'] = $result['sort_order'];
-                        $productCategoryData[$i]['multiple_company'] = $result['multiple_company'];
-                        $productCategoryData[$i]['rate'] = $result['rate'];
-                        $i++;
                     }
+
+                    $productCategoryData[$i]['id'] = $result['product_category_id'];
+                    $productCategoryData[$i]['product_default_category_id'] = $result['product_default_category_id'];
+                    $productCategoryData[$i]['name'] = $result['name'];
+                    $productCategoryData[$i]['main_category_id'] = $result['main_category_id'];
+                    $productCategoryData[$i]['company_id'] = $result['company_id'];
+                    $productCategoryData[$i]['product_fabric_id'] = $result['product_fabric_id'];
+                    $productCategoryData[$i]['sort_order'] = $result['sort_order'];
+                    $productCategoryData[$i]['multiple_company'] = $result['multiple_company'];
+                    $productCategoryData[$i]['rate'] = $result['rate'];
+                    $i++;
                 }
             }
 
@@ -503,41 +506,41 @@ class ConnectionController extends Controller
             
         }
 
-        if(!empty($employeeData)) {
-            foreach($employeeData as $employees) {
-                $employee = new Employee;
-                $employee->id = $employees['id'];
-                $employee->firstname = $employees['firstname'];
-                $employee->middlename = $employees['middlename'];
-                $employee->lastname = $employees['lastname'];
-                $employee->profile_pic = $employees['profile_pic'];
-                $employee->email_id = $employees['email_id'];
-                $employee->mobile = $employees['mobile'];
-                $employee->address = $employees['address'];
-                $employee->user_group = $employees['user_group'];
-                $employee->excel_access = $employees['excel_access'];
-                $employee->id_proof = $employees['id_proof'];
-                $employee->ref_full_name = $employees['ref_full_name'];
-                $employee->ref_pass_pic = $employees['ref_pass_pic'];
-                $employee->ref_mobile = $employees['ref_mobile'];
-                $employee->ref_address = $employees['ref_address'];
-                $employee->web_login = '';
-                $employee->save();
+        // if(!empty($employeeData)) {
+        //     foreach($employeeData as $employees) {
+        //         $employee = new Employee;
+        //         $employee->id = $employees['id'];
+        //         $employee->firstname = $employees['firstname'];
+        //         $employee->middlename = $employees['middlename'];
+        //         $employee->lastname = $employees['lastname'];
+        //         $employee->profile_pic = $employees['profile_pic'];
+        //         $employee->email_id = $employees['email_id'];
+        //         $employee->mobile = $employees['mobile'];
+        //         $employee->address = $employees['address'];
+        //         $employee->user_group = $employees['user_group'];
+        //         $employee->excel_access = $employees['excel_access'];
+        //         $employee->id_proof = $employees['id_proof'];
+        //         $employee->ref_full_name = $employees['ref_full_name'];
+        //         $employee->ref_pass_pic = $employees['ref_pass_pic'];
+        //         $employee->ref_mobile = $employees['ref_mobile'];
+        //         $employee->ref_address = $employees['ref_address'];
+        //         $employee->web_login = '';
+        //         $employee->save();
 
-                $user = new User;
-                $user->employee_id = $employee['id'];
-                $user->username = $employees['username'];
-                $user->password = $employees['password'];
-                $user->is_active = $employees['is_active'];
-                $user->save();
+        //         $user = new User;
+        //         $user->employee_id = $employee['id'];
+        //         $user->username = $employees['username'];
+        //         $user->password = $employees['password'];
+        //         $user->is_active = $employees['is_active'];
+        //         $user->save();
 
-                $userGroupData = UserGroup::where('id', $employees['user_group'])->first();
+        //         $userGroupData = UserGroup::where('id', $employees['user_group'])->first();
                 
-                $role = Role::where('id', $userGroupData['roles_id'])->first();
+        //         $role = Role::where('id', $userGroupData['roles_id'])->first();
 
-                $user->assignRole($role);
-            }
-        }
+        //         $user->assignRole($role);
+        //     }
+        // }
 
         if(!empty($productCategoryData)) {
             foreach($productCategoryData as $productCategory) {
@@ -555,280 +558,280 @@ class ConnectionController extends Controller
             }
         }
 
-        if(!empty($products)) {
-            foreach($products as $product) {
-                $productsData = new Product;
-                $productsData->id = $product['productData']['id'];
-                $productsData->product_name = $product['productData']['product_name'];
-                $productsData->catalogue_name = $product['productData']['catalogue_name'];
-                $productsData->brand_name = $product['productData']['brand_name'];
-                $productsData->model = $product['productData']['model'];
-                $productsData->launch_date = $product['productData']['launch_date'];
-                $productsData->company = $product['productData']['company'];
-                $productsData->category = $product['productData']['category'];
-                $productsData->sub_category = $product['productData']['sub_category'];        
-                $productsData->main_image = $product['productData']['main_image'];
-                $productsData->price_list_image = $product['productData']['price_list_image'];
-                $productsData->description = $product['productData']['description'];
-                $productsData->complete_flag = $product['productData']['complete_flag'];
-                $productsData->generated_by = $product['productData']['generated_by'];
-                $productsData->updated_by = $product['productData']['updated_by'];
-                $productsData->save();
+        // if(!empty($products)) {
+        //     foreach($products as $product) {
+        //         $productsData = new Product;
+        //         $productsData->id = $product['productData']['id'];
+        //         $productsData->product_name = $product['productData']['product_name'];
+        //         $productsData->catalogue_name = $product['productData']['catalogue_name'];
+        //         $productsData->brand_name = $product['productData']['brand_name'];
+        //         $productsData->model = $product['productData']['model'];
+        //         $productsData->launch_date = $product['productData']['launch_date'];
+        //         $productsData->company = $product['productData']['company'];
+        //         $productsData->category = $product['productData']['category'];
+        //         $productsData->sub_category = $product['productData']['sub_category'];        
+        //         $productsData->main_image = $product['productData']['main_image'];
+        //         $productsData->price_list_image = $product['productData']['price_list_image'];
+        //         $productsData->description = $product['productData']['description'];
+        //         $productsData->complete_flag = $product['productData']['complete_flag'];
+        //         $productsData->generated_by = $product['productData']['generated_by'];
+        //         $productsData->updated_by = $product['productData']['updated_by'];
+        //         $productsData->save();
 
                 
-                $productsDetail = new ProductDetails;
-                $productsDetail->product_id = $product['productDetails']['product_id'];
-                $productsDetail->catalogue_price = $product['productDetails']['catalogue_price'];
-                $productsDetail->average_price = $product['productDetails']['average_price'];
-                $productsDetail->wholesale_discount = $product['productDetails']['wholesale_discount'];
-                $productsDetail->wholesale_brokerage = $product['productDetails']['wholesale_brokerage'];
-                $productsDetail->retail_discount = $product['productDetails']['retail_discount'];
-                $productsDetail->retail_brokerage = $product['productDetails']['retail_brokerage'];
-                $productsDetail->save();
+        //         $productsDetail = new ProductDetails;
+        //         $productsDetail->product_id = $product['productDetails']['product_id'];
+        //         $productsDetail->catalogue_price = $product['productDetails']['catalogue_price'];
+        //         $productsDetail->average_price = $product['productDetails']['average_price'];
+        //         $productsDetail->wholesale_discount = $product['productDetails']['wholesale_discount'];
+        //         $productsDetail->wholesale_brokerage = $product['productDetails']['wholesale_brokerage'];
+        //         $productsDetail->retail_discount = $product['productDetails']['retail_discount'];
+        //         $productsDetail->retail_brokerage = $product['productDetails']['retail_brokerage'];
+        //         $productsDetail->save();
 
 
-                $productFabrics = new ProductFabricDetails;
-                $productFabrics->product_id = $product['fabrics']['product_id'];
-                $productFabrics->saree_fabric = $product['fabrics']['saree_fabric'];
-                $productFabrics->saree_cut = $product['fabrics']['saree_cut'];
-                $productFabrics->blouse_fabric = $product['fabrics']['blouse_fabric'];
-                $productFabrics->blouse_cut = $product['fabrics']['blouse_cut'];
-                $productFabrics->top_fabric = $product['fabrics']['top_fabric'];
-                $productFabrics->top_cut = $product['fabrics']['top_cut'];
-                $productFabrics->bottom_fabric = $product['fabrics']['bottom_fabric'];
-                $productFabrics->bottom_cut = $product['fabrics']['bottom_cut'];
-                $productFabrics->dupatta_fabric = $product['fabrics']['dupatta_fabric'];
-                $productFabrics->dupatta_cut = $product['fabrics']['dupatta_cut'];
-                $productFabrics->inner_fabric = $product['fabrics']['inner_fabric'];
-                $productFabrics->inner_cut = $product['fabrics']['inner_cut'];
-                $productFabrics->sleeves_fabric = $product['fabrics']['sleeves_fabric'];
-                $productFabrics->sleeves_cut = $product['fabrics']['sleeves_cut'];
-                $productFabrics->choli_fabric = $product['fabrics']['choli_fabric'];
-                $productFabrics->choli_cut = $product['fabrics']['choli_cut'];
-                $productFabrics->lehenga_fabric = $product['fabrics']['lehenga_fabric'];
-                $productFabrics->lehenga_cut = $product['fabrics']['lehenga_cut'];
-                $productFabrics->lining_fabric = $product['fabrics']['lining_fabric'];
-                $productFabrics->lining_cut = $product['fabrics']['lining_cut'];
-                $productFabrics->gown_fabric = $product['fabrics']['gown_fabric'];
-                $productFabrics->gown_cut = $product['fabrics']['gown_cut'];
-                $productFabrics->save();
-            }
-        }
+        //         $productFabrics = new ProductFabricDetails;
+        //         $productFabrics->product_id = $product['fabrics']['product_id'];
+        //         $productFabrics->saree_fabric = $product['fabrics']['saree_fabric'];
+        //         $productFabrics->saree_cut = $product['fabrics']['saree_cut'];
+        //         $productFabrics->blouse_fabric = $product['fabrics']['blouse_fabric'];
+        //         $productFabrics->blouse_cut = $product['fabrics']['blouse_cut'];
+        //         $productFabrics->top_fabric = $product['fabrics']['top_fabric'];
+        //         $productFabrics->top_cut = $product['fabrics']['top_cut'];
+        //         $productFabrics->bottom_fabric = $product['fabrics']['bottom_fabric'];
+        //         $productFabrics->bottom_cut = $product['fabrics']['bottom_cut'];
+        //         $productFabrics->dupatta_fabric = $product['fabrics']['dupatta_fabric'];
+        //         $productFabrics->dupatta_cut = $product['fabrics']['dupatta_cut'];
+        //         $productFabrics->inner_fabric = $product['fabrics']['inner_fabric'];
+        //         $productFabrics->inner_cut = $product['fabrics']['inner_cut'];
+        //         $productFabrics->sleeves_fabric = $product['fabrics']['sleeves_fabric'];
+        //         $productFabrics->sleeves_cut = $product['fabrics']['sleeves_cut'];
+        //         $productFabrics->choli_fabric = $product['fabrics']['choli_fabric'];
+        //         $productFabrics->choli_cut = $product['fabrics']['choli_cut'];
+        //         $productFabrics->lehenga_fabric = $product['fabrics']['lehenga_fabric'];
+        //         $productFabrics->lehenga_cut = $product['fabrics']['lehenga_cut'];
+        //         $productFabrics->lining_fabric = $product['fabrics']['lining_fabric'];
+        //         $productFabrics->lining_cut = $product['fabrics']['lining_cut'];
+        //         $productFabrics->gown_fabric = $product['fabrics']['gown_fabric'];
+        //         $productFabrics->gown_cut = $product['fabrics']['gown_cut'];
+        //         $productFabrics->save();
+        //     }
+        // }
             
-        if(!empty($cityList)) {
-            foreach($cityList as $city) {                
-                $cities = new Cities;
-                $cities->id = $city['id'];
-                $cities->name = $city['name'];
-                $cities->std_code = $city['std_code'];
-                $cities->country = $city['country'];
-                $cities->state = $city['state'];
-                $cities->save();
-            }
-        }
+        // if(!empty($cityList)) {
+        //     foreach($cityList as $city) {                
+        //         $cities = new Cities;
+        //         $cities->id = $city['id'];
+        //         $cities->name = $city['name'];
+        //         $cities->std_code = $city['std_code'];
+        //         $cities->country = $city['country'];
+        //         $cities->state = $city['state'];
+        //         $cities->save();
+        //     }
+        // }
             
-        if(!empty($transports)) {
-            foreach($transports as $transport) {                
-                $transportDetails = new TransportDetails;
-                $transportDetails->id = $transport['id'];
-                $transportDetails->name = $transport['name'];
-                $transportDetails->gstin = $transport['gstin'];
-                $transportDetails->save();
-            }
-            $transportMultipleAddressDetails = new TransportMultipleAddressDetails;
-            $transportMultipleAddressDetails->id = '2';
-            $transportMultipleAddressDetails->transport_details = '248';
-            $transportMultipleAddressDetails->contact_person_name = '';
-            $transportMultipleAddressDetails->contact_person_address = 'kalbadevi mumbai';
-            $transportMultipleAddressDetails->contact_person_office_no = '02222073928';
-            $transportMultipleAddressDetails->contact_person_email = '';
-            $transportMultipleAddressDetails->save();
-        }
+        // if(!empty($transports)) {
+        //     foreach($transports as $transport) {                
+        //         $transportDetails = new TransportDetails;
+        //         $transportDetails->id = $transport['id'];
+        //         $transportDetails->name = $transport['name'];
+        //         $transportDetails->gstin = $transport['gstin'];
+        //         $transportDetails->save();
+        //     }
+        //     $transportMultipleAddressDetails = new TransportMultipleAddressDetails;
+        //     $transportMultipleAddressDetails->id = '2';
+        //     $transportMultipleAddressDetails->transport_details = '248';
+        //     $transportMultipleAddressDetails->contact_person_name = '';
+        //     $transportMultipleAddressDetails->contact_person_address = 'kalbadevi mumbai';
+        //     $transportMultipleAddressDetails->contact_person_office_no = '02222073928';
+        //     $transportMultipleAddressDetails->contact_person_email = '';
+        //     $transportMultipleAddressDetails->save();
+        // }
             
-        if(!empty($productImages)) {
-            foreach($productImages as $productImage) {
-                $pImages = new ProductsImages;                
-                $pImages->product_id = $productImage['id'];
-                $pImages->product_id = $productImage['product_id'];
-                $pImages->supplier_code = $productImage['supplier_code'];
-                $pImages->product_code = $productImage['product_code'];
-                $pImages->image = $productImage['image'];
-                $pImages->price = $productImage['price'];
-                $pImages->sort_order = $productImage['sort_order'];
-                $pImages->save();
-            }
-        }
+        // if(!empty($productImages)) {
+        //     foreach($productImages as $productImage) {
+        //         $pImages = new ProductsImages;                
+        //         $pImages->product_id = $productImage['id'];
+        //         $pImages->product_id = $productImage['product_id'];
+        //         $pImages->supplier_code = $productImage['supplier_code'];
+        //         $pImages->product_code = $productImage['product_code'];
+        //         $pImages->image = $productImage['image'];
+        //         $pImages->price = $productImage['price'];
+        //         $pImages->sort_order = $productImage['sort_order'];
+        //         $pImages->save();
+        //     }
+        // }
 
-        if(!empty($companyData)) {
-            foreach($companyData as $cData) {
-                $company = new Company;
-                $company->id = $cData['companyData']['id'];
-                $company->company_name = $cData['companyData']['company_name'];
-                $company->company_type = $cData['companyData']['company_type'];
-                $company->company_country = $cData['companyData']['company_country'];
-                $company->company_state = $cData['companyData']['company_state'];
-                $company->company_city = $cData['companyData']['company_city'];
-                $company->company_website = $cData['companyData']['company_website'];
-                $company->company_landline = $cData['companyData']['company_landline'];
-                $company->company_mobile = $cData['companyData']['company_mobile'];
-                $company->company_watchout = $cData['companyData']['company_watchout'];
-                $company->company_remark_watchout = $cData['companyData']['company_remark_watchout'];
-                $company->company_about = $cData['companyData']['company_about'];
-                $company->company_category = $cData['companyData']['company_category'];
-                $company->product_category = $cData['companyData']['product_category'];
-                $company->product_sub_category = $cData['companyData']['product_sub_category'];
-                $company->company_transport = $cData['companyData']['company_transport'];
-                $company->company_discount = $cData['companyData']['company_discount'];
-                $company->company_payment_terms_in_days = $cData['companyData']['company_payment_terms_in_days'];
-                $company->company_opening_balance = $cData['companyData']['company_opening_balance'];
-                $company->favorite_flag = $cData['companyData']['favorite_flag'];
-                $company->is_verified = $cData['companyData']['is_verified'];
-                $company->is_active = $cData['companyData']['is_active'];
-                $company->is_linked = $cData['companyData']['is_linked'];
-                $company->verified_by = $cData['companyData']['verified_by'];
-                $company->generated_by = $cData['companyData']['generated_by'];
-                $company->updated_by = $cData['companyData']['updated_by'];
-                $company->verified_date = $cData['companyData']['verified_date'];
-                $company->save();
+        // if(!empty($companyData)) {
+        //     foreach($companyData as $cData) {
+        //         $company = new Company;
+        //         $company->id = $cData['companyData']['id'];
+        //         $company->company_name = $cData['companyData']['company_name'];
+        //         $company->company_type = $cData['companyData']['company_type'];
+        //         $company->company_country = $cData['companyData']['company_country'];
+        //         $company->company_state = $cData['companyData']['company_state'];
+        //         $company->company_city = $cData['companyData']['company_city'];
+        //         $company->company_website = $cData['companyData']['company_website'];
+        //         $company->company_landline = $cData['companyData']['company_landline'];
+        //         $company->company_mobile = $cData['companyData']['company_mobile'];
+        //         $company->company_watchout = $cData['companyData']['company_watchout'];
+        //         $company->company_remark_watchout = $cData['companyData']['company_remark_watchout'];
+        //         $company->company_about = $cData['companyData']['company_about'];
+        //         $company->company_category = $cData['companyData']['company_category'];
+        //         $company->product_category = $cData['companyData']['product_category'];
+        //         $company->product_sub_category = $cData['companyData']['product_sub_category'];
+        //         $company->company_transport = $cData['companyData']['company_transport'];
+        //         $company->company_discount = $cData['companyData']['company_discount'];
+        //         $company->company_payment_terms_in_days = $cData['companyData']['company_payment_terms_in_days'];
+        //         $company->company_opening_balance = $cData['companyData']['company_opening_balance'];
+        //         $company->favorite_flag = $cData['companyData']['favorite_flag'];
+        //         $company->is_verified = $cData['companyData']['is_verified'];
+        //         $company->is_active = $cData['companyData']['is_active'];
+        //         $company->is_linked = $cData['companyData']['is_linked'];
+        //         $company->verified_by = $cData['companyData']['verified_by'];
+        //         $company->generated_by = $cData['companyData']['generated_by'];
+        //         $company->updated_by = $cData['companyData']['updated_by'];
+        //         $company->verified_date = $cData['companyData']['verified_date'];
+        //         $company->save();
 
-                $swotData = new CompanySwotDetails;
-                $swotData->company_id = $cData['swotData']['company_id'];
-                $swotData->strength = $cData['swotData']['strength'];
-                $swotData->weakness = $cData['swotData']['weakness'];
-                $swotData->opportunity = $cData['swotData']['opportunity'];
-                $swotData->threat = $cData['swotData']['threat'];
-                $swotData->save();
+        //         $swotData = new CompanySwotDetails;
+        //         $swotData->company_id = $cData['swotData']['company_id'];
+        //         $swotData->strength = $cData['swotData']['strength'];
+        //         $swotData->weakness = $cData['swotData']['weakness'];
+        //         $swotData->opportunity = $cData['swotData']['opportunity'];
+        //         $swotData->threat = $cData['swotData']['threat'];
+        //         $swotData->save();
 
-                $bankDetail = new CompanyBankDetails;
-                $bankDetail->company_id = $cData['bankData']['company_id'];
-                $bankDetail->bank_name = $cData['bankData']['bank_name'];
-                $bankDetail->account_holder_name = $cData['bankData']['account_holder_name'];
-                $bankDetail->account_no = $cData['bankData']['account_no'];
-                $bankDetail->branch_name = $cData['bankData']['branch_name'];
-                $bankDetail->ifsc_code = $cData['bankData']['ifsc_code'];
-                $bankDetail->save();
+        //         $bankDetail = new CompanyBankDetails;
+        //         $bankDetail->company_id = $cData['bankData']['company_id'];
+        //         $bankDetail->bank_name = $cData['bankData']['bank_name'];
+        //         $bankDetail->account_holder_name = $cData['bankData']['account_holder_name'];
+        //         $bankDetail->account_no = $cData['bankData']['account_no'];
+        //         $bankDetail->branch_name = $cData['bankData']['branch_name'];
+        //         $bankDetail->ifsc_code = $cData['bankData']['ifsc_code'];
+        //         $bankDetail->save();
 
-                $package = new CompanyPackagingDetails;
-                $package->company_id = $cData['packagingData']['company_id'];
-                $package->gst_no = $cData['packagingData']['gst_no'];
-                $package->cst_no = $cData['packagingData']['cst_no'];
-                $package->tin_no = $cData['packagingData']['tin_no'];
-                $package->vat_no = $cData['packagingData']['vat_no'];
-                $package->save();
+        //         $package = new CompanyPackagingDetails;
+        //         $package->company_id = $cData['packagingData']['company_id'];
+        //         $package->gst_no = $cData['packagingData']['gst_no'];
+        //         $package->cst_no = $cData['packagingData']['cst_no'];
+        //         $package->tin_no = $cData['packagingData']['tin_no'];
+        //         $package->vat_no = $cData['packagingData']['vat_no'];
+        //         $package->save();
 
-                $reference = new CompanyReferences;
-                $reference->company_id = $cData['referencesData']['company_id'];
-                $reference->ref_person_name = $cData['referencesData']['ref_person_name'];
-                $reference->ref_person_mobile = $cData['referencesData']['ref_person_mobile'];
-                $reference->ref_person_company = $cData['referencesData']['ref_person_company'];
-                $reference->ref_person_address = $cData['referencesData']['ref_person_address'];
-                $reference->save();
-            }
-        }
+        //         $reference = new CompanyReferences;
+        //         $reference->company_id = $cData['referencesData']['company_id'];
+        //         $reference->ref_person_name = $cData['referencesData']['ref_person_name'];
+        //         $reference->ref_person_mobile = $cData['referencesData']['ref_person_mobile'];
+        //         $reference->ref_person_company = $cData['referencesData']['ref_person_company'];
+        //         $reference->ref_person_address = $cData['referencesData']['ref_person_address'];
+        //         $reference->save();
+        //     }
+        // }
 
-        if(!empty($companyAddressData)) {
-            foreach($companyAddressData as $caData) {
-                $companyAddress = new CompanyAddress;
-                $companyAddress->id = $caData['id'];
-                $companyAddress->company_id = $caData['company_id'];
-                $companyAddress->address_type = $caData['address_type'];
-                $companyAddress->address = $caData['address'];
-                $companyAddress->country_code = $caData['country_code'];
-                $companyAddress->mobile = $caData['mobile'];
-                $companyAddress->save();
-            }
-        }
+        // if(!empty($companyAddressData)) {
+        //     foreach($companyAddressData as $caData) {
+        //         $companyAddress = new CompanyAddress;
+        //         $companyAddress->id = $caData['id'];
+        //         $companyAddress->company_id = $caData['company_id'];
+        //         $companyAddress->address_type = $caData['address_type'];
+        //         $companyAddress->address = $caData['address'];
+        //         $companyAddress->country_code = $caData['country_code'];
+        //         $companyAddress->mobile = $caData['mobile'];
+        //         $companyAddress->save();
+        //     }
+        // }
 
-        if(!empty($companyAddressOwnerData)) {
-            foreach($companyAddressOwnerData as $caoData) {
-                $companyAddressOwner = new CompanyAddressOwner;
-                $companyAddressOwner->id = $caoData['id'];
-                $companyAddressOwner->company_address_id = $caoData['company_address_id'];
-                $companyAddressOwner->name = $caoData['name'];
-                $companyAddressOwner->designation = $caoData['designation'];
-                $companyAddressOwner->profile_pic = $caoData['profile_pic'];
-                $companyAddressOwner->mobile = $caoData['mobile'];
-                $companyAddressOwner->email = $caoData['email'];
-                $companyAddressOwner->save();
-            }
-        }
+        // if(!empty($companyAddressOwnerData)) {
+        //     foreach($companyAddressOwnerData as $caoData) {
+        //         $companyAddressOwner = new CompanyAddressOwner;
+        //         $companyAddressOwner->id = $caoData['id'];
+        //         $companyAddressOwner->company_address_id = $caoData['company_address_id'];
+        //         $companyAddressOwner->name = $caoData['name'];
+        //         $companyAddressOwner->designation = $caoData['designation'];
+        //         $companyAddressOwner->profile_pic = $caoData['profile_pic'];
+        //         $companyAddressOwner->mobile = $caoData['mobile'];
+        //         $companyAddressOwner->email = $caoData['email'];
+        //         $companyAddressOwner->save();
+        //     }
+        // }
 
-        if(!empty($companyEmailData)) {
-            foreach($companyEmailData as $ceData) {
-                $companyEmail = new CompanyEmails;
-                $companyEmail->id = $ceData['id'];
-                $companyEmail->company_id = $ceData['company_id'];
-                $companyEmail->email_id = $ceData['email_id'];
-                $companyEmail->save();
-            }
-        }
+        // if(!empty($companyEmailData)) {
+        //     foreach($companyEmailData as $ceData) {
+        //         $companyEmail = new CompanyEmails;
+        //         $companyEmail->id = $ceData['id'];
+        //         $companyEmail->company_id = $ceData['company_id'];
+        //         $companyEmail->email_id = $ceData['email_id'];
+        //         $companyEmail->save();
+        //     }
+        // }
 
-        if(!empty($companyOwnerData)) {
-            foreach($companyOwnerData as $coData) {
-                $companyContactDetails = new CompanyContactDetails;
-                $companyContactDetails->id = $coData['id'];
-                $companyContactDetails->company_id = $coData['company_id'];
-                $companyContactDetails->contact_person_name = $coData['contact_person_name'];
-                $companyContactDetails->contact_person_designation = $coData['contact_person_designation'];
-                $companyContactDetails->contact_person_profile_pic = $coData['contact_person_profile_pic'];
-                $companyContactDetails->contact_person_mobile = $coData['contact_person_mobile'];
-                $companyContactDetails->contact_person_email = $coData['contact_person_email'];
-                $companyContactDetails->save();
-            }
-        }
+        // if(!empty($companyOwnerData)) {
+        //     foreach($companyOwnerData as $coData) {
+        //         $companyContactDetails = new CompanyContactDetails;
+        //         $companyContactDetails->id = $coData['id'];
+        //         $companyContactDetails->company_id = $coData['company_id'];
+        //         $companyContactDetails->contact_person_name = $coData['contact_person_name'];
+        //         $companyContactDetails->contact_person_designation = $coData['contact_person_designation'];
+        //         $companyContactDetails->contact_person_profile_pic = $coData['contact_person_profile_pic'];
+        //         $companyContactDetails->contact_person_mobile = $coData['contact_person_mobile'];
+        //         $companyContactDetails->contact_person_email = $coData['contact_person_email'];
+        //         $companyContactDetails->save();
+        //     }
+        // }
 
-        if(!empty($companyCategoryData)) {
-            foreach($companyCategoryData as $ccData) {
-                $companyCategory = new CompanyCategory;
-                $companyCategory->id = $ccData['id'];
-                $companyCategory->category_name = $ccData['category_name'];
-                $companyCategory->sort_order = $ccData['sort_order'];
-                $companyCategory->save();
-            }
-        }
+        // if(!empty($companyCategoryData)) {
+        //     foreach($companyCategoryData as $ccData) {
+        //         $companyCategory = new CompanyCategory;
+        //         $companyCategory->id = $ccData['id'];
+        //         $companyCategory->category_name = $ccData['category_name'];
+        //         $companyCategory->sort_order = $ccData['sort_order'];
+        //         $companyCategory->save();
+        //     }
+        // }
 
-        if(!empty($agentData)) {
-            foreach($agentData as $agents) {
-                $agent = new Agent;
-                $agent->id = $agents['id'];
-                $agent->name = $agents['name'];
-                $agent->pan_no = $agents['pan_no'];
-                $agent->gst_no = $agents['gst_no'];
-                $agent->include_tax = $agents['include_tax'];
-                $agent->default = $agents['default'];
-                $agent->inv_prefix = $agents['inv_prefix'];
-                $agent->save();
-            }
-        }
+        // if(!empty($agentData)) {
+        //     foreach($agentData as $agents) {
+        //         $agent = new Agent;
+        //         $agent->id = $agents['id'];
+        //         $agent->name = $agents['name'];
+        //         $agent->pan_no = $agents['pan_no'];
+        //         $agent->gst_no = $agents['gst_no'];
+        //         $agent->include_tax = $agents['include_tax'];
+        //         $agent->default = $agents['default'];
+        //         $agent->inv_prefix = $agents['inv_prefix'];
+        //         $agent->save();
+        //     }
+        // }
 
-        if(!empty($designationData)) {
-            foreach($designationData as $designations) {
-                $designation = new Designation;
-                $designation->id = $designations['id'];
-                $designation->name = $designations['name'];
-                $designation->save();
-            }
-        }
+        // if(!empty($designationData)) {
+        //     foreach($designationData as $designations) {
+        //         $designation = new Designation;
+        //         $designation->id = $designations['id'];
+        //         $designation->name = $designations['name'];
+        //         $designation->save();
+        //     }
+        // }
 
-        if(!empty($bankDetailData)) {
-            foreach($bankDetailData as $bankDetail) {
-                $bankDetails = new BankDetails;
-                $bankDetails->id = $bankDetail['id'];
-                $bankDetails->name = $bankDetail['name'];
-                $bankDetails->sort_order = $bankDetail['sort_order'];
-                $bankDetails->save();
-            }
-        }
+        // if(!empty($bankDetailData)) {
+        //     foreach($bankDetailData as $bankDetail) {
+        //         $bankDetails = new BankDetails;
+        //         $bankDetails->id = $bankDetail['id'];
+        //         $bankDetails->name = $bankDetail['name'];
+        //         $bankDetails->sort_order = $bankDetail['sort_order'];
+        //         $bankDetails->save();
+        //     }
+        // }
 
-        if(!empty($typeOfAddressData)) {
-            foreach($typeOfAddressData as $typeOfAddresses) {
-                $typeOfAddress = new TypeOfAddress;
-                $typeOfAddress->id = $typeOfAddresses['id'];
-                $typeOfAddress->name = $typeOfAddresses['name'];
-                $typeOfAddress->sort_order = $typeOfAddresses['sort_order'];
-                $typeOfAddress->save();
-            }
-        }
+        // if(!empty($typeOfAddressData)) {
+        //     foreach($typeOfAddressData as $typeOfAddresses) {
+        //         $typeOfAddress = new TypeOfAddress;
+        //         $typeOfAddress->id = $typeOfAddresses['id'];
+        //         $typeOfAddress->name = $typeOfAddresses['name'];
+        //         $typeOfAddress->sort_order = $typeOfAddresses['sort_order'];
+        //         $typeOfAddress->save();
+        //     }
+        // }
 
 
         print_r("SUCCESS");

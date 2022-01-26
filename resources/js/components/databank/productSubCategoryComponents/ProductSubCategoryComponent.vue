@@ -28,7 +28,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export nowrap table" data-export-title="Export">
+                                <table class="datatable-init-export table" data-export-title="Export">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -46,6 +46,8 @@
                                             <td>{{ productSubCategory.categoryName }}</td>
                                             <td>{{ productSubCategory.fabricGroupName }}</td>
                                             <td>{{ productSubCategory.companyName }}</td>
+                                            <!-- <td v-if="productSubCategory.company_id != ''">{{ getCompanyName(productSubCategory.company_id) }}</td> -->
+                                            <!-- <td else></td> -->
                                             <td>
                                                 <div class="dropdown">
                                                     <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
@@ -82,10 +84,17 @@
             axios.get('./productsub-category/list')
             .then(response => {
                 this.productSubCategories = response.data;
-                console.log(this.productSubCategories);
             });
         },
         methods: {
+            getCompanyName(id){
+                axios.get('./productsub-category/company-name/'+id)
+                .then(response => {
+                    var companyName = response.data;
+                    console.log(companyName);
+                    return companyName;
+                });
+            },
             edit_data(id){
                 window.location.href = './productsub-category/edit-productsub-category/'+id;
             },

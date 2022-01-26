@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth', 'permission:modify-product-category']], f
 Route::group(['middleware' => ['auth', 'permission:access-product-sub-category']], function() {
     Route::get('/databank/productsub-category', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'index'])->name('productsub-category');
     Route::get('/databank/productsub-category/list', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'listProductSubCategory'])->name('list');
+    Route::get('/databank/productsub-category/company-name/{id}', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'getCompanyName'])->name('company-name');
     Route::get('/databank/productsub-category/listCompanies', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'listCompanies'])->name('listCompanies');
     Route::get('/databank/productsub-category/listProductFabricGroup', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'listProductFabricGroup'])->name('listProductFabricGroup');
     Route::get('/databank/productsub-category/fetch-productsub-category/{id}', [App\Http\Controllers\databank\ProductSubCategoryController::class, 'fetchProductSubCategory']);
@@ -120,6 +121,7 @@ Route::group(['middleware' => ['auth', 'permission:modify-company-category']], f
 Route::group(['middleware' => ['auth', 'permission:access-company']], function() {
     Route::get('/databank/companies', [App\Http\Controllers\databank\CompanyController::class, 'index'])->name('companies');
     Route::get('/databank/companies/list', [App\Http\Controllers\databank\CompanyController::class, 'listCompany'])->name('list');
+    Route::get('/databank/companies/category-name/{id}', [App\Http\Controllers\databank\CompanyController::class, 'getCompanyCategory'])->name('category-name');
     Route::get('/databank/companies/list-essential', [App\Http\Controllers\databank\CompanyController::class, 'listEssentialCompany'])->name('list-essential');
     Route::get('/databank/companies/fetch-company/{id}', [App\Http\Controllers\databank\CompanyController::class, 'fetchCompany']);
 });
@@ -353,19 +355,19 @@ Route::group(['middleware' => ['auth', 'permission:modify-sale-bill-agent']], fu
 
 
 // Routes for Settings / Fabric
-Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
+// Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
     Route::get('/settings/fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'index'])->name('fabricGroup');
     Route::get('/settings/fabricGroup/list', [App\Http\Controllers\settings\FabricGroupController::class, 'listFabricGroup'])->name('list');
     Route::get('/settings/fabricGroup/fetch-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'fetchFabricGroup']);
-});
+// });
 
-Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
+// Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
     Route::get('/settings/fabricGroup/create-fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'createFabricGroup']);
     Route::post('/settings/fabricGroup/create', [App\Http\Controllers\settings\FabricGroupController::class, 'insertFabricGroupData']);
     Route::post('/settings/fabricGroup/update', [App\Http\Controllers\settings\FabricGroupController::class, 'updateFabricGroupData']);
     Route::get('/settings/fabricGroup/edit-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'editFabricGroup']);
     Route::delete('/settings/fabricGroup/delete/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'deleteFabricGroup'])->name('delete');
-});
+// });
 
 
 // Routes for Settings / Company Type

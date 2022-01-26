@@ -18,7 +18,7 @@ class CreateProductCategoriesTable extends Migration
             $table->integer('product_default_category_id');
             $table->string('name');
             $table->integer('main_category_id');
-            $table->text('company_id');
+            $table->text('company_id')->nullable();
             $table->string('product_fabric_id');
             $table->integer('sort_order');
             $table->integer('multiple_company');

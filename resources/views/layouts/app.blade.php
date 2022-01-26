@@ -168,7 +168,7 @@
     <script src="{{ asset('assets/js/bundle.js?ver=2.9.0') }}"></script>
     <script src="{{ asset('assets/js/scripts.js?ver=2.9.0') }}"></script>
     <script src="{{ asset('assets/js/charts/gd-default.js?ver=2.9.0') }}"></script>
-    <!-- <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script> -->
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('assets/js/libs/datatable-btns.js?ver=2.9.0') }}"></script>   
 </body>
 

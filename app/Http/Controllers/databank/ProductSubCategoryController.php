@@ -42,19 +42,25 @@ class ProductSubCategoryController extends Controller
     public function listProductSubCategory() {
         $productSubCategory = ProductCategory::where('main_category_id', '!=', '0')->get();
 
-        foreach($productSubCategory as $category) {            
-            if(is_array(json_decode($category->company_id))) {
-                $companyName = [];
-                $companyArr = json_decode($category->company_id);
-                foreach($companyArr as $key => $c) {
-                    $company = Company::where('id', $c)->first('company_name');
-                    $companyName[$key] = $company->company_name;
-                }                
+        foreach($productSubCategory as $category) {
+            $id = $category->company_id;
+            if (!empty($id)) {
+                if(is_array(json_decode($id))) {
+                    $companyName = [];
+                    $companyArr = json_decode($id);
+        
+                    foreach($companyArr as $key => $c) {
+                        $company = Company::where('id', $c)->first('company_name');
+                        $companyName[$key] = $company->company_name;
+                    }                
+                } else {
+                    $company = Company::where('id', $id)->first('company_name');
+                    $companyName = $company->company_name;
+                }
+                $category['companyName'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
-                $company = Company::where('id', $category->company_id)->first('company_name');
-                $companyName = $company->company_name;
+                $category['companyName'] = '';
             }
-            $category['companyName'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             $categoryName = ProductCategory::where('id', $category->main_category_id)->get();
             foreach($categoryName as $cat) {
                 $category['categoryName'] = $cat->name;
@@ -66,8 +72,26 @@ class ProductSubCategoryController extends Controller
                 $category['fabricGroupName'] = '';
             }
         }
-
+        // dd($productSubCategory);
         return $productSubCategory;
+    }
+
+    public function getCompanyName($id) {    
+        if(is_array(json_decode($id))) {
+            $companyName = [];
+            $companyArr = json_decode($id);
+
+            foreach($companyArr as $key => $c) {
+                $company = Company::where('id', $c)->first('company_name');
+                $companyName[$key] = $company->company_name;
+            }                
+        } else {
+            $company = Company::where('id', $id)->first('company_name');
+            $companyName = $company->company_name;
+        }
+        $name = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+
+        return $name;
     }
 
     public function listProductFabricGroup() {

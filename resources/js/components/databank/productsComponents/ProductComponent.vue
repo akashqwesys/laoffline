@@ -28,7 +28,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export nowrap table" data-export-title="Export">
+                                <table class="datatable-init-export table" data-export-title="Export">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -118,7 +118,7 @@
             getProfilePic(pname, name){
                 var d = name.split('_')[0];
                 var path = d + '_' + pname.replace(/ /g,"_") + '/' + name;
-                console.log(path);
+
                 return '/upload/products/' + path;
             }
         },

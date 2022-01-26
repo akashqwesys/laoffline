@@ -31,7 +31,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export nowrap table" data-export-title="Export">
+                                <table class="datatable-init-export table" data-export-title="Export">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -66,8 +66,9 @@
                                                 </Ul>
                                             </td>
                                             <td>{{ company.company_type }}</td>
-                                            <td>{{ company.category_name }}</td>
-                                            <td>{{ company.name }}</td>
+                                            <td>{{ company.company_category }}</td>
+                                            <td v-if="company.company_city == 0"> </td>
+                                            <td else>{{ company.company_city }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
@@ -101,16 +102,23 @@
             return {
                 companies: [],
                 create_company: 'companies/create-company',
+                categoryName: '',
             }
         },
         created() {
             axios.get('./companies/list')
             .then(response => {
                 this.companies = response.data;
-                console.log(this.companies);
             });
         },
         methods: {
+            getCompanyCategory(id) {
+                axios.get('./companies/category-name/'+id)
+                .then(response => {
+                    this.categoryName = response.data;                    
+                });
+                return this.categoryName;
+            },
             getEssentialCompany() {
                 axios.get('./companies/list-essential')
                 .then(response => {
