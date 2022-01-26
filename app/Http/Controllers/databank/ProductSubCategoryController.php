@@ -72,7 +72,7 @@ class ProductSubCategoryController extends Controller
                 $category['fabricGroupName'] = '';
             }
         }
-        // dd($productSubCategory);
+
         return $productSubCategory;
     }
 
