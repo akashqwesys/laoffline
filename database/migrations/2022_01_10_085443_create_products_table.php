@@ -15,20 +15,20 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('product_name');
-            $table->string('catalogue_name');
-            $table->string('brand_name');
-            $table->string('model');
+            $table->string('product_name')->nullable();
+            $table->string('catalogue_name')->nullable();
+            $table->string('brand_name')->nullable();
+            $table->string('model')->nullable();
             $table->date('launch_date')->nullable();
-            $table->integer('company');
-            $table->integer('category');
-            $table->string('sub_category');
-            $table->string('main_image');
-            $table->string('price_list_image');
-            $table->text('description');
-            $table->string('complete_flag');
-            $table->string('generated_by');
-            $table->string('updated_by');
+            $table->integer('company')->default('0');
+            $table->integer('category')->default('0');
+            $table->string('sub_category')->nullable();
+            $table->string('main_image')->nullable();
+            $table->string('price_list_image')->nullable();
+            $table->text('description')->nullable();
+            $table->string('complete_flag')->nullable();
+            $table->string('generated_by')->nullable();
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }

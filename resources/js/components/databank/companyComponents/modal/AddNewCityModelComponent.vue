@@ -72,7 +72,6 @@
         name: 'createCities',
         data() {
             return {
-                cancel_url: '/settings/cities',
                 countries: [],
                 states: [],
                 form: new Form({

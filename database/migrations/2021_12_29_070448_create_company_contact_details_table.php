@@ -15,12 +15,12 @@ class CreateCompanyContactDetailsTable extends Migration
     {
         Schema::create('company_contact_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->string('contact_person_name');
-            $table->string('contact_person_designation');
-            $table->string('contact_person_profile_pic');
-            $table->string('contact_person_mobile');
-            $table->string('contact_person_email');
+            $table->integer('company_id')->default('0');
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_designation')->nullable();
+            $table->string('contact_person_profile_pic')->nullable();
+            $table->string('contact_person_mobile')->nullable();
+            $table->string('contact_person_email')->nullable();
             $table->timestamps();
         });
     }

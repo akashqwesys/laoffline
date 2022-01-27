@@ -19,7 +19,11 @@ class FabricGroupController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Fabric Group / View';
         $logs->log_subject = 'Fabric Group view page visited.';
@@ -63,7 +67,11 @@ class FabricGroupController extends Controller
     public function deleteFabricGroup($id){
         $fabricGroupData = ProductFabricGroup::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Fabric Group / Delete';
         $logs->log_subject = 'Fabric Group - "'.$fabricGroupData->name.'" was deleted.';
@@ -78,11 +86,19 @@ class FabricGroupController extends Controller
             'name' => 'required',
         ]);
 
+        $fabricGroupsLastId = ProductFabricGroup::orderBy('id', 'DESC')->first('id');
+        $fabricGroupsId = !empty($fabricGroupsLastId) ? $fabricGroupsLastId->id + 1 : 1;
+
         $fabricGroups = new ProductFabricGroup;
+        $fabricGroups->id = $fabricGroupsId;
         $fabricGroups->name = $request->name;
         $fabricGroups->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Fabric Group / Add';
         $logs->log_subject = 'Fabric Group - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -101,7 +117,11 @@ class FabricGroupController extends Controller
         $fabricGroups->name = $request->name;
         $fabricGroups->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Fabric Group / Edit';
         $logs->log_subject = 'Fabric Group - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

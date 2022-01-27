@@ -15,12 +15,12 @@ class CreateCompanyAddressOwnersTable extends Migration
     {
         Schema::create('company_address_owners', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_address_id');
-            $table->string('name');
-            $table->string('designation');
-            $table->string('profile_pic');
-            $table->string('mobile');
-            $table->string('email');
+            $table->integer('company_address_id')->default('0');
+            $table->string('name')->nullable();
+            $table->string('designation')->nullable();
+            $table->string('profile_pic')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
         });
     }

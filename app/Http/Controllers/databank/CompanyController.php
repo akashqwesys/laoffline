@@ -26,7 +26,11 @@ class CompanyController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'UserGroup / View';
         $logs->log_subject = 'User Group view page visited.';
@@ -100,10 +104,14 @@ class CompanyController extends Controller
         $company = Company::where('id', $id)->first();
         $company->is_verified = 1;
         $company->verified_by = $user->employee_id;
-        $company->verify_date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+        $company->verified_date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
         $company->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Verify';
         $logs->log_subject = 'Company "'.$company->company_name.'" was verified by "'.$user->username.'".';
@@ -120,7 +128,11 @@ class CompanyController extends Controller
         $company->favorite_flag = 1;
         $company->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Favorite';
         $logs->log_subject = 'Company "'.$company->company_name.'" is in favorite list of "'.$user->username.'".';
@@ -137,7 +149,11 @@ class CompanyController extends Controller
         $company->favorite_flag = 0;
         $company->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Verify';
         $logs->log_subject = 'Company "'.$company->company_name.'" is not in favorite list of "'.$user->username.'".';
@@ -212,7 +228,11 @@ class CompanyController extends Controller
         CompanyPackagingDetails::where('company_id', $id)->delete();
         CompanyReferences::where('company_id', $id)->delete();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Delete';
         $logs->log_subject = 'Company - '.$company->company_name.' was deleted by"'.Session::get('user')->username.'".';
@@ -222,7 +242,7 @@ class CompanyController extends Controller
         $company->delete();
     }
 
-    public function insertCompanyData(Request $request) {
+    public function insertCompanyData(Request $request) {        
         $companyData = json_decode($request->company_data);
         $contactDetails = json_decode($request->contact_details);
         $multipleAddresses = json_decode($request->multiple_addresses);
@@ -276,7 +296,11 @@ class CompanyController extends Controller
             }
         }
 
+        $comapnyLastId = Company::orderBy('id', 'DESC')->first('id');
+        $companyId = !empty($comapnyLastId) ? $comapnyLastId->id + 1 : 1;
+        
         $company = new Company;
+        $company->id = $comapnyId;
         $company->company_name = $companyData->company_name;
         $company->company_type = $companyData->company_type;
         $company->company_country = $companyData->company_country;
@@ -298,13 +322,20 @@ class CompanyController extends Controller
         $company->verified_by = 0;
         $company->generated_by = Session::get('user')->employee_id;
         $company->updated_by = 0;
+        $company->is_linked = 0;
+        $company->is_active = 0;
+        $company->verified_date = '';
         $company->save();
         
         // Contact Details Data
         if(is_array($contactDetails) && !empty($contactDetails)) {
             foreach($contactDetails as $contactDetail) {
+                $companyContactLastId = CompanyContactDetails::orderBy('id', 'DESC')->first('id');
+                $companyContactId = !empty($companyContactLastId) ? $companyContactLastId->id + 1 : 1;
+
                 $companyContactDetails = new CompanyContactDetails;
-                $companyContactDetails->company_id = $company->id;
+                $companyContactDetails->id = $companyContactId;
+                $companyContactDetails->company_id = $comapnyId;
                 $companyContactDetails->contact_person_name = $contactDetail->contact_person_name;
                 $companyContactDetails->contact_person_designation = $contactDetail->contact_person_designation;
                 $companyContactDetails->contact_person_profile_pic = $contactDetail->contact_person_profile_pic;
@@ -317,18 +348,25 @@ class CompanyController extends Controller
         // Multiple Address Data
         if(is_array($multipleAddresses) && !empty($multipleAddresses)) {
             foreach($multipleAddresses as $multipleAddress) {
+                $companyAddressLastId = CompanyAddress::orderBy('id', 'DESC')->first('id');
+                $companyAddressId = !empty($companyAddressLastId) ? $companyAddressLastId->id + 1 : 1;
+
                 $companyAddress = new CompanyAddress;
-                $companyAddress->company_id = $company->id;
+                $companyAddress->id = $companyAddressId;
+                $companyAddress->company_id = $comapnyId;
                 $companyAddress->address_type = $multipleAddress->address_type;
                 $companyAddress->address = $multipleAddress->address;
-                $companyAddress->country_code = 0;
+                $companyAddress->country_code = $multipleAddress->country_code;
                 $companyAddress->mobile = $multipleAddress->mobile;
                 $companyAddress->save();
 
                 if(is_array($multipleAddress->multipleAddressesOwners) && !empty($multipleAddress->multipleAddressesOwners)) {
                     foreach($multipleAddress->multipleAddressesOwners as $owner) {
+                        $companyAddressOwnerLastId = CompanyAddressOwner::orderBy('id', 'DESC')->first('id');
+                        $companyAddressOwnerId = !empty($companyAddressOwnerLastId) ? $companyAddressOwnerLastId->id + 1 : 1;
+        
                         $companyAddressOwner = new CompanyAddressOwner;
-                        $companyAddressOwner->company_id = $company->id;
+                        $companyAddressOwner->id = $companyAddressOwnerId;
                         $companyAddressOwner->company_address_id = $companyAddress->id;
                         $companyAddressOwner->name = $owner->name;
                         $companyAddressOwner->designation = $owner->designation;
@@ -344,8 +382,12 @@ class CompanyController extends Controller
         // Multiple Emails Data
         if(is_array($multipleEmails) && !empty($multipleEmails)) {
             foreach($multipleEmails as $multipleEmail) {
+                $companyEmailsLastId = CompanyEmails::orderBy('id', 'DESC')->first('id');
+                $companyEmailsId = !empty($companyEmailsLastId) ? $companyEmailsLastId->id + 1 : 1;
+
                 $companyEmail = new CompanyEmails;
-                $companyEmail->company_id = $company->id;
+                $companyEmail->id = $companyEmailsId;
+                $companyEmail->company_id = $comapnyId;
                 $companyEmail->email_id = $multipleEmail->email_id;
                 $companyEmail->save();
             }
@@ -353,8 +395,12 @@ class CompanyController extends Controller
 
         // SWOT Data
         if(!empty($swotDetails)) {
+            $swotDetailsLastId = CompanySwotDetails::orderBy('id', 'DESC')->first('id');
+            $swotDetailsId = !empty($swotDetailsLastId) ? $swotDetailsLastId->id + 1 : 1;
+
             $swotData = new CompanySwotDetails;
-            $swotData->company_id = $company->id;
+            $swotData->id = $swotDetailsId;
+            $swotData->company_id = $comapnyId;
             $swotData->strength = $swotDetails->strength;
             $swotData->weakness = $swotDetails->weakness;
             $swotData->opportunity = $swotDetails->opportunity;
@@ -364,8 +410,12 @@ class CompanyController extends Controller
 
         // Bank Data
         if(!empty($bankDetails)) {
+            $bankDetailsLastId = CompanyBankDetails::orderBy('id', 'DESC')->first('id');
+            $bankDetailsId = !empty($bankDetailsLastId) ? $bankDetailsLastId->id + 1 : 1;
+
             $bankDetail = new CompanyBankDetails;
-            $bankDetail->company_id = $company->id;
+            $bankDetail->id = $bankDetailsId;
+            $bankDetail->company_id = $comapnyId;
             $bankDetail->bank_name = $bankDetails->bank_name;
             $bankDetail->account_holder_name = $bankDetails->account_holder_name;
             $bankDetail->account_no = $bankDetails->account_no;
@@ -376,8 +426,12 @@ class CompanyController extends Controller
 
         // Packaging Data
         if(!empty($packagingDetails)) {
+            $packagingDetailsLastId = CompanyPackagingDetails::orderBy('id', 'DESC')->first('id');
+            $packagingDetailsId = !empty($packagingDetailsLastId) ? $packagingDetailsLastId->id + 1 : 1;
+
             $package = new CompanyPackagingDetails;
-            $package->company_id = $company->id;
+            $package->id = $packagingDetailsId;
+            $package->company_id = $comapnyId;
             $package->gst_no = $packagingDetails->gst_no;
             $package->cst_no = $packagingDetails->cst_no;
             $package->tin_no = $packagingDetails->tin_no;
@@ -387,8 +441,12 @@ class CompanyController extends Controller
 
         // Reference Data
         if(!empty($referencesDetails)) {
+            $companyReferencesLastId = CompanyReferences::orderBy('id', 'DESC')->first('id');
+            $companyReferencesId = !empty($companyReferencesLastId) ? $companyReferencesLastId->id + 1 : 1;
+
             $reference = new CompanyReferences;
-            $reference->company_id = $company->id;
+            $reference->id = $companyReferencesId;
+            $reference->company_id = $comapnyId;
             $reference->ref_person_name = $referencesDetails->ref_person_name;
             $reference->ref_person_mobile = $referencesDetails->ref_person_mobile;
             $reference->ref_person_company = $referencesDetails->ref_person_company;
@@ -396,7 +454,11 @@ class CompanyController extends Controller
             $reference->save();
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Add';
         $logs->log_subject = 'Company - "'.$company->company_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -558,7 +620,11 @@ class CompanyController extends Controller
             $reference->save();
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Edit';
         $logs->log_subject = 'Company - "'.$companyData->company_name.'" was updated from '.Session::get('user')->username.'.';

@@ -20,7 +20,11 @@ class ProductCategoryController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'ProductCategory / View';
         $logs->log_subject = 'Product Category view page visited.';
@@ -79,7 +83,11 @@ class ProductCategoryController extends Controller
     public function deleteProductCategory($id){
         $productCategoryData = ProductCategory::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product Category / Delete';
         $logs->log_subject = 'Product Category - "'.$productCategoryData->category_name.'" was deleted.';
@@ -96,7 +104,11 @@ class ProductCategoryController extends Controller
             'sort_order' => 'required',
         ]);
 
+        $productCategoryLastId = ProductCategory::orderBy('id', 'DESC')->first('id');
+        $productCategoryId = !empty($productCategoryLastId) ? $productCategoryLastId->id + 1 : 1;
+
         $productCategory = new ProductCategory;
+        $productCategory->id = $productCategoryId;
         $productCategory->product_default_category_id = $request->default_category['id'];
         $productCategory->name = $request->name;
         $productCategory->main_category_id = 0;
@@ -107,7 +119,11 @@ class ProductCategoryController extends Controller
         $productCategory->sort_order = $request->sort_order;
         $productCategory->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product category / Add';
         $logs->log_subject = 'Product category - "'.$request->category_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -130,7 +146,11 @@ class ProductCategoryController extends Controller
         $productCategory->sort_order = $request->sort_order;
         $productCategory->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product category / Edit';
         $logs->log_subject = 'Product category - "'.$request->category_name.'" was updated from '.Session::get('user')->username.'.';

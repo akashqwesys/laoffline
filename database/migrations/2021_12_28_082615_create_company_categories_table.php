@@ -15,8 +15,8 @@ class CreateCompanyCategoriesTable extends Migration
     {
         Schema::create('company_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('category_name');
-            $table->integer('sort_order');
+            $table->string('category_name')->nullable();
+            $table->integer('sort_order')->default('0');
             $table->timestamps();
         });
     }

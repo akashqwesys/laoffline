@@ -19,7 +19,11 @@ class TypeOfAddressController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TypeOfAddress / View';
         $logs->log_subject = 'TypeOfAddress view page visited.';
@@ -63,7 +67,11 @@ class TypeOfAddressController extends Controller
     public function deleteTypeOfAddress($id){
         $typeOfAddressData = TypeOfAddress::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TypeOfAddress / Delete';
         $logs->log_subject = 'TypeOfAddress - "'.$typeOfAddressData->name.'" was deleted.';
@@ -79,12 +87,20 @@ class TypeOfAddressController extends Controller
             'sort_order' => 'required'
         ]);
 
+        $typeOfAddressLastId = TypeOfAddress::orderBy('id', 'DESC')->first('id');
+        $typeOfAddressId = !empty($typeOfAddressLastId) ? $typeOfAddressLastId->id + 1 : 1;
+
         $typeOfAddress = new TypeOfAddress;
+        $typeOfAddress->id = $typeOfAddressId;
         $typeOfAddress->name = $request->name;
         $typeOfAddress->sort_order = $request->sort_order;
         $typeOfAddress->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TypeOfAddress / Add';
         $logs->log_subject = 'TypeOfAddress - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -105,7 +121,11 @@ class TypeOfAddressController extends Controller
         $typeOfAddress->sort_order = $request->sort_order;
         $typeOfAddress->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TypeOfAddress / Edit';
         $logs->log_subject = 'TypeOfAddress - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

@@ -21,7 +21,11 @@ class ProductSubCategoryController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'ProductSubCategory / View';
         $logs->log_subject = 'Product Sub Category view page visited.';
@@ -179,7 +183,11 @@ class ProductSubCategoryController extends Controller
     public function deleteProductSubCategory($id){
         $productCategoryData = ProductCategory::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product Sub Category / Delete';
         $logs->log_subject = 'Product Sub Category - "'.$productCategoryData->sub_category_name.'" was deleted.';
@@ -197,7 +205,11 @@ class ProductSubCategoryController extends Controller
                 $company_id[$key] = $com['id'];
             }
 
+            $productCategoryLastId = ProductCategory::orderBy('id', 'DESC')->first('id');
+            $productCategoryId = !empty($productCategoryLastId) ? $productCategoryLastId->id + 1 : 1;
+    
             $productCategory = new ProductCategory;
+            $productCategory->id = $productCategoryId;
             $productCategory->multiple_company = $request->multiple_company;
             $productCategory->product_default_category_id = 0;
             $productCategory->main_category_id = $request->main_category['category_id'];
@@ -214,7 +226,11 @@ class ProductSubCategoryController extends Controller
 
         } else if($request->multiple_company == 0) {
             foreach($request->productSubCategory as $subCategory) {
+                $productCategoryLastId = ProductCategory::orderBy('id', 'DESC')->first('id');
+                $productCategoryId = !empty($productCategoryLastId) ? $productCategoryLastId->id + 1 : 1;
+        
                 $productCategory = new ProductCategory;
+                $productCategory->id = $productCategoryId;
                 $productCategory->multiple_company = $request->multiple_company;
                 $productCategory->product_default_category_id = 0;
                 $productCategory->main_category_id = $subCategory['mainCategory']['category_id'];
@@ -231,7 +247,11 @@ class ProductSubCategoryController extends Controller
             }
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product sub category / Add';
         $logs->log_subject = 'Product sub category - "'.$request->sub_category_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -285,8 +305,12 @@ class ProductSubCategoryController extends Controller
                 $productCategory->save();
             }
         }
-        die;
+
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product sub category / Edit';
         $logs->log_subject = 'Product sub category - "'.$request->sub_category_name.'" was updated from '.Session::get('user')->username.'.';

@@ -461,15 +461,9 @@
         data() {
             return {
                 cancel_url: '/databank/catalog',
-                default_categories: [],
                 companies: [],
                 productCategories: [],
                 productSubCategories: [],
-                defaultCategories: [{
-                    name: 'Product',
-                },{
-                    name: 'Fabric',
-                }],
                 productAdditionalImages : [{
                     supplier_code: '',
                     product_code: '',

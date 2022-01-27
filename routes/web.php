@@ -153,6 +153,7 @@ Route::group(['middleware' => ['auth', 'permission:access-product']], function()
 Route::group(['middleware' => ['auth', 'permission:modify-product']], function() {
     Route::get('/databank/catalog/create-products', [App\Http\Controllers\databank\ProductsController::class, 'createProducts']);
     Route::post('/databank/catalog/create', [App\Http\Controllers\databank\ProductsController::class, 'insertProductsData']);
+    Route::post('/databank/catalog/create-company', [App\Http\Controllers\databank\ProductsController::class, 'insertCompaniesData']);
     Route::post('/databank/catalog/update', [App\Http\Controllers\databank\ProductsController::class, 'updateProductsData']);
     Route::get('/databank/catalog/edit-products/{id}', [App\Http\Controllers\databank\ProductsController::class, 'editProducts']);
     Route::delete('/databank/catalog/delete/{id}', [App\Http\Controllers\databank\ProductsController::class, 'deleteProducts'])->name('delete');
@@ -401,4 +402,4 @@ Route::group(['middleware' => ['auth', 'permission:modify-permission']], functio
     Route::delete('/settings/permission/delete/{id}', [App\Http\Controllers\settings\PermissionController::class, 'deletePermission'])->name('delete');
 });
 
-Route::get('/settings/connections', [App\Http\Controllers\settings\ConnectionController::class, 'index'])->name('connections');
+// Route::get('/settings/connections', [App\Http\Controllers\settings\ConnectionController::class, 'index'])->name('connections');

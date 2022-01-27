@@ -23,7 +23,11 @@ class LinkCompaniesController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Link Companies / View';
         $logs->log_subject = 'Link Companies view page visited.';
@@ -102,7 +106,11 @@ class LinkCompaniesController extends Controller
     public function deleteLinkCompanies($id){
         $userGroupData = linkCompanies::where('id', $id)->first();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Link Companies / Delete';
         $logs->log_subject = 'Link Companies - '.$userGroupData->name.' was deleted.';
@@ -164,7 +172,11 @@ class LinkCompaniesController extends Controller
         $linkCompany->is_linked = 1;
         $linkCompany->save();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Link Companies / Add';
         $logs->log_subject = 'Link Companies - "'.$request->company_id['company_name'].'" was linked by '.Session::get('user')->username.'.';
@@ -192,7 +204,11 @@ class LinkCompaniesController extends Controller
         $userGroup->modify_permission = json_encode($request->modify_permission);
         $userGroup->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Link Companies / Update';
         $logs->log_subject = 'Link Companies - "'.$userGroup->name.'" was updated from '.Session::get('user')->username.'.';

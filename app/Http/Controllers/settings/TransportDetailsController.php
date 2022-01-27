@@ -20,7 +20,11 @@ class TransportDetailsController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TransportDetails / View';
         $logs->log_subject = 'TransportDetails view page visited.';
@@ -66,7 +70,11 @@ class TransportDetailsController extends Controller
     public function deleteTransportDetails($id){
         $transportDetailsData = TransportDetails::where('id',$id)->first();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TransportDetails / Delete';
         $logs->log_subject = 'TransportDetails - "'.$transportDetailsData->name.'" was deleted.';
@@ -84,7 +92,11 @@ class TransportDetailsController extends Controller
         ]);
 
         
+        $transportDetailsLastId = TransportDetails::orderBy('id', 'DESC')->first('id');
+        $transportDetailsId = !empty($transportDetailsLastId) ? $transportDetailsLastId->id + 1 : 1;
+
         $transportDetails = new TransportDetails;
+        $transportDetails->id = $transportDetailsId;
         $transportDetails->name = $request->name;
         $transportDetails->gstin = $request->gstin;
         $transportDetails->save();
@@ -92,7 +104,11 @@ class TransportDetailsController extends Controller
         if($request->multiple_address) {
             $multipleAddresses = $request->multiple_address;
             foreach($multipleAddresses as $multipleAddress) {
+                $transportMultipleAddressDetailsLastId = TransportMultipleAddressDetails::orderBy('id', 'DESC')->first('id');
+                $transportMultipleAddressDetailsId = !empty($transportMultipleAddressDetailsLastId) ? $transportMultipleAddressDetailsLastId->id + 1 : 1;
+        
                 $transportMultipleAddressDetails = new TransportMultipleAddressDetails;
+                $transportMultipleAddressDetails->id = $transportMultipleAddressDetailsId;
                 $transportMultipleAddressDetails->transport_details = $transportDetails->id;
                 $transportMultipleAddressDetails->contact_person_name = $multipleAddress['contact_person_name'];
                 $transportMultipleAddressDetails->contact_person_address = $multipleAddress['contact_person_address'];
@@ -102,7 +118,11 @@ class TransportDetailsController extends Controller
             }
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TransportDetails / Add';
         $logs->log_subject = 'TransportDetails - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -135,7 +155,11 @@ class TransportDetailsController extends Controller
             $transportMultipleAddressDetails->save();
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / TransportDetails / Edit';
         $logs->log_subject = 'TransportDetails - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

@@ -19,7 +19,11 @@ class CountriesController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Country / View';
         $logs->log_subject = 'Country view page visited.';
@@ -63,7 +67,11 @@ class CountriesController extends Controller
     public function deleteCountries($id){
         $countriesData = Country::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Country / Delete';
         $logs->log_subject = 'Country - "'.$countriesData->name.'" was deleted.';
@@ -79,12 +87,20 @@ class CountriesController extends Controller
             'name' => 'required',
         ]);
 
+        $countryLastId = Country::orderBy('id', 'DESC')->first('id');
+        $countryId = !empty($countryLastId) ? $countryLastId->id + 1 : 1;
+
         $countries = new Country;
+        $countries->id = $countryId;
         $countries->country_code = $request->country_code;
         $countries->name = $request->name;
         $countries->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Country / Add';
         $logs->log_subject = 'Country - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -105,7 +121,11 @@ class CountriesController extends Controller
         $countries->name = $request->name;
         $countries->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Country / Edit';
         $logs->log_subject = 'Country - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

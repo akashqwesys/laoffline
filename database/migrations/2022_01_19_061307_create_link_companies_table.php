@@ -15,8 +15,8 @@ class CreateLinkCompaniesTable extends Migration
     {
         Schema::create('link_companies', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->integer('link_companies_id');
+            $table->integer('company_id')->default('0');
+            $table->integer('link_companies_id')->default('0');
             $table->timestamps();
         });
     }

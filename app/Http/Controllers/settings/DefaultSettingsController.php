@@ -22,7 +22,11 @@ class DefaultSettingsController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $user->employee_id;
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Default Settings / View';
         $logs->log_subject = 'Default Settings view page visited.';
@@ -80,7 +84,11 @@ class DefaultSettingsController extends Controller
             $defaultSettings->save();
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Default Settings';
         $logs->log_subject = 'Default Settings - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

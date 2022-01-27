@@ -15,8 +15,8 @@ class CreateBankDetailsTable extends Migration
     {
         Schema::create('bank_details', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('sort_order');
+            $table->string('name')->nullable();
+            $table->string('sort_order')->nullable();
             $table->timestamps();
         });
     }

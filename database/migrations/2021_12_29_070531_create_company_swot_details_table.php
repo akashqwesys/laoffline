@@ -15,11 +15,11 @@ class CreateCompanySwotDetailsTable extends Migration
     {
         Schema::create('company_swot_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->string('strength');
-            $table->string('weakness');
-            $table->string('opportunity');
-            $table->string('threat');
+            $table->integer('company_id')->default('0');
+            $table->string('strength')->nullable();
+            $table->string('weakness')->nullable();
+            $table->string('opportunity')->nullable();
+            $table->string('threat')->nullable();
             $table->timestamps();
         });
     }

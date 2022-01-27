@@ -15,12 +15,12 @@ class CreateProductsImagesTable extends Migration
     {
         Schema::create('products_images', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->string('supplier_code');
-            $table->string('product_code');
-            $table->string('image');
-            $table->string('price');
-            $table->integer('sort_order');
+            $table->integer('product_id')->default('0');
+            $table->string('supplier_code')->nullable();
+            $table->string('product_code')->nullable();
+            $table->string('image')->nullable();
+            $table->string('price')->nullable();
+            $table->integer('sort_order')->default('0');
             $table->timestamps();
         });
     }

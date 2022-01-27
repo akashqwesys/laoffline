@@ -82,7 +82,6 @@
         data() {
             return {
                 cancel_url: '/databank/product-category',
-                default_categories: [],
                 defaultCategories: [],
                 form: new Form({
                     id: '',

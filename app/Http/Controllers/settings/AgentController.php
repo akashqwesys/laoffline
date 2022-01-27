@@ -19,7 +19,11 @@ class AgentController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Agent / View';
         $logs->log_subject = 'Agent view page visited.';
@@ -63,7 +67,11 @@ class AgentController extends Controller
     public function deleteAgent($id){
         $agentData = Agent::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Agent / Delete';
         $logs->log_subject = 'Agent - "'.$agentData->name.'" was deleted.';
@@ -81,14 +89,22 @@ class AgentController extends Controller
             'default' => 'required',
         ]);
 
+        $agentLastId = Agent::orderBy('id', 'DESC')->first('id');
+        $agentId = !empty($agentLastId) ? $agentLastId->id + 1 : 1;
+
         $agent = new Agent;
+        $agent->id = $agentId;
         $agent->name = $request->name;
         $agent->pan_no = $request->pan_no;
         $agent->gst_no = $request->gst_no;
         $agent->default = $request->default;
         $agent->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Agent / Add';
         $logs->log_subject = 'Agent - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -113,7 +129,11 @@ class AgentController extends Controller
         $agent->default = $request->default;
         $agent->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Agent / Edit';
         $logs->log_subject = 'Agent - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

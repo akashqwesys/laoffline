@@ -15,8 +15,8 @@ class CreateTypeOfAddressesTable extends Migration
     {
         Schema::create('type_of_addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('sort_order');
+            $table->string('name')->nullable();
+            $table->string('sort_order')->nullable();
             $table->timestamps();
         });
     }

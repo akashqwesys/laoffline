@@ -16,7 +16,11 @@ class PermissionController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'UserGroup / View';
         $logs->log_subject = 'User Group view page visited.';
@@ -62,7 +66,11 @@ class PermissionController extends Controller
 
         $user->revokePermissionTo($permission->name);
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = $user->employee_id;
         $logs->log_path = 'Company Type / Delete';
         $logs->log_subject = 'Company Type - '.$permission->company_name.' was deleted by"'.$user->username.'".';
@@ -76,16 +84,28 @@ class PermissionController extends Controller
         $this->validate($request, [
             'name' => 'required',
         ]);
+        
+        $accessPermissionLastId = Permission::orderBy('id', 'DESC')->first('id');
+        $accessPermissionId = !empty($accessPermissionLastId) ? $accessPermissionLastId->id + 1 : 1;
 
         $permission = new Permission;
+        $permission->id = $accessPermissionId;
         $permission->name = 'access-'.strtolower(str_replace(' ', '-', $request->name));
         $permission->save();
+        
+        $modifyPermissionLastId = Permission::orderBy('id', 'DESC')->first('id');
+        $modifyPermissionId = !empty($modifyPermissionLastId) ? $modifyPermissionLastId->id + 1 : 1;
 
         $permission = new Permission;
+        $permission->id = $modifyPermissionId;
         $permission->name = 'modify-'.strtolower(str_replace(' ', '-', $request->name));
         $permission->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company Type / Add';
         $logs->log_subject = 'Company Type - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -107,7 +127,11 @@ class PermissionController extends Controller
         }
         $permission->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company / Edit';
         $logs->log_subject = 'Company - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

@@ -15,7 +15,7 @@ class CreateProductDefaultCategoriesTable extends Migration
     {
         Schema::create('product_default_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->timestamps();
         });
     }

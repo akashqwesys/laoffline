@@ -22,7 +22,11 @@ class UserGroupController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'UserGroup / View';
         $logs->log_subject = 'User Group view page visited.';
@@ -72,7 +76,11 @@ class UserGroupController extends Controller
     public function deleteUserGroup($id){
         $userGroupData = UserGroup::where('id', $id)->first();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Usergroup / Delete';
         $logs->log_subject = 'Usergroup - '.$userGroupData->name.' was deleted.';
@@ -94,18 +102,34 @@ class UserGroupController extends Controller
         ]);
 
         $permissions = array_merge($request->access_permission,$request->modify_permission);
+        
+        $roleLastId = Role::orderBy('id', 'DESC')->first('id');
+        $roleId = !empty($roleLastId) ? $roleLastId->id + 1 : 1;
 
-        $role = Role::create(['name' => $request->name]);        
+        // $role = Role::create(['name' => $request->name]);
+        $role = new Role;
+        $role->id = $roleId;
+        $role->name = $request->name;
+        $role->save();
+
         $role->syncPermissions($permissions);
 
+        $userGroupLastId = UserGroup::orderBy('id', 'DESC')->first('id');
+        $userGroupId = !empty($userGroupLastId) ? $userGroupLastId->id + 1 : 1;
+
         $userGroup = new UserGroup;
+        $userGroup->id = $userGroupId;
         $userGroup->name = $request->name;
         $userGroup->roles_id = $role->id;
         $userGroup->access_permissions = json_encode($request->access_permission);
         $userGroup->modify_permissions = json_encode($request->modify_permission);
         $userGroup->save();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Usergroup / Add';
         $logs->log_subject = 'Usergroup - "'.$userGroup->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -135,7 +159,11 @@ class UserGroupController extends Controller
         $permissions = array_merge($request->access_permission,$request->modify_permission);
         $role->syncPermissions($permissions);
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Usergroup / Update';
         $logs->log_subject = 'Usergroup - "'.$userGroup->name.'" was updated from '.Session::get('user')->username.'.';

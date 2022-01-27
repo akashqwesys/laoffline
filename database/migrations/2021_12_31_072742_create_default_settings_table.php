@@ -16,11 +16,11 @@ class CreateDefaultSettingsTable extends Migration
         Schema::create('default_settings', function (Blueprint $table) {
             $table->id();
             $table->integer('employee_id');
-            $table->string('cgst');
-            $table->string('sgst');
-            $table->string('igst');
-            $table->string('tds');
-            $table->string('service_tax_limit');
+            $table->string('cgst')->nullable();
+            $table->string('sgst')->nullable();
+            $table->string('igst')->nullable();
+            $table->string('tds')->nullable();
+            $table->string('service_tax_limit')->nullable();
             $table->timestamps();
         });
     }

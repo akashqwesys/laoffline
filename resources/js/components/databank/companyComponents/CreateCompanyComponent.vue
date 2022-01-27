@@ -265,7 +265,8 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-ma_mobile">Mobile</label>
-                                                        <div class="form-control-wrap">
+                                                        <div class="form-control-wrap" style="position: relative; width: 100%;">
+                                                            <input v-model="multipleAddress.country_code" type="text" placeholder="+91" class="form-control" id="fv-company_country_code">
                                                             <input v-model="multipleAddress.mobile" type="text" class="form-control" id="fw-ma_mobile">
                                                         </div>
                                                     </div>
@@ -573,6 +574,20 @@
                 designationList: [],
                 typeOfAddress: [],
                 showAddCityModal: false,
+                companyTypes: [
+                    {
+                        'id' : 1,
+                        'name' : 'General',
+                    },
+                    {
+                        'id' : 2,
+                        'name' : 'Customer',
+                    },
+                    {
+                        'id' : 3,
+                        'name' : 'Supplier',
+                    },
+                ],
                 company : {
                     id: '',
                     company_name: '',
@@ -603,6 +618,7 @@
                     address_type : '',
                     mobile : '',
                     address : '',
+                    country_code: '',
                     multipleAddressesOwners : [{
                         name : '',
                         designation : '',
@@ -836,5 +852,14 @@
     }
     .form-group.code-block .clipboard-init:hover {
         border-color: #6576ff;
+    }
+    #fv-company_country_code {
+        position: absolute;
+        width: 20%;
+        padding-left: 10px;
+    }
+    #fw-ma_mobile {
+        width: 77%;
+        float: right;
     }
 </style>

@@ -15,13 +15,13 @@ class CreateProductDetailsTable extends Migration
     {
         Schema::create('product_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->integer('catalogue_price');
-            $table->integer('average_price');
-            $table->integer('wholesale_discount');
-            $table->integer('wholesale_brokerage');
-            $table->integer('retail_discount');
-            $table->integer('retail_brokerage');
+            $table->integer('product_id')->default('0');
+            $table->integer('catalogue_price')->default('0');
+            $table->integer('average_price')->default('0');
+            $table->integer('wholesale_discount')->default('0');
+            $table->integer('wholesale_brokerage')->default('0');
+            $table->integer('retail_discount')->default('0');
+            $table->integer('retail_brokerage')->default('0');
             $table->timestamps();
         });
     }

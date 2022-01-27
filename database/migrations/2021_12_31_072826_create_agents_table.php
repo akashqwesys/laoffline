@@ -15,12 +15,12 @@ class CreateAgentsTable extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('pan_no');
-            $table->string('gst_no');
-            $table->string('default');
-            $table->string('include_tax');
-            $table->string('inv_prefix');
+            $table->string('name')->nullable();
+            $table->string('pan_no')->nullable();
+            $table->string('gst_no')->nullable();
+            $table->string('default')->nullable();
+            $table->string('include_tax')->nullable();
+            $table->string('inv_prefix')->nullable();
             $table->timestamps();
         });
     }

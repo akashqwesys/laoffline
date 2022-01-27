@@ -19,7 +19,11 @@ class BankDetailsController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Bank Details / View';
         $logs->log_subject = 'Bank Details view page visited.';
@@ -63,7 +67,11 @@ class BankDetailsController extends Controller
     public function deleteBankDetails($id){
         $bankDetailsData = BankDetails::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Bank Details / Delete';
         $logs->log_subject = 'Bank Details - "'.$bankDetailsData->name.'" was deleted.';
@@ -79,12 +87,20 @@ class BankDetailsController extends Controller
             'sort_order' => 'required',
         ]);
 
+        $bankDetailsLastId = BankDetails::orderBy('id', 'DESC')->first('id');
+        $bankDetailsId = !empty($bankDetailsLastId) ? $bankDetailsLastId->id + 1 : 1;
+
         $bankDetails = new BankDetails;
+        $bankDetails->id = $bankDetailsId;
         $bankDetails->name = $request->name;
         $bankDetails->sort_order = $request->sort_order;
         $bankDetails->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Bank Details / Add';
         $logs->log_subject = 'Bank Details - "'.$request->category_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -105,7 +121,11 @@ class BankDetailsController extends Controller
         $bankDetails->sort_order = $request->sort_order;
         $bankDetails->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Bank Details / Edit';
         $logs->log_subject = 'Bank Details - "'.$request->category_name.'" was updated from '.Session::get('user')->username.'.';

@@ -15,8 +15,8 @@ class CreateCompanyEmailsTable extends Migration
     {
         Schema::create('company_emails', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->string('email_id');
+            $table->integer('company_id')->default('0');
+            $table->string('email_id')->nullable();
             $table->timestamps();
         });
     }

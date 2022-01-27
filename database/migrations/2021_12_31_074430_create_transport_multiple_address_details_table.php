@@ -15,11 +15,11 @@ class CreateTransportMultipleAddressDetailsTable extends Migration
     {
         Schema::create('transport_multiple_address_details', function (Blueprint $table) {
             $table->id();
-            $table->string('transport_details');
-            $table->string('contact_person_name');
-            $table->string('contact_person_address');
-            $table->string('contact_person_office_no');
-            $table->string('contact_person_email');
+            $table->string('transport_details')->nullable();
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_address')->nullable();
+            $table->string('contact_person_office_no')->nullable();
+            $table->string('contact_person_email')->nullable();
             $table->timestamps();
         });
     }

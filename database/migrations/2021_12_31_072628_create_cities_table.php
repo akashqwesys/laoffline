@@ -15,10 +15,10 @@ class CreateCitiesTable extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('std_code');
-            $table->string('country');
-            $table->string('state');
+            $table->string('name')->nullable();
+            $table->string('std_code')->nullable();
+            $table->string('country')->nullable();
+            $table->string('state')->nullable();
             $table->timestamps();
         });
     }

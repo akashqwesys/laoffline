@@ -15,21 +15,21 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->string('firstname');
-            $table->string('middlename');
-            $table->string('lastname');
-            $table->text('profile_pic');
-            $table->string('email_id');
-            $table->string('mobile');
-            $table->text('address');
-            $table->integer('user_group');
-            $table->integer('excel_access');
-            $table->text('id_proof');
-            $table->text('ref_full_name');
-            $table->text('ref_pass_pic');
-            $table->string('ref_mobile');
-            $table->text('ref_address');
-            $table->string('web_login');
+            $table->string('firstname')->nullable();
+            $table->string('middlename')->nullable();
+            $table->string('lastname')->nullable();
+            $table->text('profile_pic')->nullable();
+            $table->string('email_id')->nullable();
+            $table->string('mobile')->nullable();
+            $table->text('address')->nullable();
+            $table->integer('user_group')->default('0');
+            $table->integer('excel_access')->default('0');
+            $table->text('id_proof')->nullable();
+            $table->text('ref_full_name')->nullable();
+            $table->text('ref_pass_pic')->nullable();
+            $table->string('ref_mobile')->nullable();
+            $table->text('ref_address')->nullable();
+            $table->string('web_login')->nullable();
             $table->timestamps();
         });
     }

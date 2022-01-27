@@ -23,7 +23,11 @@ class SmsSettingsController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $user->employee_id;
                         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / SmsSettings / View';
         $logs->log_subject = 'Sms Settings view page visited.';
@@ -915,7 +919,11 @@ class SmsSettingsController extends Controller
             $smsSettings->save();
         }
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / SmsSettings / Edit';
         $logs->log_subject = 'SmsSettings - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

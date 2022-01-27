@@ -22,7 +22,11 @@ class EmployeesController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Employe / View';
         $logs->log_subject = 'Employee view page visited.';
@@ -75,7 +79,11 @@ class EmployeesController extends Controller
         $employeeData = Employee::where('id',$id)->first();        
         $user = User::where('employee_id',$id)->first();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Employe / Delete';
         $logs->log_subject = 'Employee - '.$user->username.' was deleted.';
@@ -118,25 +126,33 @@ class EmployeesController extends Controller
             $image->move(public_path('upload/referencePassPic'), $referencePassPicName);
         }
 
+        $employeeLastId = Employee::orderBy('id', 'DESC')->first('id');
+        $employeeId = !empty($employeeLastId) ? $employeeLastId->id + 1 : 1;
+
         $employee = new Employee;
-        $employee->firstname = $request->firstname ? $request->firstname : '';
-        $employee->middlename = $request->middlename ? $request->middlename : ''; 
-        $employee->lastname = $request->lastname ? $request->lastname : '';
+        $employee->id = $employeeId;
+        $employee->firstname = $request->firstname;
+        $employee->middlename = $request->middlename;
+        $employee->lastname = $request->lastname;
         $employee->profile_pic = $profileImage;
-        $employee->email_id = $request->email_id ? $request->email_id : '';
-        $employee->mobile = $request->mobile ? $request->mobile : '';
-        $employee->address = $request->address ? $request->address : '';
-        $employee->user_group = $request->user_group['id'] ? $request->user_group['id'] : '';
-        $employee->excel_access = $request->excel_access ? $request->excel_access : 0;
+        $employee->email_id = $request->email_id;
+        $employee->mobile = $request->mobile;
+        $employee->address = $request->address;
+        $employee->user_group = $request->user_group['id'];
+        $employee->excel_access = $request->excel_access;
         $employee->id_proof = $idProofName;
-        $employee->ref_full_name = $request->ref_full_name ? $request->ref_full_name : '';
+        $employee->ref_full_name = $request->ref_full_name;
         $employee->ref_pass_pic = $referencePassPicName;
-        $employee->ref_mobile = $request->ref_mobile ? $request->ref_mobile : '';
-        $employee->ref_address = $request->ref_address ? $request->ref_address : '';
+        $employee->ref_mobile = $request->ref_mobile;
+        $employee->ref_address = $request->ref_address;
         $employee->save();
 
+        $userLastId = User::orderBy('id', 'DESC')->first('id');
+        $userId = !empty($userLastId) ? $userLastId->id + 1 : 1;
+
         $user = new User;
-        $user->employee_id = $employee->id;
+        $user->id = $userId;
+        $user->employee_id = $employeeId;
         $user->username = $request->username;
         $user->password = bcrypt($request->password);
         $user->is_active = 1;
@@ -148,7 +164,11 @@ class EmployeesController extends Controller
 
         $user->assignRole($role);
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Employe / Add';
         $logs->log_subject = 'Employee - "'.$user->username.'" was inserted from '.Session::get('user')->username.'.';
@@ -217,7 +237,11 @@ class EmployeesController extends Controller
 
         $user->assignRole($role);
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Employe / Edit';
         $logs->log_subject = 'Employee - "'.$user->username.'" was updated from '.Session::get('user')->username.'.';

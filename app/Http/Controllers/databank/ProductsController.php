@@ -10,6 +10,7 @@ use App\Models\FabricField;
 use App\Models\Logs;
 use App\Models\ProductCategory;
 use App\Models\Company\Company;
+use App\Models\Company\CompanyContactDetails;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Models\ProductsImages;
@@ -26,7 +27,11 @@ class ProductsController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product / View';
         $logs->log_subject = 'Product view page visited.';
@@ -206,7 +211,11 @@ class ProductsController extends Controller
         ProductsImages::where('product_id',$id)->delete();
         ProductFabricDetails::where('product_id',$id)->delete();
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product / Delete';
         $logs->log_subject = 'Product - "'.$productData->product_name.'" was deleted.';
@@ -214,6 +223,67 @@ class ProductsController extends Controller
         $logs->save();
 
         $productData->delete();
+    }
+
+    public function insertCompaniesData(Request $request) {
+        $comapnyLastId = Company::orderBy('id', 'DESC')->first('id');
+        $companyId = !empty($comapnyLastId) ? $comapnyLastId->id + 1 : 1;
+
+        $companyContactDetailsLastId = CompanyContactDetails::orderBy('id', 'DESC')->first('id');
+        $companyContactDetailsId = !empty($companyContactDetailsLastId) ? $companyContactDetailsLastId->id + 1 : 1;
+
+        $company = new Company;
+        $company->id = $companyId;
+        $company->company_name = $request->name;
+        $company->company_type = $request->company_type['id'];
+        $company->company_country = $request->country['id'];
+        $company->company_state = $request->city['state'];
+        $company->company_city = $request->city['id'];
+        $company->company_website = '';
+        $company->company_landline = '';
+        $company->company_mobile = '';
+        $company->company_watchout = 0;
+        $company->company_remark_watchout = '';
+        $company->company_about = $request->about_company;
+        $company->company_category = 0;
+        $company->product_category = 0;
+        $company->product_sub_category = 0;
+        $company->company_transport = 0;
+        $company->company_discount = 0;
+        $company->company_payment_terms_in_days = 0;
+        $company->company_opening_balance = 0;
+        $company->favorite_flag = 0;
+        $company->is_verified = 0;
+        $company->is_linked = 0;
+        $company->is_active = 0;
+        $company->verified_by = 0;
+        $company->generated_by = Session::get('user')->employee_id;
+        $company->updated_by = 0;
+        $company->verified_date = NULL;
+        $company->save();
+
+        $companyContactDetails = new CompanyContactDetails;
+        $companyContactDetails->id = $companyContactDetailsId;
+        $companyContactDetails->company_id = $companyId;
+        $companyContactDetails->contact_person_name = $request->owner_name;
+        $companyContactDetails->contact_person_designation = '';
+        $companyContactDetails->contact_person_profile_pic = '';
+        $companyContactDetails->contact_person_mobile = $request->owner_mobile;
+        $companyContactDetails->contact_person_email = $request->owner_email;
+        $companyContactDetails->save();
+
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
+        $logs = new Logs;
+        $logs->id = $logsId;
+        $logs->employee_id = Session::get('user')->employee_id;
+        $logs->log_path = 'Company / Add';
+        $logs->log_subject = 'Company - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
+        $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $logs->save();
+
+        return true;
     }
 
     public function insertProductsData(Request $request) {
@@ -268,7 +338,11 @@ class ProductsController extends Controller
             }
         }
 
+        $productsLastId = Product::orderBy('id', 'DESC')->first('id');
+        $productsId = !empty($productsLastId) ? $productsLastId->id + 1 : 1;
+
         $products = new Product;
+        $products->id = $productsId;
         $products->product_name = $productData->product_name;
         $products->catalogue_name = $productData->catalogue_name;
         $products->brand_name = $productData->brand_name;
@@ -285,8 +359,12 @@ class ProductsController extends Controller
         $products->updated_by = 0;
         $products->save();
         
+        $productDetailsLastId = ProductDetails::orderBy('id', 'DESC')->first('id');
+        $productDetailsId = !empty($productDetailsLastId) ? $productDetailsLastId->id + 1 : 1;
+
         $productDetails = new ProductDetails;
-        $productDetails->product_id = $products->id;
+        $productDetails->id = $productDetailsId;
+        $productDetails->product_id = $productsId;
         $productDetails->catalogue_price = $productData->catalogue_price;
         $productDetails->average_price = $productData->average_price;
         $productDetails->wholesale_discount = $productData->wholesale_discount;
@@ -296,8 +374,12 @@ class ProductsController extends Controller
         $productDetails->save();
         
         foreach($AdditionalImage as $image) {
+            $productImagesLastId = ProductsImages::orderBy('id', 'DESC')->first('id');
+            $productImagesId = !empty($productImagesLastId) ? $productImagesLastId->id + 1 : 1;
+    
             $productImages = new ProductsImages;
-            $productImages->product_id = $products->id;
+            $productImages->id = $productImagesId;
+            $productImages->product_id = $productsId;
             $productImages->supplier_code = $image->supplier_code;
             $productImages->product_code = $image->product_code;
             $productImages->image = $image->product_pic;
@@ -306,8 +388,12 @@ class ProductsController extends Controller
             $productImages->save();
         }
         
+        $productFabricsLastId = ProductFabricDetails::orderBy('id', 'DESC')->first('id');
+        $productFabricsId = !empty($productFabricsLastId) ? $productFabricsLastId->id + 1 : 1;
+
         $productFabrics = new ProductFabricDetails;
-        $productFabrics->product_id = $products->id;
+        $productFabrics->id = $productFabricsId;
+        $productFabrics->product_id = $productsId;
         $productFabrics->saree_fabric = isset($fabrics['saree_fabric']) ? $fabrics['saree_fabric'] : 0;
         $productFabrics->saree_cut = isset($fabrics['saree_cut']) ? $fabrics['saree_cut'] : 0;
         $productFabrics->blouse_fabric = isset($fabrics['blouse_fabric']) ? $fabrics['blouse_fabric'] : 0;
@@ -332,7 +418,11 @@ class ProductsController extends Controller
         $productFabrics->gown_cut = isset($fabrics['gown_cut']) ? $fabrics['gown_cut'] : 0;
         $productFabrics->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product / Add';
         $logs->log_subject = 'Product - "'.$productData->product_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -465,7 +555,11 @@ class ProductsController extends Controller
         $productFabrics->gown_cut = isset($fabrics['gown_cut']) ? $fabrics['gown_cut'] : 0;
         $productFabrics->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Product / Edit';
         $logs->log_subject = 'Product - "'.$productData->product_name.'" was updated from '.Session::get('user')->username.'.';

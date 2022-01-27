@@ -19,7 +19,11 @@ class SaleBillAgentController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / Sale Bill Agent / View';
         $logs->log_subject = 'Sale Bill Agent view page visited.';
@@ -63,7 +67,11 @@ class SaleBillAgentController extends Controller
     public function deleteSaleBillAgent($id){
         $saleBillAgentData = SaleBillAgent::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / SaleBillAgent / Delete';
         $logs->log_subject = 'SaleBillAgent - "'.$saleBillAgentData->name.'" was deleted.';
@@ -79,12 +87,20 @@ class SaleBillAgentController extends Controller
             'default' => 'required',
         ]);
 
+        $saleBillAgentLastId = SaleBillAgent::orderBy('id', 'DESC')->first('id');
+        $saleBillAgentId = !empty($saleBillAgentLastId) ? $saleBillAgentLastId->id + 1 : 1;
+
         $saleBillAgent = new SaleBillAgent;
+        $saleBillAgent->id = $saleBillAgentId;
         $saleBillAgent->name = $request->name;
         $saleBillAgent->default = $request->default;
         $saleBillAgent->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / SaleBillAgent / Add';
         $logs->log_subject = 'SaleBillAgent - "'.$request->name.'" was inserted from '.Session::get('user')->username.'.';
@@ -105,7 +121,11 @@ class SaleBillAgentController extends Controller
         $saleBillAgent->default = $request->default;
         $saleBillAgent->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Settings / SaleBillAgent / Edit';
         $logs->log_subject = 'SaleBillAgent - "'.$request->name.'" was updated from '.Session::get('user')->username.'.';

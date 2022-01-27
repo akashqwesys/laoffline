@@ -15,11 +15,11 @@ class CreateCompanyPackagingDetailsTable extends Migration
     {
         Schema::create('company_packaging_details', function (Blueprint $table) {
             $table->id();
-            $table->integer('company_id');
-            $table->string('gst_no');
-            $table->string('cst_no');
-            $table->string('tin_no');
-            $table->string('vat_no');
+            $table->integer('company_id')->default('0');
+            $table->string('gst_no')->nullable();
+            $table->string('cst_no')->nullable();
+            $table->string('tin_no')->nullable();
+            $table->string('vat_no')->nullable();
             $table->timestamps();
         });
     }

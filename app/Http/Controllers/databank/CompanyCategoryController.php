@@ -19,7 +19,11 @@ class CompanyCategoryController extends Controller
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'CompanyCategory / View';
         $logs->log_subject = 'Company Category view page visited.';
@@ -63,7 +67,11 @@ class CompanyCategoryController extends Controller
     public function deleteCompanyCategory($id){
         $companyCategoryData = CompanyCategory::where('id',$id)->first();        
         
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company Category / Delete';
         $logs->log_subject = 'Company Category - "'.$companyCategoryData->category_name.'" was deleted.';
@@ -79,12 +87,20 @@ class CompanyCategoryController extends Controller
             'sort_order' => 'required',
         ]);
 
+        $comapnyCategoryLastId = CompanyCategory::orderBy('id', 'DESC')->first('id');
+        $companyCategoryId = !empty($comapnyCategoryLastId) ? $comapnyCategoryLastId->id + 1 : 1;
+
         $companyCategory = new CompanyCategory;
+        $companyCategory->id = $companyCategoryId;
         $companyCategory->category_name = $request->category_name;
         $companyCategory->sort_order = $request->sort_order;
         $companyCategory->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company category / Add';
         $logs->log_subject = 'Company category - "'.$request->category_name.'" was inserted from '.Session::get('user')->username.'.';
@@ -105,7 +121,11 @@ class CompanyCategoryController extends Controller
         $companyCategory->sort_order = $request->sort_order;
         $companyCategory->save();
 
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
         $logs = new Logs;
+        $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
         $logs->log_path = 'Company category / Edit';
         $logs->log_subject = 'Company category - "'.$request->category_name.'" was updated from '.Session::get('user')->username.'.';
