@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,18 +65,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'typeOfAddress',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 typeOfAddresses: [],
+                showLoader: false,
                 create_typeOfAddress: 'type-of-address/create-type-of-address',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./type-of-address/list')
             .then(response => {
                 this.typeOfAddresses = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,19 +65,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'companyCategory',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 companyCategories: [],
+                showLoader:false,
                 create_company_category: 'companyCategory/create-company-category',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./companyCategory/list')
             .then(response => {
                 this.companyCategories = response.data;
-                console.log(this.companyCategories);
+                this.showLoader = false;
             });
         },
         methods: {

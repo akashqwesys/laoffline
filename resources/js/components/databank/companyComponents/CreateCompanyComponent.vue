@@ -26,7 +26,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_name">Company Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="company.company_name" type="text" class="form-control" id="fw-company_name">
+                                                        <input v-model="company.company_name" type="text" class="form-control" id="fw-company_name" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -34,12 +34,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_type">Company Type</label>
                                                     <div>
-                                                        <select v-model="company.company_type" class="form-control" id="fv-company_type" data-placeholder="Select a option">
-                                                            <option>Select Company Type</option>
-                                                            <option value="1">General</option>
-                                                            <option value="2">Customer</option>
-                                                            <option value="3">Supplier</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_type" :options="companyType" placeholder="Select one" label="name" track-by="name" @input="getStateList"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -47,9 +42,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_country">Country</label>
                                                     <div>
-                                                        <select v-model="company.company_country" class="form-control" id="fv-company_country" data-placeholder="Select a option">
-                                                            <option v-for="country in countryList" :key="country.id" :value="country.id">{{country.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_country" :options="countryList" placeholder="Select one" label="name" track-by="name" @input="getStateList"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -57,9 +50,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_state">State</label>
                                                     <div>
-                                                        <select v-model="company.company_state" class="form-control" id="fv-company_state" data-placeholder="Select a option">
-                                                            <option v-for="state in stateList" :key="state.id" :value="state.id">{{state.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_state" :options="stateList" placeholder="Select one" label="name" track-by="name" @input="getCityList"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -68,9 +59,7 @@
                                                     <label class="form-label" for="fw-company_city">City</label>
                                                     <button type="button" class="btn btn-sm clipboard-init" data-toggle="modal" data-target="#addCity" title="Add new city"><span class="clipboard-text">Add New</span></button>
                                                     <div>
-                                                        <select v-model="company.company_city" class="form-control" id="fv-company_city" data-placeholder="Select a option">
-                                                            <option v-for="city in cityList" :key="city.id" :value="city.id">{{city.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_city" :options="cityList" placeholder="Select one" label="name" track-by="name"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -143,9 +132,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_category">Company Category</label>
                                                     <div>
-                                                        <select v-model="company.company_category" class="form-control" id="fv-company_category" data-placeholder="Select a option">
-                                                            <option v-for="category in companyCategoryList" :key="category.id" :value="category.id">{{category.category_name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_category" :options="companyCategoryList" placeholder="Select one" label="category_name" track-by="category_name"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -154,9 +141,7 @@
                                                     <label class="form-label" for="fw-company_transport">Transport</label>
                                                         <button type="button" class="btn btn-sm clipboard-init" data-toggle="modal" data-target="#addTransport" title="Add new transport"><span class="clipboard-text">Add New</span></button>
                                                     <div>
-                                                        <select v-model="company.company_transport" class="form-control" id="fv-company_transport" data-placeholder="Select a option">
-                                                            <option v-for="transport in transportList" :key="transport.id" :value="transport.id">{{transport.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="company.company_transport" :options="transportList" placeholder="Select one" label="name" track-by="name"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -205,9 +190,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-contact_person_designation">Designation</label>
                                                     <div>
-                                                        <select v-model="contactDetail.contact_person_designation" class="form-control" id="fv-contact_person_designation" data-placeholder="Select a option">
-                                                            <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                        </select>
+                                                        <multiselect v-model="contactDetail.contact_person_designation" :options="designationList" placeholder="Select one" label="name" track-by="name"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,9 +239,7 @@
                                                         <label class="form-label" for="fw-ma_address_type">Type of Address</label>
                                                         <button type="button" class="btn btn-sm clipboard-init" data-toggle="modal" data-target="#addTypeOffAddress" title="Add new type of address"><span class="clipboard-text">Add New</span></button>
                                                         <div>
-                                                            <select v-model="multipleAddress.address_type" class="form-control" id="fv-ma_address_type" data-placeholder="Select a option">
-                                                                <option v-for="address in typeOfAddress" :key="address.id" :value="address.id">{{address.name}}</option>
-                                                            </select>
+                                                            <multiselect v-model="multipleAddress.address_type" :options="typeOfAddress" placeholder="Select one" label="name" track-by="name"></multiselect>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -302,9 +283,7 @@
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-maodesignation">Designation</label>
                                                         <div>
-                                                            <select v-model="multipleAddressesOwner.designation" class="form-control" id="fv-maodesignation" data-placeholder="Select a option">
-                                                                <option v-for="designation in designationList" :key="designation.id" :value="designation.id">{{designation.name}}</option>
-                                                            </select>
+                                                            <multiselect v-model="multipleAddressesOwner.designation" :options="designationList" placeholder="Select one" label="name" track-by="name"></multiselect>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -536,22 +515,16 @@
 </template>
 
 <script>
+    import Multiselect from 'vue-multiselect';
     import AddCity from './modal/AddNewCityModelComponent';
     import AddTransport from './modal/AddNewTransportModelComponent';
     import AddTypeOfAddress from './modal/AddNewTypeOfAddressModelComponent';
 
     var companies = [];
-    var countries = [];
-    var states = [];
-    var cities = [];
-    var companyCategories = [];
-    var transports = [];
-    var designations = [];
-    var addresses = [];
-    var i = 0, j = 0;
     export default {
         name: 'createCompany',
         components: {
+            Multiselect,
             AddCity,
             AddTransport,
             AddTypeOfAddress
@@ -661,45 +634,47 @@
             axios.get('/settings/companyType/list')
             .then(response => {
                 this.companyType = response.data;
-                console.log(this.companyType);
             });
             axios.get('/settings/cities/list-country')
             .then(response => {
-                countries = response.data;
-                this.countryList = countries;
-            });
-            axios.get('/settings/cities/list-state')
-            .then(response => {
-                states = response.data;
-                this.stateList = states;
-            });
-            axios.get('/settings/cities/list')
-            .then(response => {
-                cities = response.data;
-                this.cityList = cities;
+                this.countryList = response.data;
             });
             axios.get('/databank/companyCategory/list')
             .then(response => {
-                companyCategories = response.data;
-                this.companyCategoryList = companyCategories;
+                this.companyCategoryList = response.data;
             });
             axios.get('/settings/transport-details/list')
             .then(response => {
-                transports = response.data;
-                this.transportList   = transports;
+                this.transportList = response.data;
             });
             axios.get('/settings/designation/list')
             .then(response => {
-                designations = response.data;
-                this.designationList = designations;
+                this.designationList = response.data;
             });
             axios.get('/settings/type-of-address/list')
             .then(response => {
-                addresses = response.data;
-                this.typeOfAddress = addresses;
+                this.typeOfAddress = response.data;
             });
         },
         methods: {
+            getStateList: function(event) {
+                if(event != null) {
+                    console.log(event);                    
+                    axios.get('/settings/cities/list-state-id/'+event.id)
+                    .then(response => {
+                        this.stateList = response.data;
+                    });
+                }
+            },
+            getCityList: function(event) {
+                if(event != null) {
+                    console.log(event);                    
+                    axios.get('/settings/cities/list-city-id/'+event.id)
+                    .then(response => {
+                        this.cityList = response.data;
+                    });
+                }
+            },
             addContactDetailsRow: function() {
                 this.contactDetails.push({
                     contact_person_name: '',
@@ -737,7 +712,7 @@
                     designation : '',
                     mobile : '',
                     email : '',
-                        profile_pic : '',
+                    profile_pic : '',
                 });
             },
             deleteMultipleAddressesOwnersRow: function(row, subrow) {
@@ -789,7 +764,7 @@
                         }
                     })
                 })
-                console.log("FORM:- ", formData);
+
                 if (this.scope == 'edit') {
                     axios.post('/databank/companies/update', formData)
                     .then(response => {
@@ -798,7 +773,7 @@
                 } else {
                     axios.post('/databank/companies/create', formData)
                     .then(response => {
-                        window.location.href = '/databank/companies';
+                        // window.location.href = '/databank/companies';
                     });
                 }
             },
@@ -809,7 +784,7 @@
                     axios.get(`/databank/companies/fetch-company/${this.id}`)
                     .then(response => {
                         companies = response.data;
-                        console.log(companies);
+
                         // company Data
                         this.company = companies.company;
 
@@ -841,7 +816,101 @@
         },
     };
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
+    .multiselect {
+        height: calc(2.125rem + 2px);
+        font-family: Roboto,sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        background-color: #fff;
+        border: none;
+        border-radius: 4px;
+        box-shadow: none;
+        transition: all 0.3s;
+        min-height: 36px;
+        display: inline-flex;
+        flex-wrap: wrap;
+    }
+    .multiselect__tag-icon:after {
+        color: #526484;
+    }
+    .multiselect__tag {
+        color: #526484;
+        background: #ebeef2;
+        font-size: 13px;
+        font-family: Roboto,sans-serif;
+    }
+    .multiselect__tags {
+        padding: 7px 16px;
+        font-size: 13px;
+        min-height: 36px;
+        border: 1px solid #dbdfea;
+        width: 100%;
+    }
+    .multiselect__placeholder {
+        margin-bottom: 0;
+        padding-top: 0;
+    }
+    .multiselect__select {
+        height: calc(2.125rem + 2px);
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: calc(2.125rem + 2px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .multiselect__select:before {
+        display: none;
+    }
+    .multiselect .multiselect__select:after {
+        font-family: "Nioicon";
+        content: "";
+        line-height: 1;
+    }
+    .multiselect.multiselect--active .multiselect__input, .multiselect__single {
+        font-size: 13px;
+        padding: 0;
+        margin-bottom: 0;
+        width: 98% !important;
+    }
+    .multiselect__content-wrapper {
+        border-top: 1px solid #dbdfea;
+        padding: 6px;
+        top: 36px;
+    }
+    .multiselect__option--highlight {
+        background: #ebeef2;
+        border-radius: 4px;
+        color: #526484;        
+    }
+    .multiselect__element {
+        margin-bottom: 0.125rem;
+    }
+    .multiselect__option--highlight:after, .multiselect__option:after {
+        display: none;
+    }
+    .multiselect__option--selected.multiselect__option--highlight {
+        background: #f3f3f3;
+        color: #35495e;
+    }
+    .multiselect__option--selected {
+        font-weight: 500;
+    }
+    .multiselect__tags-wrap {
+        display: inline-flex;
+    }
+    .multiselect--above .multiselect__content-wrapper {
+        border: 1px solid #e8e8e8;
+    }
+    .multiselect__tag-icon:focus, .multiselect__tag-icon:hover {
+        background: #ebeef2;
+    }
+    .multiselect__tag-icon:focus:after, .multiselect__tag-icon:hover:after {
+        color: #526484;
+    }
     .form-group.code-block {
         border: none;
         padding: 0;

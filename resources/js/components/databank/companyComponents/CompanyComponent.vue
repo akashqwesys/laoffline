@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -96,19 +97,27 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'company',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 companies: [],
+                showLoader:false,
                 create_company: 'companies/create-company',
                 categoryName: '',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./companies/list')
             .then(response => {
                 this.companies = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

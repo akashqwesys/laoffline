@@ -237,7 +237,9 @@ Route::group(['middleware' => ['auth', 'permission:access-cities']], function() 
     Route::get('/settings/cities', [App\Http\Controllers\settings\CitiesController::class, 'index'])->name('cities');
     Route::get('/settings/cities/list', [App\Http\Controllers\settings\CitiesController::class, 'listCities'])->name('list');
     Route::get('/settings/cities/list-country', [App\Http\Controllers\settings\CitiesController::class, 'listCountries'])->name('list-country');
-    Route::get('/settings/cities/list-state', [App\Http\Controllers\settings\CitiesController::class, 'liststate'])->name('list-state');
+    Route::get('/settings/cities/list-state', [App\Http\Controllers\settings\CitiesController::class, 'listState'])->name('list-state');
+    Route::get('/settings/cities/list-state-id/{id}', [App\Http\Controllers\settings\CitiesController::class, 'listStateByCountryId'])->name('list-state-id');
+    Route::get('/settings/cities/list-city-id/{id}', [App\Http\Controllers\settings\CitiesController::class, 'listCityByStateId'])->name('list-city-id');
     Route::get('/settings/cities/fetch-cities/{id}', [App\Http\Controllers\settings\CitiesController::class, 'fetchCities']);
 });
 
@@ -356,19 +358,19 @@ Route::group(['middleware' => ['auth', 'permission:modify-sale-bill-agent']], fu
 
 
 // Routes for Settings / Fabric
-// Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
+Route::group(['middleware' => ['auth', 'permission:access-fabric-group']], function() {
     Route::get('/settings/fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'index'])->name('fabricGroup');
     Route::get('/settings/fabricGroup/list', [App\Http\Controllers\settings\FabricGroupController::class, 'listFabricGroup'])->name('list');
     Route::get('/settings/fabricGroup/fetch-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'fetchFabricGroup']);
-// });
+});
 
-// Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
+Route::group(['middleware' => ['auth', 'permission:modify-fabricGroup']], function() {
     Route::get('/settings/fabricGroup/create-fabricGroup', [App\Http\Controllers\settings\FabricGroupController::class, 'createFabricGroup']);
     Route::post('/settings/fabricGroup/create', [App\Http\Controllers\settings\FabricGroupController::class, 'insertFabricGroupData']);
     Route::post('/settings/fabricGroup/update', [App\Http\Controllers\settings\FabricGroupController::class, 'updateFabricGroupData']);
     Route::get('/settings/fabricGroup/edit-fabricGroup/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'editFabricGroup']);
     Route::delete('/settings/fabricGroup/delete/{id}', [App\Http\Controllers\settings\FabricGroupController::class, 'deleteFabricGroup'])->name('delete');
-// });
+});
 
 
 // Routes for Settings / Company Type

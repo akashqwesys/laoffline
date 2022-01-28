@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,18 +65,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'bankDetails',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 bankDetails: [],
+                showLoader: false,
                 create_company_category: 'bank-details/create-bank-details',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./bank-details/list')
             .then(response => {
                 this.bankDetails = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

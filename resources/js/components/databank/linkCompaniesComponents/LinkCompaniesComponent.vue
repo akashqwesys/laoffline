@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -109,11 +110,13 @@
 
 <script>
     import Multiselect from 'vue-multiselect';
+    import VueLoader from './../../../VueLoader';
 
     export default {
         name: 'linkCompany',        
         components: {
             Multiselect,
+            VueLoader,
         },
         data() {
             return {
@@ -122,6 +125,7 @@
                 linkCompanies: [],
                 linkId: 0,
                 modalId: '',
+                showLoader:false,
                 form: new Form({
                     company_id: '',
                     link_company_id: [],
@@ -129,9 +133,11 @@
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./link-company/list')
             .then(response => {
                 this.linkCompanies = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

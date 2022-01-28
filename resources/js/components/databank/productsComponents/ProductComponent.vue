@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -91,18 +92,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'product',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 products: [],
+                showLoader:false,
                 create_product_category: 'catalog/create-products',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./catalog/list')
             .then(response => {
                 this.products = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

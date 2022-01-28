@@ -55,6 +55,18 @@ class CitiesController extends Controller
         return $state;
     }
 
+    public function listStateByCountryId($id) {
+        $state = State::where('country_id', $id)->get();
+
+        return $state;
+    }
+
+    public function listCityByStateId($id) {
+        $city = Cities::where('state', $id)->get();
+
+        return $city;
+    }
+
     public function listCities() {
         $city = Cities::all();
 

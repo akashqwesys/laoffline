@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -67,19 +68,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'saleBillAgent',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 saleBillAgents: [],
+                showLoader: false,
                 create_company_category: 'sale-bill-agent/create-sale-bill-agent',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./sale-bill-agent/list')
             .then(response => {
                 this.saleBillAgents = response.data;
-                console.log(this.saleBillAgents);
+                this.showLoader = false;
             });
         },
         methods: {

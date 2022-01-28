@@ -60,7 +60,11 @@ class LoginController extends Controller
 
             Session::put('user', $user);
             
+            $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+            $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                            
             $logs = new Logs;
+            $logs->id = $logsId;
             $logs->employee_id = $user->employee_id;
             $logs->log_path = 'Login';
             $logs->log_subject = 'Login Successfully.';

@@ -39,7 +39,8 @@ class CompanyTypeController extends Controller
     }
 
     public function listCompanyType() {
-        $companyType = CompanyType::get();
+        $companyType = CompanyType::all();
+
         return $companyType;
     }
 

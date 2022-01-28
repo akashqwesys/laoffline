@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,19 +65,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'country',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 countries: [],
+                showLoader: false,
                 create_countries: 'countries/create-countries',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./countries/list')
             .then(response => {
                 this.countries = response.data;
-                console.log(this.countries);
+                this.showLoader = false;
             });
         },
         methods: {

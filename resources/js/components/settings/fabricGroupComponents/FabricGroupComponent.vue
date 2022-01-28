@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,18 +65,26 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'city',
+        components: { 
+            VueLoader,
+        },
         data() {
             return {
                 fabricGroups: [],
+                showLoader: false,
                 create_cities: 'fabricGroup/create-fabricGroup',
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./fabricGroup/list')
             .then(response => {
                 this.fabricGroups = response.data;
+                this.showLoader = false;
             });
         },
         methods: {

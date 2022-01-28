@@ -253,7 +253,7 @@ class CompanyController extends Controller
         $bankDetails = json_decode($request->bank_details);
         $contactDetailsProfilePic = $request->contact_details_profile_pic;
         $multipleAddressProfilePic = $request->multiple_address_profile_pic;
-
+        dd($companyData);
         if (!file_exists(public_path('upload/company'))) {
             mkdir(public_path('upload/company'), 0777, true);
         }
@@ -300,20 +300,20 @@ class CompanyController extends Controller
         $companyId = !empty($comapnyLastId) ? $comapnyLastId->id + 1 : 1;
         
         $company = new Company;
-        $company->id = $comapnyId;
+        $company->id = $companyId;
         $company->company_name = $companyData->company_name;
         $company->company_type = $companyData->company_type;
-        $company->company_country = $companyData->company_country;
-        $company->company_state = $companyData->company_state;
-        $company->company_city = $companyData->company_city;
+        $company->company_country = $companyData->company_country->id;
+        $company->company_state = $companyData->company_state->id;
+        $company->company_city = $companyData->company_city->id;
         $company->company_website = $companyData->company_website;
         $company->company_landline = $companyData->company_landline;
         $company->company_mobile = $companyData->company_mobile;
         $company->company_watchout = $companyData->company_watchout;
         $company->company_remark_watchout = $companyData->company_remark_watchout;
         $company->company_about = $companyData->company_about;
-        $company->company_category = $companyData->company_category;
-        $company->company_transport = $companyData->company_transport;
+        $company->company_category = $companyData->company_category->id;
+        $company->company_transport = $companyData->company_transport->id;
         $company->company_discount = $companyData->company_discount;
         $company->company_payment_terms_in_days = $companyData->company_payment_terms_in_days;
         $company->company_opening_balance = $companyData->company_opening_balance;
@@ -337,7 +337,7 @@ class CompanyController extends Controller
                 $companyContactDetails->id = $companyContactId;
                 $companyContactDetails->company_id = $comapnyId;
                 $companyContactDetails->contact_person_name = $contactDetail->contact_person_name;
-                $companyContactDetails->contact_person_designation = $contactDetail->contact_person_designation;
+                $companyContactDetails->contact_person_designation = $contactDetail->contact_person_designation->id;
                 $companyContactDetails->contact_person_profile_pic = $contactDetail->contact_person_profile_pic;
                 $companyContactDetails->contact_person_mobile = $contactDetail->contact_person_mobile;
                 $companyContactDetails->contact_person_email = $contactDetail->contact_person_email;
@@ -354,7 +354,7 @@ class CompanyController extends Controller
                 $companyAddress = new CompanyAddress;
                 $companyAddress->id = $companyAddressId;
                 $companyAddress->company_id = $comapnyId;
-                $companyAddress->address_type = $multipleAddress->address_type;
+                $companyAddress->address_type = $multipleAddress->address_type->id;
                 $companyAddress->address = $multipleAddress->address;
                 $companyAddress->country_code = $multipleAddress->country_code;
                 $companyAddress->mobile = $multipleAddress->mobile;
@@ -369,7 +369,7 @@ class CompanyController extends Controller
                         $companyAddressOwner->id = $companyAddressOwnerId;
                         $companyAddressOwner->company_address_id = $companyAddress->id;
                         $companyAddressOwner->name = $owner->name;
-                        $companyAddressOwner->designation = $owner->designation;
+                        $companyAddressOwner->designation = $owner->designation->id;
                         $companyAddressOwner->profile_pic = $owner->profile_pic;
                         $companyAddressOwner->mobile = $owner->mobile;
                         $companyAddressOwner->email = $owner->email;

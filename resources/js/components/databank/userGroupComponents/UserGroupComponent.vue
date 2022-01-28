@@ -1,5 +1,6 @@
 <template>
     <div class="nk-content ">
+        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -64,17 +65,25 @@
 </template>
 
 <script>
+    import VueLoader from './../../../VueLoader';
+
     export default {
         name: 'userGroup',
+        components:{
+          VueLoader,
+        },
         data() {
             return {
                 userGroups: [],
                 create_user_group: 'users-group/create-user-group',
+                showLoader:false,
             }
         },
         created() {
+            this.showLoader = true;
             axios.get('./users-group/list')
             .then(response => {
+                this.showLoader = false;
                 this.userGroups = response.data;
             });
         },
@@ -84,7 +93,8 @@
             },
             delete_data(id){
                 axios.delete('./users-group/delete/'+id)
-                .then(response => {                    
+                .then(response => {
+                    this.showLoader = false;
                     location.reload();
                 });
             }
