@@ -14,10 +14,11 @@ class CreateFabricFieldsTable extends Migration
     public function up()
     {
         Schema::create('fabric_fields', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('product_fabric_id')->default('0');
             $table->string('name')->nullable();
             $table->integer('sort_order')->default('0');
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

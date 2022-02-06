@@ -12,7 +12,12 @@ use Illuminate\Support\Facades\Session;
 
 class DefaultSettingsController extends Controller
 {
-    use HasRoles;    
+    use HasRoles;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(Request $request) {
         $user = Session::get('user');

@@ -14,7 +14,7 @@ class CreateDefaultSettingsTable extends Migration
     public function up()
     {
         Schema::create('default_settings', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('employee_id');
             $table->string('cgst')->nullable();
             $table->string('sgst')->nullable();

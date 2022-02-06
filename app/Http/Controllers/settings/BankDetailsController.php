@@ -12,12 +12,19 @@ use Illuminate\Support\Facades\Session;
 
 class BankDetailsController extends Controller
 {
-    use HasRoles;    
+    use HasRoles;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -65,7 +72,9 @@ class BankDetailsController extends Controller
     }
 
     public function deleteBankDetails($id){
-        $bankDetailsData = BankDetails::where('id',$id)->first();        
+        $bankDetailsData = BankDetails::where('id',$id)->first();
+        $bankDetailsData->is_delete = 1;
+        $bankDetailsData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -77,8 +86,6 @@ class BankDetailsController extends Controller
         $logs->log_subject = 'Bank Details - "'.$bankDetailsData->name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $bankDetailsData->delete();
     }
 
     public function insertBankDetailsData(Request $request) {

@@ -14,7 +14,7 @@ class CreateProductsImagesTable extends Migration
     public function up()
     {
         Schema::create('products_images', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('product_id')->default('0');
             $table->string('supplier_code')->nullable();
             $table->string('product_code')->nullable();

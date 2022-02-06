@@ -1,7 +1,7 @@
 
 import Vue from 'vue';
 import Form from 'vform';
-// import VuejsDatatableFactory from 'vuejs-datatable';
+import { VuejsDatatableFactory } from 'vuejs-datatable';
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -12,7 +12,7 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 window.Form = Form;
-// Vue.use( VuejsDatatableFactory );
+Vue.use( VuejsDatatableFactory );
 
 /**
  * The following block of code may be used to automatically register your
@@ -44,6 +44,7 @@ Vue.component('create-product-sub-category-component', require('./components/dat
 Vue.component('company-category-component', require('./components/databank/companyCategoryComponents/CompanyCategoryComponent.vue').default);
 Vue.component('create-company-category-component', require('./components/databank/companyCategoryComponents/CreateCompanyCategoryComponent.vue').default);
 
+Vue.component('essential-company-component', require('./components/databank/companyComponents/EssentialCompanyComponent.vue').default);
 Vue.component('company-component', require('./components/databank/companyComponents/CompanyComponent.vue').default);
 Vue.component('create-company-component', require('./components/databank/companyComponents/CreateCompanyComponent.vue').default);
 Vue.component('view-company-component', require('./components/databank/companyComponents/ViewCompanyComponent.vue').default);
@@ -79,7 +80,6 @@ Vue.component('create-designation-component', require('./components/settings/des
 Vue.component('sale-bill-agent-component', require('./components/settings/saleBillAgentComponents/SaleBillAgentComponent.vue').default);
 Vue.component('create-sale-bill-agent-component', require('./components/settings/saleBillAgentComponents/CreateSaleBillAgentComponent.vue').default);
 
-Vue.component('sms-settings-component', require('./components/settings/smsSettingsComponents/SmsSettingsComponent.vue').default);
 Vue.component('create-sms-settings-component', require('./components/settings/smsSettingsComponents/CreateSmsSettingsComponent.vue').default);
 
 Vue.component('transport-details-component', require('./components/settings/transportDetailsComponents/TransportDetailsComponent.vue').default);

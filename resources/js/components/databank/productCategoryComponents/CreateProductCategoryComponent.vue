@@ -17,7 +17,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="form.id">
                                     <div class="preview-block">
                                         <div class="row gy-4">
@@ -25,7 +25,8 @@
                                                 <div>
                                                     <label class="form-label" for="fv-default_category">Default Category</label>
                                                     <div>
-                                                        <multiselect v-model="form.default_category" :options="defaultCategories" placeholder="Select one" label="name" track-by="name"></multiselect>
+                                                        <multiselect id="fv-default_category" v-model="form.default_category" :options="defaultCategories" placeholder="Select one" label="name" track-by="name"></multiselect>
+                                                        <span v-if="errors.default_category" class="invalid">{{errors.default_category}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -33,7 +34,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-category-name">Category Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-category-name" v-model="form.name" required>
+                                                        <input type="text" class="form-control" id="fv-category-name" v-model="form.name">
+                                                        <span v-if="errors.category_name" class="invalid">{{errors.category_name}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -41,7 +43,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-sort-order">Sort Order</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-sort-order" v-model="form.sort_order" required>
+                                                        <input type="number" class="form-control" id="fv-sort-order" v-model="form.sort_order" required>
                                                     </div>
                                                 </div>
                                             </div> 
@@ -83,11 +85,15 @@
             return {
                 cancel_url: '/databank/product-category',
                 defaultCategories: [],
+                errors: {
+                    default_category: '',
+                    category_name: ''
+                },
                 form: new Form({
                     id: '',
                     default_category: '',
                     name: '',
-                    sort_order: '',
+                    sort_order: 0,
                 })
             }
         },
@@ -104,10 +110,30 @@
                         .then(( response ) => {
                             window.location.href = '/databank/product-category';
                     })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.default_category) {
+                            this.errors.default_category = validationError.default_category[0];
+                        }
+                        if(validationError.name) {
+                            this.errors.category_name = validationError.name[0];
+                        }
+                    })
                 } else {
                     this.form.post('/databank/product-category/create')
                         .then(( response ) => {
                             window.location.href = '/databank/product-category';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.default_category) {
+                            this.errors.default_category = validationError.default_category[0];
+                        }
+                        if(validationError.name) {
+                            this.errors.category_name = validationError.name[0];
+                        }
                     })
                 }
             },
@@ -133,6 +159,11 @@
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
+    .invalid {
+        color: #e85347;
+        font-size: 11px;
+        font-style: italic;
+    }
     .multiselect {
         height: calc(2.125rem + 2px);
         font-family: Roboto,sans-serif;

@@ -14,7 +14,7 @@ class CreateCompanyPackagingDetailsTable extends Migration
     public function up()
     {
         Schema::create('company_packaging_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('company_id')->default('0');
             $table->string('gst_no')->nullable();
             $table->string('cst_no')->nullable();

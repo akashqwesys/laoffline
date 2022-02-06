@@ -11,10 +11,18 @@ use Illuminate\Support\Facades\Session;
 
 class CompanyTypeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index() {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -63,6 +71,8 @@ class CompanyTypeController extends Controller
 
     public function deleteCompanyType($id){
         $companyType = CompanyType::where('id', $id)->first();
+        $companyType->is_delete = 1;
+        $companyType->save();
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -74,8 +84,6 @@ class CompanyTypeController extends Controller
         $logs->log_subject = 'Company Type - '.$companyType->company_name.' was deleted by"'.Session::get('user')->username.'".';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $companyType->delete();
     }
 
     public function insertCompanyTypeData(Request $request) {

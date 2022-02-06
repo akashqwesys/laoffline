@@ -14,7 +14,7 @@ class CreateProductsTable extends Migration
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('product_name')->nullable();
             $table->string('catalogue_name')->nullable();
             $table->string('brand_name')->nullable();
@@ -22,13 +22,14 @@ class CreateProductsTable extends Migration
             $table->date('launch_date')->nullable();
             $table->integer('company')->default('0');
             $table->integer('category')->default('0');
-            $table->string('sub_category')->nullable();
+            $table->json('sub_category')->nullable();
             $table->string('main_image')->nullable();
             $table->string('price_list_image')->nullable();
             $table->text('description')->nullable();
             $table->string('complete_flag')->nullable();
-            $table->string('generated_by')->nullable();
-            $table->string('updated_by')->nullable();
+            $table->integer('generated_by')->default('0');
+            $table->integer('updated_by')->default('0');
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

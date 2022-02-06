@@ -12,12 +12,19 @@ use Illuminate\Support\Facades\Session;
 
 class AgentController extends Controller
 {
-    use HasRoles;    
+    use HasRoles;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -65,7 +72,9 @@ class AgentController extends Controller
     }
 
     public function deleteAgent($id){
-        $agentData = Agent::where('id',$id)->first();        
+        $agentData = Agent::where('id',$id)->first();
+        $agentData->is_delete = 1;
+        $agentData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -77,8 +86,6 @@ class AgentController extends Controller
         $logs->log_subject = 'Agent - "'.$agentData->name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $agentData->delete();
     }
 
     public function insertAgentData(Request $request) {

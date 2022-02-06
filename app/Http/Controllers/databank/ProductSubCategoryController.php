@@ -11,15 +11,23 @@ use App\Models\ProductCategory;
 use App\Models\Logs;
 use App\Models\Company\Company;
 use Illuminate\Support\Facades\Session;
+use DB;
 
 class ProductSubCategoryController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -44,7 +52,10 @@ class ProductSubCategoryController extends Controller
     }
 
     public function listProductSubCategory() {
-        $productSubCategory = ProductCategory::where('main_category_id', '!=', '0')->get();
+        $productSubCategory = ProductCategory::join('product_categories as pc','product_categories.main_category_id','=','pc.id')->
+                                               where('product_categories.main_category_id', '!=', '0')->
+                                               where('product_categories.is_delete', '0')->
+                                               get(['product_categories.*', 'pc.name as categoryName']);
 
         foreach($productSubCategory as $category) {
             $id = $category->company_id;
@@ -52,23 +63,17 @@ class ProductSubCategoryController extends Controller
                 if(is_array(json_decode($id))) {
                     $companyName = [];
                     $companyArr = json_decode($id);
-        
+
                     foreach($companyArr as $key => $c) {
                         $company = Company::where('id', $c)->first('company_name');
                         $companyName[$key] = $company->company_name;
                     }                
-                } else {
-                    $company = Company::where('id', $id)->first('company_name');
-                    $companyName = $company->company_name;
                 }
                 $category['companyName'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
                 $category['companyName'] = '';
             }
-            $categoryName = ProductCategory::where('id', $category->main_category_id)->get();
-            foreach($categoryName as $cat) {
-                $category['categoryName'] = $cat->name;
-            }
+            
             if ($category->product_fabric_id != 0) {
                 $fabricGroup = productFabricGroup::where('id', $category->product_fabric_id)->first('name');
                 $category['fabricGroupName'] = $fabricGroup->name;
@@ -181,7 +186,9 @@ class ProductSubCategoryController extends Controller
 
 
     public function deleteProductSubCategory($id){
-        $productCategoryData = ProductCategory::where('id',$id)->first();        
+        $productCategoryData = ProductCategory::where('id',$id)->first();
+        $productCategoryData->is_delete = 1;
+        $productCategoryData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -193,11 +200,25 @@ class ProductSubCategoryController extends Controller
         $logs->log_subject = 'Product Sub Category - "'.$productCategoryData->sub_category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $productCategoryData->delete();
     }
 
     public function insertProductSubCategoryData(Request $request) {
+        if ($request->multiple_company == 1) {
+            $this->validate($request, [
+                'main_category' => 'required',
+                'company' => 'required',
+                'sub_category_name' => 'required',
+            ]);
+
+        } elseif ($request->multiple_company == 0) {
+            $this->validate($request, [
+                'singleCompany' => 'required',
+                'mainCategory' => 'required',
+                'sub_category_name' => 'required',
+            ]);
+
+        }
+        
         $company_id = [];
 
         if($request->multiple_company == 1) {
@@ -260,6 +281,11 @@ class ProductSubCategoryController extends Controller
     }
 
     public function updateProductSubCategoryData(Request $request) {
+        $this->validate($request, [
+            'main_category' => 'required',
+            'company' => 'required',
+            'sub_category_name' => 'required',
+        ]);
         $id = $request->id;
         $company_id = [];
 
@@ -288,7 +314,10 @@ class ProductSubCategoryController extends Controller
                 if ($key == 0) {
                     $productCategory = ProductCategory::where('id', $id)->first();
                 } else {
+                    $productCategoryLastId = ProductCategory::orderBy('id', 'DESC')->first('id');
+                    $productCategoryId = !empty($productCategoryLastId) ? $productCategoryLastId->id + 1 : 1;
                     $productCategory = new ProductCategory;
+                    $productCategory->id = $productCategoryId;
                 }
                 $productCategory->multiple_company = $request->multiple_company;
                 $productCategory->product_default_category_id = 0;

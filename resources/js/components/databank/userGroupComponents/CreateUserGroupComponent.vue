@@ -25,7 +25,8 @@
                                             <div class="form-group">
                                                 <label class="form-label" for="fv-group-name">Group Name</label>
                                                 <div class="form-control-wrap">
-                                                    <input type="text" class="form-control" id="fv-group-name" v-model="form.name" required>
+                                                    <input type="text" class="form-control" id="fv-group-name" v-model="form.name">
+                                                    <span v-if="errors.group_name" class="invalid">{{errors.group_name}}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -39,6 +40,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            <span v-if="errors.apermission" class="invalid">{{errors.apermission}}</span>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -50,6 +52,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            <span v-if="errors.apermission" class="invalid">{{errors.mpermission}}</span>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -83,6 +86,11 @@
                 cancel_url: '/databank/users-group',
                 aPermissions: [],
                 mPermissions: [],
+                errors: {
+                    group_name: '',
+                    apermission: '',
+                    mpermission: '',
+                },
                 form: new Form({
                     id: '',
                     name: '',
@@ -122,10 +130,36 @@
                         .then(( response ) => {
                             window.location.href = '/databank/users-group';
                     })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+                        
+                        if(validationError.name) {
+                            this.errors.group_name = validationError.name[0];
+                        }
+                        if(validationError.access_permission) {
+                            this.errors.apermission = validationError.access_permission[0];
+                        }
+                        if(validationError.modify_permission) {
+                            this.errors.mpermission = validationError.modify_permission[0];
+                        }
+                    })
                 } else {
                     this.form.post('create')
                         .then(( response ) => {
                             window.location.href = '/databank/users-group';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.name) {
+                            this.errors.group_name = validationError.name[0];
+                        }
+                        if(validationError.access_permission) {
+                            this.errors.apermission = validationError.access_permission[0];
+                        }
+                        if(validationError.modify_permission) {
+                            this.errors.mpermission = validationError.modify_permission[0];
+                        }
                     })
                 }
             },

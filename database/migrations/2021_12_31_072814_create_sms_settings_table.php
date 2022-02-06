@@ -14,7 +14,7 @@ class CreateSmsSettingsTable extends Migration
     public function up()
     {
         Schema::create('sms_settings', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('employee_id')->nullable();
             $table->string('enquiry_general')->nullable();
             $table->string('enquiry_supplier')->nullable();

@@ -10,9 +10,8 @@
         <!-- Page Title  -->
         <title>Sales Dashboard | DashLite Admin Template</title>
         <!-- StyleSheets  -->
-        <link rel="stylesheet" href="{{ asset('assets/css/dashlite.css?ver=2.9.0') }}">
-        <link id="skin-default" rel="stylesheet" href="{{ asset('assets/css/theme.css?ver=2.9.0') }}">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="{{ asset('assets/css/dashlite.css') }}">
+        <link id="skin-default" rel="stylesheet" href="{{ asset('assets/css/theme.css') }}">        
     </head>
 
 <body class="nk-body bg-lighter npc-general has-sidebar ">
@@ -165,11 +164,13 @@
         </div><!-- .modla-dialog -->
     </div><!-- .modal -->
     <!-- JavaScript -->
-    <script src="{{ asset('assets/js/bundle.js?ver=2.9.0') }}"></script>
-    <script src="{{ asset('assets/js/scripts.js?ver=2.9.0') }}"></script>
-    <script src="{{ asset('assets/js/charts/gd-default.js?ver=2.9.0') }}"></script>
-    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
-    <script src="{{ asset('assets/js/libs/datatable-btns.js?ver=2.9.0') }}"></script>   
+
+    <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/js/nioapp/nioapp.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.js') }}"></script>
+    <script src="{{ asset('assets/js/charts/gd-default.js') }}"></script>
+    <script src="{{ asset('assets/js/libs/datatable-btns.js') }}"></script>
 </body>
 
 </html>

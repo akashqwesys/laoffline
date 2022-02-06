@@ -204,7 +204,7 @@
                                                                     <div class="user-name"><span class="tb-lead">{{ contactDetail.contact_person_name }}</span></div>                                                    
                                                                 </div>
                                                             </td>
-                                                            <td>{{ contactDetail.contact_person_designation_name }}</td>
+                                                            <td>{{ contactDetail.contact_person_designation }}</td>
                                                             <td>{{ contactDetail.contact_person_mobile }}</td>
                                                             <td>{{ contactDetail.contact_person_mail }}</td>
                                                         </tr>

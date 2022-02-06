@@ -70,422 +70,492 @@ class ConnectionController extends Controller
         } else {
             echo "Connected successfully";
 
-            echo "<br>";
-            $emp = "SELECT * FROM employe";
-            $equery = mysqli_query($conn, $emp);
+            echo "<br><pre>";
+            // $emp = "SELECT * FROM employe";
+            // $equery = mysqli_query($conn, $emp);
        
-            if(mysqli_num_rows($equery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($equery)) {
-                    // print_r($result);
-                    $employeeData[$i]['id'] = $result['employe_id'];
-                    $employeeData[$i]['firstname'] = $result['firstname'];
-                    $employeeData[$i]['middlename'] = $result['middlename'];
-                    $employeeData[$i]['lastname'] = $result['lastname'];
-                    $employeeData[$i]['profile_pic'] = $result['profile_pic'];
-                    $employeeData[$i]['email_id'] = $result['email_id'];
-                    $employeeData[$i]['username'] = $result['username'];
-                    $employeeData[$i]['password'] = $result['password'];
-                    $employeeData[$i]['mobile'] = $result['mobile'];
-                    $employeeData[$i]['address'] = $result['address'];
-                    $employeeData[$i]['user_group'] = $result['user_group_id'];
-                    $employeeData[$i]['excel_access'] = $result['excel_access'];
-                    $employeeData[$i]['id_proof'] = $result['id_proof'];
-                    $employeeData[$i]['ref_full_name'] = $result['ref_name'];
-                    $employeeData[$i]['ref_pass_pic'] = $result['ref_profile_pic'];
-                    $employeeData[$i]['ref_mobile'] = $result['ref_mobile'];
-                    $employeeData[$i]['ref_address'] = $result['ref_address'];
-                    $employeeData[$i]['is_active'] = $result['is_active'];
-                    $i++;
-                }
-            }
-             
-            $pcat = "SELECT * FROM product_category";
-            $pquery = mysqli_query($conn, $pcat);
+            // if(mysqli_num_rows($equery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($equery)) {
+            //         // print_r($result);
+            //         $employeeData[$i]['id'] = $result['employe_id'];
+            //         $employeeData[$i]['firstname'] = $result['firstname'];
+            //         $employeeData[$i]['middlename'] = $result['middlename'];
+            //         $employeeData[$i]['lastname'] = $result['lastname'];
+            //         $employeeData[$i]['profile_pic'] = $result['profile_pic'];
+            //         $employeeData[$i]['email_id'] = $result['email_id'];
+            //         $employeeData[$i]['username'] = $result['username'];
+            //         $employeeData[$i]['password'] = $result['password'];
+            //         $employeeData[$i]['mobile'] = $result['mobile'];
+            //         $employeeData[$i]['address'] = $result['address'];
+            //         $employeeData[$i]['user_group'] = $result['user_group_id'];
+            //         $employeeData[$i]['excel_access'] = $result['excel_access'];
+            //         $employeeData[$i]['id_proof'] = $result['id_proof'];
+            //         $employeeData[$i]['ref_full_name'] = $result['ref_name'];
+            //         $employeeData[$i]['ref_pass_pic'] = $result['ref_profile_pic'];
+            //         $employeeData[$i]['ref_mobile'] = $result['ref_mobile'];
+            //         $employeeData[$i]['ref_address'] = $result['ref_address'];
+            //         $employeeData[$i]['is_active'] = $result['is_active'];
+            //         $i++;
+            //     }
+            // }
+            // echo "<pre>"; print_r($employeeData); die;
+            // $pcat = "SELECT * FROM product_category";
+            // $pquery = mysqli_query($conn, $pcat);
 
-            if(mysqli_num_rows($pquery) != 0) { 
-                $i = 0;
-                $companyId = [];
-                while($result = mysqli_fetch_assoc($pquery)) {
-                    if(!empty($result['company_id'])) {
-                        $companyId = unserialize($result['company_id']);
-                        if($companyId) {
-                            $countCompanyId = array_key_last($companyId) + 1;
-                            if ($countCompanyId == 1) {
-                                $result['company_id'] = $companyId[0];
-                            } else {
-                                $result['company_id'] = json_encode($companyId);
-                            }
-                        } else {
-                            $result['company_id'] = '';                            
-                        }
-                    }
+            // if(mysqli_num_rows($pquery) != 0) { 
+            //     $i = 0;
+            //     $companyId = [];
+            //     while($result = mysqli_fetch_assoc($pquery)) {
+            //         if(!empty($result['company_id'])) {
+            //             $companyId = unserialize($result['company_id']);
+            //             if($companyId) {
+            //                 $countCompanyId = array_key_last($companyId) + 1;
+            //                 if ($countCompanyId == 1) {
+            //                     $result['company_id'] = json_encode($companyId[0]);
+            //                 } else {
+            //                     $result['company_id'] = json_encode($companyId);
+            //                 }
+            //             } else {
+            //                 $result['company_id'] = 0;                            
+            //             }
+            //         }
 
-                    $productCategoryData[$i]['id'] = $result['product_category_id'];
-                    $productCategoryData[$i]['product_default_category_id'] = $result['product_default_category_id'];
-                    $productCategoryData[$i]['name'] = $result['name'];
-                    $productCategoryData[$i]['main_category_id'] = $result['main_category_id'];
-                    $productCategoryData[$i]['company_id'] = $result['company_id'];
-                    $productCategoryData[$i]['product_fabric_id'] = $result['product_fabric_id'];
-                    $productCategoryData[$i]['sort_order'] = $result['sort_order'];
-                    $productCategoryData[$i]['multiple_company'] = $result['multiple_company'];
-                    $productCategoryData[$i]['rate'] = $result['rate'];
-                    $i++;
-                }
-            }
+            //         $productCategoryData[$i]['id'] = $result['product_category_id'];
+            //         $productCategoryData[$i]['product_default_category_id'] = $result['product_default_category_id'];
+            //         $productCategoryData[$i]['name'] = $result['name'];
+            //         $productCategoryData[$i]['main_category_id'] = $result['main_category_id'];
+            //         $productCategoryData[$i]['company_id'] = $result['company_id'];
+            //         $productCategoryData[$i]['product_fabric_id'] = $result['product_fabric_id'];
+            //         $productCategoryData[$i]['sort_order'] = $result['sort_order'];
+            //         $productCategoryData[$i]['multiple_company'] = $result['multiple_company'];
+            //         $productCategoryData[$i]['rate'] = $result['rate'];
+            //         $i++;
+            //     }
+            // }
 
                          
-            $prod = "SELECT * FROM product_main";
-            $pdquery = mysqli_query($conn, $prod);
+            // $prod = "SELECT * FROM product_main";
+            // $pdquery = mysqli_query($conn, $prod);
 
-            if(mysqli_num_rows($pdquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($pdquery)) {
+            // if(mysqli_num_rows($pdquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($pdquery)) {
                     
-                    if(!empty($result['sub_category_id'])) {
-                        $subCatId = unserialize($result['sub_category_id']);
-                        if($subCatId) {
-                            $countsubCatId = array_key_last($subCatId) + 1;
-                            if ($countsubCatId == 1) {
-                                $result['sub_category_id'] = $subCatId[0];
-                            } else {
-                                $result['sub_category_id'] = json_encode($subCatId);
-                            }
-                        } else {
-                            $result['sub_category_id'] = '';                            
-                        }
-                    }
+            //         if(!empty($result['sub_category_id'])) {
+            //             $subCatId = unserialize($result['sub_category_id']);
+            //             if($subCatId) {
+            //                 $countsubCatId = array_key_last($subCatId) + 1;
+            //                 if ($countsubCatId == 1) {
+            //                     $result['sub_category_id'] = json_encode($subCatId[0]);
+            //                 } else {
+            //                     $result['sub_category_id'] = json_encode($subCatId);
+            //                 }
+            //             } else {
+            //                 $result['sub_category_id'] = 0;                            
+            //             }
+            //         }
 
-                    if($result['launch_date'] == '0000-00-00') {
-                        $result['launch_date'] = NULL;
-                    } else {
-                        $result['launch_date'] = $result['launch_date'];
-                    }
+            //         if($result['launch_date'] == '0000-00-00') {
+            //             $result['launch_date'] = NULL;
+            //         } else {
+            //             $result['launch_date'] = $result['launch_date'];
+            //         }
 
-                    $products[$i]['productData']['id'] = $result['product_main_id'];
-                    $products[$i]['productData']['product_name'] = $result['name'];
-                    $products[$i]['productData']['catalogue_name'] = $result['catalogue_name'];
-                    $products[$i]['productData']['brand_name'] = $result['brand_name'];
-                    $products[$i]['productData']['model'] = $result['model_name'];
-                    $products[$i]['productData']['launch_date'] = $result['launch_date'];
-                    $products[$i]['productData']['company'] = $result['company_id'];
-                    $products[$i]['productData']['category'] = $result['category_id'];
-                    $products[$i]['productData']['sub_category'] = $result['sub_category_id'];                    
-                    $products[$i]['productData']['main_image'] = $result['main_image'];
-                    $products[$i]['productData']['price_list_image'] = $result['price_list_image'];
-                    $products[$i]['productData']['description'] = $result['description'];
-                    $products[$i]['productData']['complete_flag'] = $result['complete_flag'];
-                    $products[$i]['productData']['generated_by'] = 1;
-                    $products[$i]['productData']['updated_by'] = 0;
+            //         $products[$i]['productData']['id'] = $result['product_main_id'];
+            //         $products[$i]['productData']['product_name'] = $result['name'];
+            //         $products[$i]['productData']['catalogue_name'] = $result['catalogue_name'];
+            //         $products[$i]['productData']['brand_name'] = $result['brand_name'];
+            //         $products[$i]['productData']['model'] = $result['model_name'];
+            //         $products[$i]['productData']['launch_date'] = $result['launch_date'];
+            //         $products[$i]['productData']['company'] = $result['company_id'];
+            //         $products[$i]['productData']['category'] = $result['category_id'];
+            //         $products[$i]['productData']['sub_category'] = $result['sub_category_id'];                    
+            //         $products[$i]['productData']['main_image'] = $result['main_image'];
+            //         $products[$i]['productData']['price_list_image'] = $result['price_list_image'];
+            //         $products[$i]['productData']['description'] = $result['description'];
+            //         $products[$i]['productData']['complete_flag'] = $result['complete_flag'];
+            //         $products[$i]['productData']['generated_by'] = 1;
+            //         $products[$i]['productData']['updated_by'] = 0;
 
-                    $products[$i]['productDetails']['product_id'] = $result['product_main_id'];
-                    $products[$i]['productDetails']['catalogue_price'] = $result['price'];
-                    $products[$i]['productDetails']['average_price'] = $result['average_price'];
-                    $products[$i]['productDetails']['wholesale_discount'] = $result['wh_discount'];
-                    $products[$i]['productDetails']['wholesale_brokerage'] = $result['wh_brokerage'];
-                    $products[$i]['productDetails']['retail_discount'] = $result['re_discount'];
-                    $products[$i]['productDetails']['retail_brokerage'] = $result['re_brokerage'];
+            //         $products[$i]['productDetails']['product_id'] = $result['product_main_id'];
+            //         $products[$i]['productDetails']['catalogue_price'] = $result['price'];
+            //         $products[$i]['productDetails']['average_price'] = $result['average_price'];
+            //         $products[$i]['productDetails']['wholesale_discount'] = $result['wh_discount'];
+            //         $products[$i]['productDetails']['wholesale_brokerage'] = $result['wh_brokerage'];
+            //         $products[$i]['productDetails']['retail_discount'] = $result['re_discount'];
+            //         $products[$i]['productDetails']['retail_brokerage'] = $result['re_brokerage'];
 
-                    $products[$i]['fabrics']['product_id'] = $result['product_main_id'];
-                    $products[$i]['fabrics']['saree_fabric'] = $result['saree_fabric'];
-                    $products[$i]['fabrics']['saree_cut'] = $result['saree_cut'];
-                    $products[$i]['fabrics']['blouse_fabric'] = $result['blouse_fabric'];
-                    $products[$i]['fabrics']['blouse_cut'] = $result['blouse_cut'];
-                    $products[$i]['fabrics']['top_fabric'] = $result['top_fabric'];
-                    $products[$i]['fabrics']['top_cut'] = $result['top_cut'];
-                    $products[$i]['fabrics']['bottom_fabric'] = $result['bottom_fabric'];
-                    $products[$i]['fabrics']['bottom_cut'] = $result['bottom_cut'];
-                    $products[$i]['fabrics']['dupatta_fabric'] = $result['dupatta_fabric'];
-                    $products[$i]['fabrics']['dupatta_cut'] = $result['dupatta_cut'];
-                    $products[$i]['fabrics']['inner_fabric'] = $result['inner_fabric'];
-                    $products[$i]['fabrics']['inner_cut'] = $result['inner_cut'];
-                    $products[$i]['fabrics']['sleeves_fabric'] = $result['sleeves_fabric'];
-                    $products[$i]['fabrics']['sleeves_cut'] = $result['sleeves_cut'];
-                    $products[$i]['fabrics']['choli_fabric'] = $result['choli_fabric'];
-                    $products[$i]['fabrics']['choli_cut'] = $result['choli_cut'];
-                    $products[$i]['fabrics']['lehenga_fabric'] = $result['lehenga_fabric'];
-                    $products[$i]['fabrics']['lehenga_cut'] = $result['lehenga_cut'];
-                    $products[$i]['fabrics']['lining_fabric'] = $result['lining_fabric'];
-                    $products[$i]['fabrics']['lining_cut'] = $result['lining_cut'];
-                    $products[$i]['fabrics']['gown_fabric'] = $result['gown_fabric'];
-                    $products[$i]['fabrics']['gown_cut'] = $result['gown_cut'];
-                    $i++;
-                }
-            }
+            //         $products[$i]['fabrics']['product_id'] = $result['product_main_id'];
+            //         $products[$i]['fabrics']['saree_fabric'] = $result['saree_fabric'];
+            //         $products[$i]['fabrics']['saree_cut'] = $result['saree_cut'];
+            //         $products[$i]['fabrics']['blouse_fabric'] = $result['blouse_fabric'];
+            //         $products[$i]['fabrics']['blouse_cut'] = $result['blouse_cut'];
+            //         $products[$i]['fabrics']['top_fabric'] = $result['top_fabric'];
+            //         $products[$i]['fabrics']['top_cut'] = $result['top_cut'];
+            //         $products[$i]['fabrics']['bottom_fabric'] = $result['bottom_fabric'];
+            //         $products[$i]['fabrics']['bottom_cut'] = $result['bottom_cut'];
+            //         $products[$i]['fabrics']['dupatta_fabric'] = $result['dupatta_fabric'];
+            //         $products[$i]['fabrics']['dupatta_cut'] = $result['dupatta_cut'];
+            //         $products[$i]['fabrics']['inner_fabric'] = $result['inner_fabric'];
+            //         $products[$i]['fabrics']['inner_cut'] = $result['inner_cut'];
+            //         $products[$i]['fabrics']['sleeves_fabric'] = $result['sleeves_fabric'];
+            //         $products[$i]['fabrics']['sleeves_cut'] = $result['sleeves_cut'];
+            //         $products[$i]['fabrics']['choli_fabric'] = $result['choli_fabric'];
+            //         $products[$i]['fabrics']['choli_cut'] = $result['choli_cut'];
+            //         $products[$i]['fabrics']['lehenga_fabric'] = $result['lehenga_fabric'];
+            //         $products[$i]['fabrics']['lehenga_cut'] = $result['lehenga_cut'];
+            //         $products[$i]['fabrics']['lining_fabric'] = $result['lining_fabric'];
+            //         $products[$i]['fabrics']['lining_cut'] = $result['lining_cut'];
+            //         $products[$i]['fabrics']['gown_fabric'] = $result['gown_fabric'];
+            //         $products[$i]['fabrics']['gown_cut'] = $result['gown_cut'];
+            //         $i++;
+            //     }
+            // }
             
                          
-            $csql = "SELECT * FROM cities";
-            $cquery = mysqli_query($conn, $csql);
+            // $csql = "SELECT * FROM cities";
+            // $cquery = mysqli_query($conn, $csql);
 
-            if(mysqli_num_rows($cquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($cquery)) {
-                    $cityList[$i]['id'] = $result['city_id'];
-                    $cityList[$i]['name'] = $result['city_name'];
-                    $cityList[$i]['std_code'] = $result['city_code'];
-                    $cityList[$i]['country'] = $result['country_id'];
-                    if($result['city_state'] == NULL) {
-                        $cityList[$i]['state'] = 0;
-                    } else {                        
-                        $cityList[$i]['state'] = $result['city_state'];
-                    }
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($cquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($cquery)) {
+            //         $cityList[$i]['id'] = $result['city_id'];
+            //         $cityList[$i]['name'] = $result['city_name'];
+            //         $cityList[$i]['std_code'] = $result['city_code'];
+            //         $cityList[$i]['country'] = $result['country_id'];
+            //         if($result['city_state'] == NULL) {
+            //             $cityList[$i]['state'] = 0;
+            //         } else {                        
+            //             $cityList[$i]['state'] = $result['city_state'];
+            //         }
+            //         $i++;
+            //     }
+            // }
             
                                      
-            $tsql = "SELECT * FROM transport";
-            $tquery = mysqli_query($conn, $tsql);
+            // $tsql = "SELECT * FROM transport";
+            // $tquery = mysqli_query($conn, $tsql);
 
-            if(mysqli_num_rows($tquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($tquery)) {
-                    $transports[$i]['id'] = $result['transport_id'];
-                    $transports[$i]['name'] = $result['transport_name'];
-                    $transports[$i]['gstin'] = !empty($result['gstin']) ? $result['gstin'] : 0;
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($tquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($tquery)) {
+            //         $transports[$i]['id'] = $result['transport_id'];
+            //         $transports[$i]['name'] = $result['transport_name'];
+            //         $transports[$i]['gstin'] = !empty($result['gstin']) ? $result['gstin'] : 0;
+            //         $i++;
+            //     }
+            // }
             
             
                                      
-            $pisql = "SELECT * FROM product_image";
-            $piquery = mysqli_query($conn, $pisql);
+            // $pisql = "SELECT * FROM product_image";
+            // $piquery = mysqli_query($conn, $pisql);
 
-            if(mysqli_num_rows($piquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($piquery)) {
-                    $productImages[$i]['id'] = $result['product_image_id'];
-                    $productImages[$i]['product_id'] = $result['product_main_id'];
-                    $productImages[$i]['supplier_code'] = $result['name'];
-                    $productImages[$i]['product_code'] = !empty($result['product_code']) ? $result['product_code'] : 0;
-                    $productImages[$i]['image'] = $result['image_name'];
-                    $productImages[$i]['price'] = $result['price'];
-                    $productImages[$i]['sort_order'] = $result['sort_order'];
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($piquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($piquery)) {
+            //         $productImages[$i]['id'] = $result['product_image_id'];
+            //         $productImages[$i]['product_id'] = $result['product_main_id'];
+            //         $productImages[$i]['supplier_code'] = $result['name'];
+            //         $productImages[$i]['product_code'] = !empty($result['product_code']) ? $result['product_code'] : 0;
+            //         $productImages[$i]['image'] = $result['image_name'];
+            //         $productImages[$i]['price'] = $result['price'];
+            //         $productImages[$i]['sort_order'] = $result['sort_order'];
+            //         $i++;
+            //     }
+            // }
             
                         
                                      
-            $comsql = "SELECT * FROM company";
-            $comquery = mysqli_query($conn, $comsql);
+            // $comsql = "SELECT * FROM company";
+            // $comquery = mysqli_query($conn, $comsql);
 
-            if(mysqli_num_rows($comquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($comquery)) {
-                    if(!empty($result['company_category_id'])) {
-                        $subCatId = unserialize($result['company_category_id']);
-                        if($subCatId) {
-                            $countsubCatId = array_key_last($subCatId['company_category']) + 1;
-                            if ($countsubCatId == 1) {
-                                $result['company_category_id'] = $subCatId['company_category'][0];
-                            } else {
-                                $result['company_category_id'] = json_encode($subCatId['company_category']);
-                            }
-                        } else {
-                            $result['company_category_id'] = '';                            
-                        }
-                    }
+            // if(mysqli_num_rows($comquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($comquery)) {
+            //         if(!empty($result['company_category_id'])) {
+            //             $subCatId = unserialize($result['company_category_id']);
+            //             if($subCatId) {
+            //                 $countsubCatId = array_key_last($subCatId['company_category']) + 1;
+            //                 if ($countsubCatId == 1) {
+            //                     $result['company_category_id'] = json_encode($subCatId['company_category'][0]);
+            //                 } else {
+            //                     $result['company_category_id'] = json_encode($subCatId['company_category']);
+            //                 }
+            //             } else {
+            //                 $result['company_category_id'] = 0;                            
+            //             }
+            //         } else {
+            //             $result['company_category_id'] = 0;
+            //         }
                     
-                    if($result['verified_date'] == '0000-00-00 00:00:00') {
-                        $result['verified_date'] = NULL;
-                    } else {
-                        $result['verified_date'] = $result['verified_date'];
-                    }
+            //         if(!empty($result['landline_no'])) {
+            //             $lno = @unserialize($result['landline_no']);
+            //             if($lno) {
+            //                 $countlno = array_key_last($lno) + 1;
+            //                 if ($countlno == 1) {
+            //                     $result['landline_no'] = json_encode($lno[0]);
+            //                 } else {
+            //                     $result['landline_no'] = json_encode($lno);
+            //                 }
+            //             } else {
+            //                 $result['landline_no'] = 0;
+            //             }
+            //         } else {
+            //             $result['landline_no'] = 0;
+            //         }
+                    
+            //         if(!empty($result['mobile_no'])) {
+            //             $lno = @unserialize($result['mobile_no']);
+            //             if($lno) {
+            //                 $countlno = array_key_last($lno) + 1;
+            //                 if ($countlno == 1) {
+            //                     $result['mobile_no'] = json_encode($lno[0]);
+            //                 } else {
+            //                     $result['mobile_no'] = json_encode($lno);
+            //                 }
+            //             } else {
+            //                 $result['mobile_no'] = 0;
+            //             }
+            //         } else {
+            //             $result['mobile_no'] = 0;
+            //         }
 
-                    $companyData[$i]['companyData']['id'] = $result['company_id'];
-                    $companyData[$i]['companyData']['company_name'] = $result['name'];
-                    $companyData[$i]['companyData']['company_type'] = $result['company_type_id'];
-                    $companyData[$i]['companyData']['company_country'] = !empty($result['country_name']) ? $result['country_name'] : 0;
-                    $companyData[$i]['companyData']['company_state'] = !empty($result['state_id']) ? $result['state_id'] : 0;
-                    $companyData[$i]['companyData']['company_city'] = !empty($result['city_name']) ? $result['city_name'] : 0;
-                    $companyData[$i]['companyData']['company_website'] = $result['website'];
-                    $companyData[$i]['companyData']['company_landline'] = $result['landline_no'];
-                    $companyData[$i]['companyData']['company_mobile'] = $result['mobile_no'];
-                    $companyData[$i]['companyData']['company_watchout'] = $result['watchout'];
-                    $companyData[$i]['companyData']['company_remark_watchout'] = $result['remark_watchout'];
-                    $companyData[$i]['companyData']['company_about'] = $result['about_cmp'];
-                    $companyData[$i]['companyData']['company_category'] = $result['company_category_id'];
-                    $companyData[$i]['companyData']['product_category'] = $result['product_category_id'];
-                    $companyData[$i]['companyData']['product_sub_category'] = $result['product_sub_category_id'];
-                    $companyData[$i]['companyData']['company_transport'] = $result['transport_id'];
-                    $companyData[$i]['companyData']['company_discount'] = $result['discount'];
-                    $companyData[$i]['companyData']['company_payment_terms_in_days'] = $result['pay_term_days'];
-                    $companyData[$i]['companyData']['company_opening_balance'] = $result['opening_balance'];
-                    $companyData[$i]['companyData']['favorite_flag'] = $result['favorite_flag'];
-                    $companyData[$i]['companyData']['is_verified'] = $result['is_verified'];
-                    $companyData[$i]['companyData']['is_active'] = $result['is_active'];
-                    $companyData[$i]['companyData']['is_linked'] = $result['is_linked'];
-                    $companyData[$i]['companyData']['verified_by'] = $result['verified_by'];
-                    $companyData[$i]['companyData']['generated_by'] = $result['generated_by'];
-                    $companyData[$i]['companyData']['updated_by'] = $result['updated_by'];
-                    $companyData[$i]['companyData']['verified_date'] = $result['verified_date'];
+            //         if($result['verified_date'] == '0000-00-00 00:00:00') {
+            //             $result['verified_date'] = NULL;
+            //         } else {
+            //             $result['verified_date'] = $result['verified_date'];
+            //         }
 
-                    $companyData[$i]['swotData']['company_id'] = $result['company_id'];
-                    $companyData[$i]['swotData']['strength'] = !empty($result['strength']) ? $result['strength'] : 0;
-                    $companyData[$i]['swotData']['weakness'] = !empty($result['weakness']) ? $result['weakness'] : 0;
-                    $companyData[$i]['swotData']['opportunity'] = !empty($result['opportunity']) ? $result['opportunity'] : 0;
-                    $companyData[$i]['swotData']['threat'] = !empty($result['threat']) ? $result['threat'] : 0;
+            //         $companyData[$i]['companyData']['id'] = $result['company_id'];
+            //         $companyData[$i]['companyData']['company_name'] = $result['name'];
+            //         $companyData[$i]['companyData']['company_type'] = $result['company_type_id'];
+            //         $companyData[$i]['companyData']['company_country'] = !empty($result['country_name']) ? $result['country_name'] : 0;
+            //         $companyData[$i]['companyData']['company_state'] = !empty($result['state_id']) ? $result['state_id'] : 0;
+            //         $companyData[$i]['companyData']['company_city'] = !empty($result['city_name']) ? $result['city_name'] : 0;
+            //         $companyData[$i]['companyData']['company_website'] = $result['website'];
+            //         $companyData[$i]['companyData']['company_landline'] = $result['landline_no'];
+            //         $companyData[$i]['companyData']['company_mobile'] = $result['mobile_no'];
+            //         $companyData[$i]['companyData']['company_watchout'] = $result['watchout'];
+            //         $companyData[$i]['companyData']['company_remark_watchout'] = $result['remark_watchout'];
+            //         $companyData[$i]['companyData']['company_about'] = $result['about_cmp'];
+            //         $companyData[$i]['companyData']['company_category'] = $result['company_category_id'];
+            //         $companyData[$i]['companyData']['company_transport'] = $result['transport_id'];
+            //         $companyData[$i]['companyData']['company_discount'] = $result['discount'];
+            //         $companyData[$i]['companyData']['company_payment_terms_in_days'] = $result['pay_term_days'];
+            //         $companyData[$i]['companyData']['company_opening_balance'] = $result['opening_balance'];
+            //         $companyData[$i]['companyData']['favorite_flag'] = $result['favorite_flag'];
+            //         $companyData[$i]['companyData']['is_verified'] = $result['is_verified'];
+            //         $companyData[$i]['companyData']['is_active'] = $result['is_active'];
+            //         $companyData[$i]['companyData']['is_linked'] = $result['is_linked'];
+            //         $companyData[$i]['companyData']['verified_by'] = $result['verified_by'];
+            //         $companyData[$i]['companyData']['generated_by'] = $result['generated_by'];
+            //         $companyData[$i]['companyData']['updated_by'] = $result['updated_by'];
+            //         $companyData[$i]['companyData']['verified_date'] = $result['verified_date'];
 
-                    $companyData[$i]['bankData']['company_id'] = $result['company_id'];
-                    $companyData[$i]['bankData']['bank_name'] = $result['bank_name'];
-                    $companyData[$i]['bankData']['account_holder_name'] = $result['acc_name'];
-                    $companyData[$i]['bankData']['account_no'] = $result['acc_num'];
-                    $companyData[$i]['bankData']['branch_name'] = $result['branch_name'];
-                    $companyData[$i]['bankData']['ifsc_code'] = $result['ifsc_code'];
+            //         $companyData[$i]['swotData']['company_id'] = $result['company_id'];
+            //         $companyData[$i]['swotData']['strength'] = !empty($result['strength']) ? $result['strength'] : 0;
+            //         $companyData[$i]['swotData']['weakness'] = !empty($result['weakness']) ? $result['weakness'] : 0;
+            //         $companyData[$i]['swotData']['opportunity'] = !empty($result['opportunity']) ? $result['opportunity'] : 0;
+            //         $companyData[$i]['swotData']['threat'] = !empty($result['threat']) ? $result['threat'] : 0;
 
-                    $companyData[$i]['packagingData']['company_id'] = $result['company_id'];
-                    $companyData[$i]['packagingData']['gst_no'] = !empty($result['gst_no']) ? $result['gst_no'] : 0;
-                    $companyData[$i]['packagingData']['cst_no'] = !empty($result['cst_no']) ? $result['cst_no'] : 0;
-                    $companyData[$i]['packagingData']['tin_no'] = !empty($result['tin_no']) ? $result['tin_no'] : 0;
-                    $companyData[$i]['packagingData']['vat_no'] = !empty($result['vat_no']) ? $result['vat_no'] : 0;
+            //         $companyData[$i]['bankData']['company_id'] = $result['company_id'];
+            //         $companyData[$i]['bankData']['bank_name'] = $result['bank_name'];
+            //         $companyData[$i]['bankData']['account_holder_name'] = $result['acc_name'];
+            //         $companyData[$i]['bankData']['account_no'] = $result['acc_num'];
+            //         $companyData[$i]['bankData']['branch_name'] = $result['branch_name'];
+            //         $companyData[$i]['bankData']['ifsc_code'] = $result['ifsc_code'];
 
-                    $companyData[$i]['referencesData']['company_id'] = $result['company_id'];
-                    $companyData[$i]['referencesData']['ref_person_name'] = $result['ref_person'];
-                    $companyData[$i]['referencesData']['ref_person_mobile'] = $result['ref_mobile'];
-                    $companyData[$i]['referencesData']['ref_person_company'] = $result['ref_company'];
-                    $companyData[$i]['referencesData']['ref_person_address'] = $result['ref_address'];
-                    $i++;
-                }
-            }
+            //         $companyData[$i]['packagingData']['company_id'] = $result['company_id'];
+            //         $companyData[$i]['packagingData']['gst_no'] = !empty($result['gst_no']) ? $result['gst_no'] : 0;
+            //         $companyData[$i]['packagingData']['cst_no'] = !empty($result['cst_no']) ? $result['cst_no'] : 0;
+            //         $companyData[$i]['packagingData']['tin_no'] = !empty($result['tin_no']) ? $result['tin_no'] : 0;
+            //         $companyData[$i]['packagingData']['vat_no'] = !empty($result['vat_no']) ? $result['vat_no'] : 0;
+
+            //         $companyData[$i]['referencesData']['company_id'] = $result['company_id'];
+            //         $companyData[$i]['referencesData']['ref_person_name'] = $result['ref_person'];
+            //         $companyData[$i]['referencesData']['ref_person_mobile'] = $result['ref_mobile'];
+            //         $companyData[$i]['referencesData']['ref_person_company'] = $result['ref_company'];
+            //         $companyData[$i]['referencesData']['ref_person_address'] = $result['ref_address'];
+            //         $i++;
+            //     }
+            // }
             
                                      
-            $casql = "SELECT * FROM company_address";
-            $caquery = mysqli_query($conn, $casql);
+            // $casql = "SELECT * FROM company_address";
+            // $caquery = mysqli_query($conn, $casql);
 
-            if(mysqli_num_rows($caquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($caquery)) {
-                    $companyAddressData[$i]['id'] = $result['company_address_id'];
-                    $companyAddressData[$i]['company_id'] = $result['company_id'];
-                    $companyAddressData[$i]['address_type'] = $result['type_of_address_id'];
-                    $companyAddressData[$i]['address'] = $result['address'];
-                    $companyAddressData[$i]['country_code'] = $result['country_code'];
-                    $companyAddressData[$i]['mobile'] = $result['landline_no'];
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($caquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($caquery)) {
+            //         $companyAddressData[$i]['id'] = $result['company_address_id'];
+            //         $companyAddressData[$i]['company_id'] = $result['company_id'];
+            //         $companyAddressData[$i]['address_type'] = $result['type_of_address_id'];
+            //         $companyAddressData[$i]['address'] = $result['address'];
+            //         $companyAddressData[$i]['country_code'] = $result['country_code'];
+            //         $companyAddressData[$i]['mobile'] = $result['landline_no'];
+            //         $i++;
+            //     }
+            // }
+            
+            
+
+            // $caosql = "SELECT * FROM company_address_owner";
+            // $caoquery = mysqli_query($conn, $caosql);
+
+            // if(mysqli_num_rows($caoquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($caoquery)) {
+            //         $des = $result['designation'];
+
+            //         if (is_numeric($des)) {
+            //             $result['designation'] = json_encode($des);
+
+            //         } else {
+            //             $desg = @unserialize($result['designation']);
+            //             if (is_array($desg)) {
+            //                 if($desg) {
+            //                     $result['designation'] = json_encode($desg);
+            //                 } else {
+            //                     $result['designation'] = 0;                            
+            //                 }
+            //             } else {
+            //                 $designation = "SELECT * FROM designation WHERE designation_name = '$des'";
+            //                 $designationData = mysqli_query($conn, $designation);
+                            
+            //                 $dResult = mysqli_fetch_row($designationData);
+                            
+            //                 if ($dResult != NULL) {
+            //                     $result['designation'] = json_encode($dResult[0]);
+            //                 } else {
+            //                     $result['designation'] = 0;
+            //                 }
+            //             }                        
+            //         }
+
+            //         $companyAddressOwnerData[$i]['id'] = $result['company_address_owner_id'];
+            //         $companyAddressOwnerData[$i]['company_address_id'] = $result['company_address_id'];
+            //         $companyAddressOwnerData[$i]['name'] = $result['name'];
+            //         $companyAddressOwnerData[$i]['designation'] = $result['designation'];
+            //         $companyAddressOwnerData[$i]['profile_pic'] = $result['profile_pic'];
+            //         $companyAddressOwnerData[$i]['mobile'] = $result['mobile_no'];
+            //         $companyAddressOwnerData[$i]['email'] = $result['email'];
+            //         $i++;
+            //     }
+            // }          
+                                     
+            // $ccsql = "SELECT * FROM company_category";
+            // $ccquery = mysqli_query($conn, $ccsql);
+
+            // if(mysqli_num_rows($ccquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($ccquery)) {
+            //         $companyCategoryData[$i]['id'] = $result['company_category_id'];
+            //         $companyCategoryData[$i]['category_name'] = $result['name'];
+            //         $companyCategoryData[$i]['sort_order'] = $result['sort_order'];
+            //         $i++;                        
+            //     }
+            // }
             
             
                         
                                      
-            $caosql = "SELECT * FROM company_address_owner";
-            $caoquery = mysqli_query($conn, $caosql);
+            // $cesql = "SELECT * FROM company_email";
+            // $cequery = mysqli_query($conn, $cesql);
 
-            if(mysqli_num_rows($caoquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($caoquery)) {
-                    $companyAddressOwnerData[$i]['id'] = $result['company_address_owner_id'];
-                    $companyAddressOwnerData[$i]['company_address_id'] = $result['company_address_id'];
-                    $companyAddressOwnerData[$i]['name'] = $result['name'];
-                    $companyAddressOwnerData[$i]['designation'] = $result['designation'];
-                    $companyAddressOwnerData[$i]['profile_pic'] = $result['profile_pic'];
-                    $companyAddressOwnerData[$i]['mobile'] = $result['mobile_no'];
-                    $companyAddressOwnerData[$i]['email'] = $result['email'];
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($cequery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($cequery)) {
+            //         $companyEmailData[$i]['id'] = $result['company_email_id'];
+            //         $companyEmailData[$i]['company_id'] = $result['company_id'];
+            //         $companyEmailData[$i]['email_id'] = $result['email_id'];
+            //         $i++;
+            //     }
+            // }
+            
+            
+                             
+            // $cosql = "SELECT * FROM company_owner";
+            // $coquery = mysqli_query($conn, $cosql);
+            
+            // if(mysqli_num_rows($coquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($coquery)) {
+            //         $des = $result['designation'];
+
+            //         if (is_numeric($des)) {
+            //             $result['designation'] = $des;
+            //         } else {
+            //             $designation = "SELECT * FROM designation WHERE designation_name = '$des'";
+            //             $designationData = mysqli_query($conn, $designation);
+                        
+            //             $dResult = mysqli_fetch_row($designationData);
+                        
+            //             if ($dResult != NULL) {
+            //                 $result['designation'] = $dResult[0];
+            //             } else {
+            //                 $result['designation'] = 0;
+            //             }                        
+            //         }
+                    
+            //         $companyOwnerData[$i]['id'] = $result['company_owner_id'];
+            //         $companyOwnerData[$i]['company_id'] = $result['company_id'];
+            //         $companyOwnerData[$i]['contact_person_name'] = $result['name'];
+            //         $companyOwnerData[$i]['contact_person_designation'] = $result['designation'];
+            //         $companyOwnerData[$i]['contact_person_profile_pic'] = $result['image'];
+            //         $companyOwnerData[$i]['contact_person_mobile'] = $result['mobile_no'];
+            //         $companyOwnerData[$i]['contact_person_email'] = $result['email_id'];
+            //         $i++;
+            //     }
+            // }
+
+            // $asql = "SELECT * FROM agent";
+            // $aquery = mysqli_query($conn, $asql);
+
+            // if(mysqli_num_rows($aquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($aquery)) {
+            //         $agentData[$i]['id'] = $result['agent_id'];
+            //         $agentData[$i]['name'] = $result['name'];
+            //         $agentData[$i]['pan_no'] = $result['pan_no'];
+            //         $agentData[$i]['gst_no'] = $result['gst_no'];
+            //         $agentData[$i]['include_tax'] = $result['include_tax'];
+            //         $agentData[$i]['default'] = $result['is_default'];
+            //         $agentData[$i]['inv_prefix'] = $result['inv_prefix'];
+            //         $i++;
+            //     }
+            // }
             
             
                         
-                                     
-            $ccsql = "SELECT * FROM company_category";
-            $ccquery = mysqli_query($conn, $ccsql);
+            // $dsql = "SELECT * FROM designation";
+            // $dquery = mysqli_query($conn, $dsql);
 
-            if(mysqli_num_rows($ccquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($ccquery)) {
-                    $companyCategoryData[$i]['id'] = $result['company_category_id'];
-                    $companyCategoryData[$i]['category_name'] = $result['name'];
-                    $companyCategoryData[$i]['sort_order'] = $result['sort_order'];
-                    $i++;                        
-                }
-            }
-            
-            
-                        
-                                     
-            $cesql = "SELECT * FROM company_email";
-            $cequery = mysqli_query($conn, $cesql);
-
-            if(mysqli_num_rows($cequery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($cequery)) {
-                    $companyEmailData[$i]['id'] = $result['company_email_id'];
-                    $companyEmailData[$i]['company_id'] = $result['company_id'];
-                    $companyEmailData[$i]['email_id'] = $result['email_id'];
-                    $i++;
-                }
-            }
-            
-            
-                        
-                                     
-            $cosql = "SELECT * FROM company_owner";
-            $coquery = mysqli_query($conn, $cosql);
-
-            if(mysqli_num_rows($coquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($coquery)) {
-                    $companyOwnerData[$i]['id'] = $result['company_owner_id'];
-                    $companyOwnerData[$i]['company_id'] = $result['company_id'];
-                    $companyOwnerData[$i]['contact_person_name'] = $result['name'];
-                    $companyOwnerData[$i]['contact_person_designation'] = $result['designation'];
-                    $companyOwnerData[$i]['contact_person_profile_pic'] = $result['image'];
-                    $companyOwnerData[$i]['contact_person_mobile'] = $result['mobile_no'];
-                    $companyOwnerData[$i]['contact_person_email'] = $result['email_id'];
-                    $i++;
-                }
-            }
-            
-                        
-            $asql = "SELECT * FROM agent";
-            $aquery = mysqli_query($conn, $asql);
-
-            if(mysqli_num_rows($aquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($aquery)) {
-                    $agentData[$i]['id'] = $result['agent_id'];
-                    $agentData[$i]['name'] = $result['name'];
-                    $agentData[$i]['pan_no'] = $result['pan_no'];
-                    $agentData[$i]['gst_no'] = $result['gst_no'];
-                    $agentData[$i]['include_tax'] = $result['include_tax'];
-                    $agentData[$i]['default'] = $result['is_default'];
-                    $agentData[$i]['inv_prefix'] = $result['inv_prefix'];
-                    $i++;
-                }
-            }
-            
-            
-                        
-            $dsql = "SELECT * FROM designation";
-            $dquery = mysqli_query($conn, $dsql);
-
-            if(mysqli_num_rows($dquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($dquery)) {
-                    $designationData[$i]['id'] = $result['designation_id'];
-                    $designationData[$i]['name'] = $result['designation_name'];
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($dquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($dquery)) {
+            //         $designationData[$i]['id'] = $result['designation_id'];
+            //         $designationData[$i]['name'] = $result['designation_name'];
+            //         $i++;
+            //     }
+            // }
             
             
             
                         
-            $bdsql = "SELECT * FROM bank_details";
-            $bdquery = mysqli_query($conn, $bdsql);
+            // $bdsql = "SELECT * FROM bank_details";
+            // $bdquery = mysqli_query($conn, $bdsql);
 
-            if(mysqli_num_rows($bdquery) != 0) {
-                $i = 0;
-                while($result = mysqli_fetch_assoc($bdquery)) {
-                    $bankDetailData[$i]['id'] = $result['bank_details_id'];
-                    $bankDetailData[$i]['name'] = $result['name'];
-                    $bankDetailData[$i]['sort_order'] = $result['sort_order'];
-                    $i++;
-                }
-            }
+            // if(mysqli_num_rows($bdquery) != 0) {
+            //     $i = 0;
+            //     while($result = mysqli_fetch_assoc($bdquery)) {
+            //         $bankDetailData[$i]['id'] = $result['bank_details_id'];
+            //         $bankDetailData[$i]['name'] = $result['name'];
+            //         $bankDetailData[$i]['sort_order'] = $result['sort_order'];
+            //         $i++;
+            //     }
+            // }
             
             
             
@@ -527,7 +597,11 @@ class ConnectionController extends Controller
         //         $employee->web_login = '';
         //         $employee->save();
 
+        //         $userId = User::orderBy('id', 'DESC')->first('id');
+        //         $usrId = !empty($userId) ? $userId->id + 1 : 1;
+
         //         $user = new User;
+        //         $user->id = $usrId;
         //         $user->employee_id = $employee['id'];
         //         $user->username = $employees['username'];
         //         $user->password = $employees['password'];
@@ -542,21 +616,21 @@ class ConnectionController extends Controller
         //     }
         // }
 
-        if(!empty($productCategoryData)) {
-            foreach($productCategoryData as $productCategory) {
-                $pCategory = new ProductCategory;
-                $pCategory->id = $productCategory['id'];
-                $pCategory->product_default_category_id = $productCategory['product_default_category_id'];
-                $pCategory->name = $productCategory['name'];
-                $pCategory->main_category_id = $productCategory['main_category_id'];
-                $pCategory->company_id = $productCategory['company_id'];
-                $pCategory->product_fabric_id = $productCategory['product_fabric_id'];
-                $pCategory->multiple_company = $productCategory['multiple_company'];
-                $pCategory->rate = $productCategory['rate'];
-                $pCategory->sort_order = $productCategory['sort_order'];
-                $pCategory->save();
-            }
-        }
+        // if(!empty($productCategoryData)) {
+        //     foreach($productCategoryData as $productCategory) {
+        //         $pCategory = new ProductCategory;
+        //         $pCategory->id = $productCategory['id'];
+        //         $pCategory->product_default_category_id = $productCategory['product_default_category_id'];
+        //         $pCategory->name = $productCategory['name'];
+        //         $pCategory->main_category_id = $productCategory['main_category_id'];
+        //         $pCategory->company_id = $productCategory['company_id'];
+        //         $pCategory->product_fabric_id = $productCategory['product_fabric_id'];
+        //         $pCategory->multiple_company = $productCategory['multiple_company'];
+        //         $pCategory->rate = $productCategory['rate'];
+        //         $pCategory->sort_order = $productCategory['sort_order'];
+        //         $pCategory->save();
+        //     }
+        // }
 
         // if(!empty($products)) {
         //     foreach($products as $product) {
@@ -578,8 +652,11 @@ class ConnectionController extends Controller
         //         $productsData->updated_by = $product['productData']['updated_by'];
         //         $productsData->save();
 
+        //         $pdId = ProductDetails::orderBy('id', 'DESC')->first('id');
+        //         $podId = !empty($pdId) ? $pdId->id + 1 : 1;
                 
         //         $productsDetail = new ProductDetails;
+        //         $productsDetail->id = $podId;
         //         $productsDetail->product_id = $product['productDetails']['product_id'];
         //         $productsDetail->catalogue_price = $product['productDetails']['catalogue_price'];
         //         $productsDetail->average_price = $product['productDetails']['average_price'];
@@ -589,8 +666,11 @@ class ConnectionController extends Controller
         //         $productsDetail->retail_brokerage = $product['productDetails']['retail_brokerage'];
         //         $productsDetail->save();
 
-
+        //         $pfdId = ProductFabricDetails::orderBy('id', 'DESC')->first('id');
+        //         $fdId = !empty($pfdId) ? $pfdId->id + 1 : 1;
+                
         //         $productFabrics = new ProductFabricDetails;
+        //         $productFabrics->id = $fdId;
         //         $productFabrics->product_id = $product['fabrics']['product_id'];
         //         $productFabrics->saree_fabric = $product['fabrics']['saree_fabric'];
         //         $productFabrics->saree_cut = $product['fabrics']['saree_cut'];
@@ -647,11 +727,11 @@ class ConnectionController extends Controller
         //     $transportMultipleAddressDetails->contact_person_email = '';
         //     $transportMultipleAddressDetails->save();
         // }
-            
+
         // if(!empty($productImages)) {
         //     foreach($productImages as $productImage) {
         //         $pImages = new ProductsImages;                
-        //         $pImages->product_id = $productImage['id'];
+        //         $pImages->id = $productImage['id'];
         //         $pImages->product_id = $productImage['product_id'];
         //         $pImages->supplier_code = $productImage['supplier_code'];
         //         $pImages->product_code = $productImage['product_code'];
@@ -661,7 +741,7 @@ class ConnectionController extends Controller
         //         $pImages->save();
         //     }
         // }
-
+        // dd($companyData[0]['companyData']);
         // if(!empty($companyData)) {
         //     foreach($companyData as $cData) {
         //         $company = new Company;
@@ -678,8 +758,6 @@ class ConnectionController extends Controller
         //         $company->company_remark_watchout = $cData['companyData']['company_remark_watchout'];
         //         $company->company_about = $cData['companyData']['company_about'];
         //         $company->company_category = $cData['companyData']['company_category'];
-        //         $company->product_category = $cData['companyData']['product_category'];
-        //         $company->product_sub_category = $cData['companyData']['product_sub_category'];
         //         $company->company_transport = $cData['companyData']['company_transport'];
         //         $company->company_discount = $cData['companyData']['company_discount'];
         //         $company->company_payment_terms_in_days = $cData['companyData']['company_payment_terms_in_days'];
@@ -694,7 +772,11 @@ class ConnectionController extends Controller
         //         $company->verified_date = $cData['companyData']['verified_date'];
         //         $company->save();
 
+        //         $csdId = CompanySwotDetails::orderBy('id', 'DESC')->first('id');
+        //         $sdId = !empty($csdId) ? $csdId->id + 1 : 1;
+                
         //         $swotData = new CompanySwotDetails;
+        //         $swotData->id = $sdId;
         //         $swotData->company_id = $cData['swotData']['company_id'];
         //         $swotData->strength = $cData['swotData']['strength'];
         //         $swotData->weakness = $cData['swotData']['weakness'];
@@ -702,7 +784,11 @@ class ConnectionController extends Controller
         //         $swotData->threat = $cData['swotData']['threat'];
         //         $swotData->save();
 
+        //         $cbdId = CompanyBankDetails::orderBy('id', 'DESC')->first('id');
+        //         $bdId = !empty($cbdId) ? $cbdId->id + 1 : 1;
+                
         //         $bankDetail = new CompanyBankDetails;
+        //         $bankDetail->id = $bdId;
         //         $bankDetail->company_id = $cData['bankData']['company_id'];
         //         $bankDetail->bank_name = $cData['bankData']['bank_name'];
         //         $bankDetail->account_holder_name = $cData['bankData']['account_holder_name'];
@@ -711,7 +797,11 @@ class ConnectionController extends Controller
         //         $bankDetail->ifsc_code = $cData['bankData']['ifsc_code'];
         //         $bankDetail->save();
 
+        //         $cpdId = CompanyPackagingDetails::orderBy('id', 'DESC')->first('id');
+        //         $pdId = !empty($cpdId) ? $cpdId->id + 1 : 1;
+                
         //         $package = new CompanyPackagingDetails;
+        //         $package->id = $pdId;
         //         $package->company_id = $cData['packagingData']['company_id'];
         //         $package->gst_no = $cData['packagingData']['gst_no'];
         //         $package->cst_no = $cData['packagingData']['cst_no'];
@@ -719,7 +809,11 @@ class ConnectionController extends Controller
         //         $package->vat_no = $cData['packagingData']['vat_no'];
         //         $package->save();
 
+        //         $crId = CompanyReferences::orderBy('id', 'DESC')->first('id');
+        //         $crefId = !empty($crId) ? $crId->id + 1 : 1;
+                
         //         $reference = new CompanyReferences;
+        //         $reference->id = $crefId;
         //         $reference->company_id = $cData['referencesData']['company_id'];
         //         $reference->ref_person_name = $cData['referencesData']['ref_person_name'];
         //         $reference->ref_person_mobile = $cData['referencesData']['ref_person_mobile'];
@@ -756,6 +850,16 @@ class ConnectionController extends Controller
         //     }
         // }
 
+        // if(!empty($companyCategoryData)) {
+        //     foreach($companyCategoryData as $ccData) {
+        //         $companyCategory = new CompanyCategory;
+        //         $companyCategory->id = $ccData['id'];
+        //         $companyCategory->category_name = $ccData['category_name'];
+        //         $companyCategory->sort_order = $ccData['sort_order'];
+        //         $companyCategory->save();
+        //     }
+        // }
+
         // if(!empty($companyEmailData)) {
         //     foreach($companyEmailData as $ceData) {
         //         $companyEmail = new CompanyEmails;
@@ -777,16 +881,6 @@ class ConnectionController extends Controller
         //         $companyContactDetails->contact_person_mobile = $coData['contact_person_mobile'];
         //         $companyContactDetails->contact_person_email = $coData['contact_person_email'];
         //         $companyContactDetails->save();
-        //     }
-        // }
-
-        // if(!empty($companyCategoryData)) {
-        //     foreach($companyCategoryData as $ccData) {
-        //         $companyCategory = new CompanyCategory;
-        //         $companyCategory->id = $ccData['id'];
-        //         $companyCategory->category_name = $ccData['category_name'];
-        //         $companyCategory->sort_order = $ccData['sort_order'];
-        //         $companyCategory->save();
         //     }
         // }
 
@@ -833,7 +927,6 @@ class ConnectionController extends Controller
         //     }
         // }
 
-
-        print_r("SUCCESS");
+        print_r("SUCCESsssS");
     }
 }

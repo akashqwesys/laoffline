@@ -32,7 +32,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export table" data-export-title="Export">
+                                <table id="companies" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -50,15 +50,15 @@
                                         <tr v-for="(company, index) in companies" :key="index">
                                             <td>{{ index + 1 }}</td>
                                             <td>
-                                                <em v-if="company.favorite_flag == 0" class="icon ni ni-star" @click="isFavorite(company.company_id)"></em>
-                                                <em v-else class="icon ni ni-star-fill" @click="isUnFavorite(company.company_id)"></em>
+                                                <em v-if="company.favorite_flag == 0" class="icon ni ni-star" @click="isFavorite(company.id)"></em>
+                                                <em v-else class="icon ni ni-star-fill" @click="isUnFavorite(company.id)"></em>
                                             </td>
                                             <td>
                                                 <em v-if="company.is_verified == 0" class="icon ni ni-alert-fill"></em>
                                                 <em v-else class="icon ni ni-check-thick"></em>
                                             </td>
                                             <td>
-                                                <a href="#" @click="view_data(company.company_id)">{{ company.company_name }} </a>
+                                                <a href="#" @click="view_data(company.id)">{{ company.company_name }} </a>
                                             </td>
                                             <td>
                                                 <Ul>
@@ -68,18 +68,17 @@
                                             </td>
                                             <td>{{ company.company_type }}</td>
                                             <td>{{ company.company_category }}</td>
-                                            <td v-if="company.company_city == 0"> </td>
-                                            <td else>{{ company.company_city }}</td>
+                                            <td>{{ company.company_city }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
                                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
                                                         <!-- <ul class="link-list-plain"> -->
                                                         <ul class="link-list-opt no-bdr">
-                                                            <li><a href="#" @click="view_data(company.company_id)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
-                                                            <li><a href="#" v-if="company.is_verified == 0" @click="isVerified(company.company_id)"><em class="icon ni ni-check-thick"></em><span>Verify</span></a></li>
-                                                            <li><a href="#" @click="edit_data(company.company_id)"><em class="icon ni ni-edit-alt"></em><span>update</span></a></li>
-                                                            <li><a href="#" @click="delete_data(company.company_id)"><em class="icon ni ni-trash"></em><span>Remove</span></a></li>
+                                                            <li><a href="#" @click="view_data(company.id)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
+                                                            <li><a href="#" v-if="company.is_verified == 0" @click="isVerified(company.id)"><em class="icon ni ni-check-thick"></em><span>Verify</span></a></li>
+                                                            <li><a href="#" @click="edit_data(company.id)"><em class="icon ni ni-edit-alt"></em><span>update</span></a></li>
+                                                            <li><a href="#" @click="delete_data(company.id)"><em class="icon ni ni-trash"></em><span>Remove</span></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -101,6 +100,9 @@
 
     export default {
         name: 'company',
+        props: {
+            excelAccess: Number,
+        },
         components: { 
             VueLoader,
         },
@@ -121,18 +123,8 @@
             });
         },
         methods: {
-            getCompanyCategory(id) {
-                axios.get('./companies/category-name/'+id)
-                .then(response => {
-                    this.categoryName = response.data;                    
-                });
-                return this.categoryName;
-            },
             getEssentialCompany() {
-                axios.get('./companies/list-essential')
-                .then(response => {
-                    this.companies = response.data;
-                });
+                window.location.href = './companies/essential/';
             },
             isFavorite: function(id) {
                 axios.post('./companies/favorite/'+id)

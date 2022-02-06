@@ -2,7 +2,7 @@
 
 @section('content')
     <div id="app">
-        <company-type-component></company-type-component>
+        <company-type-component :excel-access="{{ $employees['excelAccess'] ?? 0 }}"></company-type-component>
     </div>
     <script src="{{ asset('js/app.js') }}"></script> 
 @endsection

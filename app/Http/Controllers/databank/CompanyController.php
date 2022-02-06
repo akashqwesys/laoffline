@@ -16,15 +16,30 @@ use App\Models\Company\CompanyEmails;
 use App\Models\Company\CompanyPackagingDetails;
 use App\Models\Company\CompanyReferences;
 use App\Models\Company\CompanySwotDetails;
+use App\Models\Settings\Designation;
+use App\Models\CompanyType;
+use App\Models\Settings\Country;
+use App\Models\Settings\State;
+use App\Models\Settings\Cities;
+use App\Models\Settings\TypeOfAddress;
 use Illuminate\Support\Facades\Session;
 use Carbon;
 
 class CompanyController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index() {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
+                        
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -40,6 +55,28 @@ class CompanyController extends Controller
         return view('databank.companies.company')->with('employees', $employees);
     }
 
+    public function essentialCompany() {
+        $user = Session::get('user');
+        $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
+                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
+                        
+
+        $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
+        $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
+                        
+        $logs = new Logs;
+        $logs->id = $logsId;
+        $logs->employee_id = Session::get('user')->employee_id;
+        $logs->log_path = 'UserGroup / View';
+        $logs->log_subject = 'User Group view page visited.';
+        $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $logs->save();
+
+        return view('databank.companies.essentialCompany')->with('employees', $employees);
+    }
+
     public function createCompany() {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
@@ -49,7 +86,7 @@ class CompanyController extends Controller
     }
 
     public function listCompany() {
-        $company = Company::all();
+        $company = Company::where('is_delete', 0)->get();
 
         foreach($company as $cmp) {
             if($cmp->company_type == 1) {
@@ -71,30 +108,134 @@ class CompanyController extends Controller
                     }
 
                 } else {
-                    $companyCat = CompanyCategory::where('id', $cmp->company_category)->first('category_name');
+                    $companyCatId = json_decode($cmp->company_category);
+
+                    $companyCat = CompanyCategory::where('id', $companyCatId)->first('category_name');
                     $companyName = $companyCat->category_name;
                 }
                 $cmp['company_category'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
                 $cmp['company_category'] = '';
             }
+
+            if(!empty($cmp->company_landline)){
+                if(is_array(json_decode($cmp->company_landline))) {
+                    $landlineNo = json_decode($cmp->company_landline);
+
+                    $cmp['company_landline'] = implode(", ", $landlineNo);
+                } else {
+                    $cmp['company_landline'] = json_decode($cmp->company_landline);
+                }
+            } else {
+                $cmp['company_landline'] = '';
+            }
+
+            if(!empty($cmp->company_mobile)){
+                if(is_array(json_decode($cmp->company_mobile))) {
+                    $mobileNo = json_decode($cmp->company_mobile);
+
+                    $cmp['company_mobile'] = implode(", ", $mobileNo);
+                } else {
+                    $cmp['company_mobile'] = json_decode($cmp->company_mobile);
+                }                
+            } else {
+                $cmp['company_mobile'] = '';
+            }
+
+            if(!is_numeric($cmp->company_city)) {
+                if($cmp->company_city == 0) {                    
+                    $cmp['company_city'] = '';
+                } else {
+                    $cmp['company_city'] = $cmp->company_city;
+                }
+            } else {
+                if($cmp->company_city == 0) {
+                    $cmp['company_city'] = '';
+                } else {
+                    $cityname = Cities::where('id', $cmp->company_city)->first('name');
+
+                    $cmp['company_city'] = $cityname->name;
+                }
+            }
         }
 
         return $company;
     }
 
-    public function listEssentialCompany() {
-        $company = Company::join('company_addresses', 'companies.id', '=', 'company_addresses.company_id')->
-                            join('company_address_owners', 'companies.id', '=', 'company_address_owners.company_id')->
-                            join('company_bank_details', 'companies.id', '=', 'company_bank_details.company_id')->
-                            join('company_contact_details', 'companies.id', '=', 'company_contact_details.company_id')->
-                            join('company_emails', 'companies.id', '=', 'company_emails.company_id')->
-                            join('company_packaging_details', 'companies.id', '=', 'company_packaging_details.company_id')->
-                            join('company_references', 'companies.id', '=', 'company_references.company_id')->
-                            join('company_swot_details', 'companies.id', '=', 'company_swot_details.company_id')->
-                            join('company_categories', 'companies.company_category', '=', 'company_categories.id')->
-                            join('cities', 'companies.company_city', '=', 'cities.id')->where('favorite_flag', '1')->
-                            get();
+    public function listEssentialCompany() {        
+        $company = Company::where('favorite_flag', '1')->where('is_delete', 0)->get();
+
+        foreach($company as $cmp) {
+            if($cmp->company_type == 1) {
+                $cmp['company_type'] = 'General';
+            } elseif($cmp->company_type == 2) {
+                $cmp['company_type'] = 'Customer';
+            } elseif($cmp->company_type == 3) {
+                $cmp['company_type'] = 'Supplier';
+            }
+
+            if(!empty($cmp->company_category)) {
+                if(is_array(json_decode($cmp->company_category))) {
+                    $companyName = [];
+                    $companyArr = json_decode($cmp->company_category);
+        
+                    foreach($companyArr as $key => $c) {
+                        $companyCat = CompanyCategory::where('id', $c)->first('category_name');
+                        $companyName[$key] = $companyCat->category_name;
+                    }
+
+                } else {
+                    $companyCatId = json_decode($cmp->company_category);
+
+                    $companyCat = CompanyCategory::where('id', $companyCatId)->first('category_name');
+                    $companyName = $companyCat->category_name;
+                }
+                $cmp['company_category'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+            } else {
+                $cmp['company_category'] = '';
+            }
+
+            if(!empty($cmp->company_landline)){
+                if(is_array(json_decode($cmp->company_landline))) {
+                    $landlineNo = json_decode($cmp->company_landline);
+
+                    $cmp['company_landline'] = implode(", ", $landlineNo);
+                } else {
+                    $cmp['company_landline'] = json_decode($cmp->company_landline);
+                }
+            } else {
+                $cmp['company_landline'] = '';
+            }
+
+            if(!empty($cmp->company_mobile)){
+                if(is_array(json_decode($cmp->company_mobile))) {
+                    $mobileNo = json_decode($cmp->company_mobile);
+
+                    $cmp['company_mobile'] = implode(", ", $mobileNo);
+                } else {
+                    $cmp['company_mobile'] = json_decode($cmp->company_mobile);
+                }                
+            } else {
+                $cmp['company_mobile'] = '';
+            }
+
+            if(!is_numeric($cmp->company_city)) {
+                if($cmp->company_city == 0) {                    
+                    $cmp['company_city'] = '';
+                } else {
+                    $cmp['company_city'] = $cmp->company_city;
+                }
+            } else {
+                if($cmp->company_city == 0) {
+                    $cmp['company_city'] = '';
+                } else {
+                    $cityname = Cities::where('id', $cmp->company_city)->first('name');
+
+                    $cmp['company_city'] = $cityname->name;
+                }
+            }
+        }
+
         return $company;
     }
 
@@ -188,16 +329,64 @@ class CompanyController extends Controller
     public function fetchCompany($id) {
         $companyData = [];
         $company = Company::where('id', $id)->first();
-        $companyContactDetails = CompanyContactDetails::join('designations', 'company_contact_details.contact_person_designation', '=', 'designations.id')->
-                                                        where('company_contact_details.company_id', $id)->
-                                                        get(['company_contact_details.*', 'designations.name as contact_person_designation_name']);
-        $multipleAddresses = CompanyAddress::join('type_of_addresses', 'company_addresses.address_type', '=', 'type_of_addresses.id')->where('company_addresses.company_id', $id)
-                                            ->get(['company_addresses.*', 'type_of_addresses.name as address_type_name']);
-        foreach($multipleAddresses as $multipleAddress) {
-            $multipleAddress['multipleAddressesOwners'] = CompanyAddressOwner::join('designations', 'company_address_owners.designation', '=', 'designations.id')->
-                                                                            where('company_address_owners.company_address_id', $multipleAddress->id)->
-                                                                            get(['company_address_owners.*', 'designations.name as designation_name']);
+
+        if($company->company_type != 0) {
+            $company->company_type = CompanyType::where('id', $company->company_type)->first();
         }
+        if($company->company_country != 0) {
+            $company->company_country = Country::where('id', $company->company_country)->first();
+        }
+        if($company->company_state != 0) {
+            $company->company_state = State::where('id', $company->company_state)->first();
+        }
+        if($company->company_city != 0) {
+            $company->company_city = Cities::where('id', $company->company_city)->first();
+        }
+        if($company->company_category != 0) {
+            $companyCat = json_decode($company->company_category);
+
+            if(is_array($companyCat)) {
+                $company->company_category = CompanyCategory::whereIn('id', $companyCat)->get();
+            } else {
+                $company->company_category = CompanyCategory::where('id', $companyCat)->get();
+            }
+        }
+        if($company->company_transport != 0) {
+            $company->company_transport = Cities::where('id', $company->company_transport)->first();
+        }
+        if($company->company_landline != 0) {
+            $company->company_landline = json_decode($company->company_landline);
+        }
+        if($company->company_mobile != 0) {
+            $company->company_mobile = json_decode($company->company_mobile);
+        }
+
+        $companyContactDetails = CompanyContactDetails::where('company_id', $id)->get();
+
+        foreach($companyContactDetails as $contact) {            
+            $contactDesignation = $contact->contact_person_designation;
+            if (!empty($contactDesignation)) {
+                $contact->contact_person_designation = Designation::where('id', $contactDesignation)->where('is_delete', 0)->first();
+            }
+        }
+                                                
+        $multipleAddresses = CompanyAddress::where('company_addresses.company_id', $id)->get();
+
+        foreach($multipleAddresses as $multipleAddress) {
+            if($multipleAddress->address_type != 0) {
+                $multipleAddress->address_type =  TypeOfAddress::where('id', $multipleAddress->address_type)->first();
+            }
+            $multipleAddress['multipleAddressesOwners'] = CompanyAddressOwner::where('company_address_id', $multipleAddress->id)->get();
+            if ($multipleAddress['multipleAddressesOwners']) {
+                foreach($multipleAddress['multipleAddressesOwners'] as $addressOwner) {
+                    $addressOwnerDesignation = json_decode($addressOwner->designation);
+                    if (!empty($addressOwnerDesignation)) {
+                        $addressOwner->designation = Designation::whereIn('id', $addressOwnerDesignation)->where('is_delete', 0)->get();
+                    }
+                }
+            }
+        }
+
         $multipleEmails = CompanyEmails::where('company_id', $id)->get();
         $swotDetails = CompanySwotDetails::where('company_id', $id)->first();
         $bankDetails = CompanyBankDetails::where('company_id', $id)->first();
@@ -218,15 +407,8 @@ class CompanyController extends Controller
 
     public function deleteCompany($id){
         $company = Company::where('id', $id)->first();
-
-        CompanyContactDetails::where('company_id', $id)->delete();
-        CompanyAddress::where('company_id', $id)->delete();
-        CompanyAddressOwner::where('company_id', $id)->delete();
-        CompanyEmails::where('company_id', $id)->delete();
-        CompanySwotDetails::where('company_id', $id)->delete();
-        CompanyBankDetails::where('company_id', $id)->delete();
-        CompanyPackagingDetails::where('company_id', $id)->delete();
-        CompanyReferences::where('company_id', $id)->delete();
+        $company->is_delete = 1;
+        $company->save();
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -238,11 +420,13 @@ class CompanyController extends Controller
         $logs->log_subject = 'Company - '.$company->company_name.' was deleted by"'.Session::get('user')->username.'".';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $company->delete();
     }
 
-    public function insertCompanyData(Request $request) {        
+    public function insertCompanyData(Request $request) {
+        $this->validate($request, [
+            'company_name' => 'required',
+        ]);
+
         $companyData = json_decode($request->company_data);
         $contactDetails = json_decode($request->contact_details);
         $multipleAddresses = json_decode($request->multiple_addresses);
@@ -253,7 +437,25 @@ class CompanyController extends Controller
         $bankDetails = json_decode($request->bank_details);
         $contactDetailsProfilePic = $request->contact_details_profile_pic;
         $multipleAddressProfilePic = $request->multiple_address_profile_pic;
-        dd($companyData);
+
+        if(is_array($multipleAddresses) && !empty($multipleAddresses)) {
+            foreach($multipleAddresses as $multipleAddress) {
+                if(is_array($multipleAddress->multipleAddressesOwners) && !empty($multipleAddress->multipleAddressesOwners)) {
+                    foreach($multipleAddress->multipleAddressesOwners as $owner) {
+                        $multipleAddressOwnerDesignation = [];
+                        if (!empty($owner->designation)) {
+                            foreach($owner->designation as $key => $des) {
+                                $multipleAddressOwnerDesignation[$key] = $des->id;
+                            }
+                            $owner->designation = json_encode($multipleAddressOwnerDesignation);
+                        } else {
+                            $owner->designation = 0;
+                        }
+                    }
+                }
+            }
+        }
+
         if (!file_exists(public_path('upload/company'))) {
             mkdir(public_path('upload/company'), 0777, true);
         }
@@ -262,12 +464,16 @@ class CompanyController extends Controller
             mkdir(public_path('upload/company/profilePic'), 0777, true);
         }
 
+        if (!file_exists(public_path('upload/company/multipleAddressProfilePic'))) {
+            mkdir(public_path('upload/company/multipleAddressProfilePic'), 0777, true);
+        }
+
         if(is_array($contactDetailsProfilePic) && !empty($contactDetailsProfilePic)) {
             $length = count($contactDetailsProfilePic);
             for ($i=0; $i<$length; $i++) {                
                 if ($image = $contactDetailsProfilePic[$i]) {
                     if(!is_string($image)) {                        
-                        $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                        $profileImage = date('YmdHis') . "_" . $i . "." . $image->getClientOriginalExtension();
                         $contactDetails[$i]->contact_person_profile_pic = $profileImage;
                         $image->move(public_path('upload/company/profilePic'), $profileImage);
                     } else {
@@ -285,7 +491,7 @@ class CompanyController extends Controller
                 for ($j=0; $j<$ownerLength; $j++) {
                     if ($image = $ownerimage['ownerImage'][$j]) {
                         if(!is_string($image)) {                        
-                            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                            $profileImage = date('YmdHis') . "_" . $i . "." . $image->getClientOriginalExtension();
                             $multipleAddresses[$i]->multipleAddressesOwners[$j]->profile_pic = $profileImage;
                             $image->move(public_path('upload/company/multipleAddressProfilePic'), $profileImage);
                         } else {
@@ -296,24 +502,34 @@ class CompanyController extends Controller
             }
         }
 
+        if(!empty($companyData->company_landline)) {
+            $landline = explode(',', trim($companyData->company_landline));
+            $companyData->company_landline = json_encode($landline);
+        }
+        
+        if(!empty($companyData->company_mobile)) {
+            $mobile = explode(',', trim($companyData->company_mobile));
+            $companyData->company_mobile = json_encode($mobile);
+        }
+
         $comapnyLastId = Company::orderBy('id', 'DESC')->first('id');
         $companyId = !empty($comapnyLastId) ? $comapnyLastId->id + 1 : 1;
-        
+
         $company = new Company;
         $company->id = $companyId;
         $company->company_name = $companyData->company_name;
-        $company->company_type = $companyData->company_type;
-        $company->company_country = $companyData->company_country->id;
-        $company->company_state = $companyData->company_state->id;
-        $company->company_city = $companyData->company_city->id;
+        $company->company_type = !empty($companyData->company_type) ? $companyData->company_type->id : 0;
+        $company->company_country = !empty($companyData->company_country) ? $companyData->company_country->id : 0;
+        $company->company_state = !empty($companyData->company_state) ? $companyData->company_state->id : 0;
+        $company->company_city = !empty($companyData->company_city) ? $companyData->company_city->id : 0;
         $company->company_website = $companyData->company_website;
         $company->company_landline = $companyData->company_landline;
         $company->company_mobile = $companyData->company_mobile;
         $company->company_watchout = $companyData->company_watchout;
         $company->company_remark_watchout = $companyData->company_remark_watchout;
         $company->company_about = $companyData->company_about;
-        $company->company_category = $companyData->company_category->id;
-        $company->company_transport = $companyData->company_transport->id;
+        $company->company_category = !empty($companyData->company_category) ? $companyData->company_category->id : 0;
+        $company->company_transport = !empty($companyData->company_transport) ? $companyData->company_transport->id : 0;
         $company->company_discount = $companyData->company_discount;
         $company->company_payment_terms_in_days = $companyData->company_payment_terms_in_days;
         $company->company_opening_balance = $companyData->company_opening_balance;
@@ -324,7 +540,7 @@ class CompanyController extends Controller
         $company->updated_by = 0;
         $company->is_linked = 0;
         $company->is_active = 0;
-        $company->verified_date = '';
+        $company->verified_date = NULL;
         $company->save();
         
         // Contact Details Data
@@ -335,9 +551,9 @@ class CompanyController extends Controller
 
                 $companyContactDetails = new CompanyContactDetails;
                 $companyContactDetails->id = $companyContactId;
-                $companyContactDetails->company_id = $comapnyId;
+                $companyContactDetails->company_id = $companyId;
                 $companyContactDetails->contact_person_name = $contactDetail->contact_person_name;
-                $companyContactDetails->contact_person_designation = $contactDetail->contact_person_designation->id;
+                $companyContactDetails->contact_person_designation = !empty($contactDetail->contact_person_designation) ? $contactDetail->contact_person_designation->id : 0;
                 $companyContactDetails->contact_person_profile_pic = $contactDetail->contact_person_profile_pic;
                 $companyContactDetails->contact_person_mobile = $contactDetail->contact_person_mobile;
                 $companyContactDetails->contact_person_email = $contactDetail->contact_person_email;
@@ -353,8 +569,8 @@ class CompanyController extends Controller
 
                 $companyAddress = new CompanyAddress;
                 $companyAddress->id = $companyAddressId;
-                $companyAddress->company_id = $comapnyId;
-                $companyAddress->address_type = $multipleAddress->address_type->id;
+                $companyAddress->company_id = $companyId;
+                $companyAddress->address_type = !empty($multipleAddress->address_type) ? $multipleAddress->address_type->id : 0;
                 $companyAddress->address = $multipleAddress->address;
                 $companyAddress->country_code = $multipleAddress->country_code;
                 $companyAddress->mobile = $multipleAddress->mobile;
@@ -367,9 +583,9 @@ class CompanyController extends Controller
         
                         $companyAddressOwner = new CompanyAddressOwner;
                         $companyAddressOwner->id = $companyAddressOwnerId;
-                        $companyAddressOwner->company_address_id = $companyAddress->id;
+                        $companyAddressOwner->company_address_id = !empty($companyAddress) ? $companyAddress->id : 0;
                         $companyAddressOwner->name = $owner->name;
-                        $companyAddressOwner->designation = $owner->designation->id;
+                        $companyAddressOwner->designation = $owner->designation;
                         $companyAddressOwner->profile_pic = $owner->profile_pic;
                         $companyAddressOwner->mobile = $owner->mobile;
                         $companyAddressOwner->email = $owner->email;
@@ -387,7 +603,7 @@ class CompanyController extends Controller
 
                 $companyEmail = new CompanyEmails;
                 $companyEmail->id = $companyEmailsId;
-                $companyEmail->company_id = $comapnyId;
+                $companyEmail->company_id = $companyId;
                 $companyEmail->email_id = $multipleEmail->email_id;
                 $companyEmail->save();
             }
@@ -400,7 +616,7 @@ class CompanyController extends Controller
 
             $swotData = new CompanySwotDetails;
             $swotData->id = $swotDetailsId;
-            $swotData->company_id = $comapnyId;
+            $swotData->company_id = $companyId;
             $swotData->strength = $swotDetails->strength;
             $swotData->weakness = $swotDetails->weakness;
             $swotData->opportunity = $swotDetails->opportunity;
@@ -415,7 +631,7 @@ class CompanyController extends Controller
 
             $bankDetail = new CompanyBankDetails;
             $bankDetail->id = $bankDetailsId;
-            $bankDetail->company_id = $comapnyId;
+            $bankDetail->company_id = $companyId;
             $bankDetail->bank_name = $bankDetails->bank_name;
             $bankDetail->account_holder_name = $bankDetails->account_holder_name;
             $bankDetail->account_no = $bankDetails->account_no;
@@ -431,7 +647,7 @@ class CompanyController extends Controller
 
             $package = new CompanyPackagingDetails;
             $package->id = $packagingDetailsId;
-            $package->company_id = $comapnyId;
+            $package->company_id = $companyId;
             $package->gst_no = $packagingDetails->gst_no;
             $package->cst_no = $packagingDetails->cst_no;
             $package->tin_no = $packagingDetails->tin_no;
@@ -446,7 +662,7 @@ class CompanyController extends Controller
 
             $reference = new CompanyReferences;
             $reference->id = $companyReferencesId;
-            $reference->company_id = $comapnyId;
+            $reference->company_id = $companyId;
             $reference->ref_person_name = $referencesDetails->ref_person_name;
             $reference->ref_person_mobile = $referencesDetails->ref_person_mobile;
             $reference->ref_person_company = $referencesDetails->ref_person_company;
@@ -467,6 +683,10 @@ class CompanyController extends Controller
     }
 
     public function updateCompanyData(Request $request) {
+        $this->validate($request, [
+            'company_name' => 'required',
+        ]);
+
         $companyData = json_decode($request->company_data);
         $contactDetails = json_decode($request->contact_details);
         $multipleAddresses = json_decode($request->multiple_addresses);
@@ -480,16 +700,34 @@ class CompanyController extends Controller
 
         $id = $companyData->id;
 
+        if(is_array($multipleAddresses) && !empty($multipleAddresses)) {
+            foreach($multipleAddresses as $multipleAddress) {
+                if(is_array($multipleAddress->multipleAddressesOwners) && !empty($multipleAddress->multipleAddressesOwners)) {
+                    foreach($multipleAddress->multipleAddressesOwners as $owner) {
+                        $multipleAddressOwnerDesignation = [];
+                        if (!empty($owner->designation)) {
+                            foreach($owner->designation as $key => $des) {
+                                $multipleAddressOwnerDesignation[$key] = $des->id;
+                            }
+                            $owner->designation = json_encode($multipleAddressOwnerDesignation);
+                        } else {
+                            $owner->designation = 0;
+                        }
+                    }
+                }
+            }
+        }
+
         if(is_array($contactDetailsProfilePic) && !empty($contactDetailsProfilePic)) {
             $length = count($contactDetailsProfilePic);
             for ($i=0; $i<$length; $i++) {                
                 if ($image = $contactDetailsProfilePic[$i]) {
                     if(!is_string($image)) {                        
-                        $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                        $profileImage = date('YmdHis') . "_" . $i . "." . $image->getClientOriginalExtension();
                         $contactDetails[$i]->contact_person_profile_pic = $profileImage;
                         $image->move(public_path('upload/company/profilePic'), $profileImage);
                     } else {
-                        $contactDetails[$i]->contact_person_profile_pic = '';
+                        $contactDetails[$i]->contact_person_profile_pic = $contactDetails[$i]->contact_person_profile_pic;
                     }
                 }
             }            
@@ -503,23 +741,49 @@ class CompanyController extends Controller
                 for ($j=0; $j<$ownerLength; $j++) {
                     if ($image = $ownerimage['ownerImage'][$j]) {
                         if(!is_string($image)) {                        
-                            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                            $profileImage = date('YmdHis') . "_" . $i . "." . $image->getClientOriginalExtension();
                             $multipleAddresses[$i]->multipleAddressesOwners[$j]->profile_pic = $profileImage;
                             $image->move(public_path('upload/company/multipleAddressProfilePic'), $profileImage);
                         } else {
-                            $multipleAddresses[$i]->multipleAddressesOwners[$j]->profile_pic = '';
+                            $multipleAddresses[$i]->multipleAddressesOwners[$j]->profile_pic = $multipleAddresses[$i]->multipleAddressesOwners[$j]->profile_pic;
                         }
                     }
                 }
             }
         }
+        
+        if(!empty($companyData->company_landline)) {
+            if(is_array($companyData->company_landline)) {
+                $companyData->company_landline = json_encode($companyData->company_landline);
+            } else {
+                $landline = explode(',', trim($companyData->company_landline));
+                $companyData->company_landline = json_encode($landline);
+            }
+        }
+        
+        if(!empty($companyData->company_mobile) ) {
+            if(is_array($companyData->company_mobile) ) {
+                $companyData->company_mobile = json_encode($companyData->company_mobile);
+            } else {
+                $mobile = explode(',', trim($companyData->company_mobile));
+                $companyData->company_mobile = json_encode($mobile);
+            }
+        }
+
+        if(is_array($companyData->company_category) && !empty($companyData->company_category)) {
+            $companyCategory = [];
+            foreach($companyData->company_category as $key => $category) {
+                array_push($companyCategory, $category->id);
+            }
+            $companyData->company_category = json_encode($companyCategory);
+        }
 
         $company = Company::where('id', $id)->first();
         $company->company_name = $companyData->company_name;
-        $company->company_type = $companyData->company_type;
-        $company->company_country = $companyData->company_country;
-        $company->company_state = $companyData->company_state;
-        $company->company_city = $companyData->company_city;
+        $company->company_type = !empty($companyData->company_type) ? $companyData->company_type->id : 0;
+        $company->company_country = !empty($companyData->company_country) ? $companyData->company_country->id : 0;
+        $company->company_state = !empty($companyData->company_state) ? $companyData->company_state->id : 0;
+        $company->company_city = !empty($companyData->company_city) ? $companyData->company_city->id : 0;
         $company->company_website = $companyData->company_website;
         $company->company_landline = $companyData->company_landline;
         $company->company_mobile = $companyData->company_mobile;
@@ -527,7 +791,7 @@ class CompanyController extends Controller
         $company->company_remark_watchout = $companyData->company_remark_watchout;
         $company->company_about = $companyData->company_about;
         $company->company_category = $companyData->company_category;
-        $company->company_transport = $companyData->company_transport;
+        $company->company_transport = !empty($companyData->company_transport) ? $companyData->company_transport->id : 0;
         $company->company_discount = $companyData->company_discount;
         $company->company_payment_terms_in_days = $companyData->company_payment_terms_in_days;
         $company->company_opening_balance = $companyData->company_opening_balance;
@@ -539,7 +803,7 @@ class CompanyController extends Controller
             foreach($contactDetails as $contactDetail) {
                 $companyContactDetails = CompanyContactDetails::where('company_id', $id)->first();
                 $companyContactDetails->contact_person_name = $contactDetail->contact_person_name;
-                $companyContactDetails->contact_person_designation = $contactDetail->contact_person_designation;
+                $companyContactDetails->contact_person_designation = !empty($contactDetail->contact_person_designation) ? $contactDetail->contact_person_designation->id : 0;
                 $companyContactDetails->contact_person_profile_pic = $contactDetail->contact_person_profile_pic;
                 $companyContactDetails->contact_person_mobile = $contactDetail->contact_person_mobile;
                 $companyContactDetails->contact_person_email = $contactDetail->contact_person_email;
@@ -551,7 +815,7 @@ class CompanyController extends Controller
         if(is_array($multipleAddresses) && !empty($multipleAddresses)) {
             foreach($multipleAddresses as $multipleAddress) {
                 $companyAddress = CompanyAddress::where('company_id', $id)->first();
-                $companyAddress->address_type = $multipleAddress->address_type;
+                $companyAddress->address_type = !empty($multipleAddress->address_type) ? $multipleAddress->address_type->id : 0;
                 $companyAddress->address = $multipleAddress->address;
                 $companyAddress->mobile = $multipleAddress->mobile;
                 $companyAddress->save();

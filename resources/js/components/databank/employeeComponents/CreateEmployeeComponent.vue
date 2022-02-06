@@ -18,7 +18,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="form.id">
                                     <input type="hidden" id="user_group_id" v-model="form.user_group">
                                     <div class="preview-block">
@@ -28,7 +28,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-first-name">First Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-first-name" v-model="form.firstname" required>
+                                                        <input type="text" class="form-control" id="fv-first-name" v-model="form.firstname">
+                                                        <span v-if="errors.firstname" class="invalid">{{errors.firstname}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -44,7 +45,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-last-name">Last Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-last-name" v-model="form.lastname" required>
+                                                        <input type="text" class="form-control" id="fv-last-name" v-model="form.lastname">
+                                                    <span v-if="errors.lastname" class="invalid">{{errors.lastname}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -52,7 +54,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="default-06">Profile Picture</label>
                                                     <div class="form-control-wrap">
-                                                        <div class="custom-file">
+                                                        <img v-if="scope == 'edit'" v-bind:src="getProfilePic(profilePic)">
+                                                        <div :class="scope == 'edit' ? 'custom-file profilePic' : 'custom-file'">
                                                             <input type="file" class="custom-file-input" name="profile_pic" id="fv-profile-pic" @change="uploadProfilePic">
                                                             <label class="custom-file-label" for="fv-profile-pic">Choose photo</label>
                                                         </div>
@@ -63,7 +66,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-email-id">Email Id</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-email-id" v-model="form.email_id" required>
+                                                        <input type="text" class="form-control" id="fv-email-id" v-model="form.email_id">
+                                                        <span v-if="errors.email_id" class="invalid">{{errors.email_id}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -71,7 +75,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-mobile">Mobile No</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-mobile" v-model="form.mobile" required>
+                                                        <input type="number" pattern="[789][0-9]{9}" class="form-control" id="fv-mobile" v-model="form.mobile">
                                                     </div>
                                                 </div>
                                             </div>
@@ -88,6 +92,7 @@
                                                     <label class="form-label" for="fv-user_group">User Group</label>
                                                     <div>
                                                         <multiselect v-model="form.user_group" :options="userGroups" placeholder="Select one" label="name" track-by="name"></multiselect>
+                                                    <span v-if="errors.user_group" class="invalid">{{errors.user_group}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -119,6 +124,7 @@
                                                             </div>
                                                         </li>
                                                     </ul>
+                                                    <span v-if="errors.excel_access" class="invalid">{{errors.excel_access}}</span>
                                                 </div>
                                             </div>
                                             <div v-if="scope == 'edit'" class="col-md-2">
@@ -146,23 +152,23 @@
                                         <div class="row gy-4">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label" for="fv-ref-full-name">Ref. Full Name</label>
+                                                    <label class="form-label" for="fv-ref-full-name">Full Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-ref-full-name" v-model="form.ref_full_name" required>
+                                                        <input type="text" class="form-control" id="fv-ref-full-name" v-model="form.ref_full_name">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label" for="fv-ref-mobile">Ref. Mobile No</label>
+                                                    <label class="form-label" for="fv-ref-mobile">Mobile No</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-ref-mobile" v-model="form.ref_mobile">
+                                                        <input type="number" pattern="[789][0-9]{9}" class="form-control" id="fv-ref-mobile" v-model="form.ref_mobile">
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label class="form-label" for="default-06">Ref. Passport size photo</label>
+                                                    <label class="form-label" for="default-06">Passport size photo</label>
                                                     <div class="form-control-wrap">
                                                         <div class="custom-file">
                                                             <input type="file" class="custom-file-input" name="ref_pass_pic" id="fv-ref-pic" @change="uploadRefPassPic">
@@ -173,7 +179,7 @@
                                             </div>
                                             <div class="col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-label" for="fv-ref-address">Description</label>
+                                                    <label class="form-label" for="fv-ref-address">Address</label>
                                                     <div class="form-control-wrap">
                                                         <textarea class="form-control no-resize" id="fv-ref-address" v-model="form.ref_address"></textarea>
                                                     </div>
@@ -187,7 +193,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-user-name">User Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-user-name" v-model="form.username" required>
+                                                        <input type="text" class="form-control" id="fv-user-name" v-model="form.username">
+                                                        <span v-if="errors.username" class="invalid">{{errors.username}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,7 +202,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-password">Password</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="password" class="form-control" id="fv-password" v-model="form.password" required>
+                                                        <input type="password" class="form-control" id="fv-password" v-model="form.password">
+                                                        <span v-if="errors.password" class="invalid">{{errors.password}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -251,6 +259,15 @@
                 idProof: null,
                 refPassPic: null,
                 userGroups: [],
+                errors: {
+                    firstname: '',
+                    lastname: '',
+                    email_id: '',
+                    user_group: '',
+                    excel_access: '',
+                    username: '',
+                    password: '',
+                },
                 form: new Form({
                     id: '',
                     firstname: '',
@@ -293,23 +310,76 @@
                 this.form['id_proof'] = this.idProof;
                 this.form['ref_pass_pic'] = this.refPassPic;
                 element = document.getElementById("user_group_id");
-                console.log(element);
-                console.log(this.form);
+
                 if (this.scope == 'edit') {
                     this.form.post('/databank/employee/update')
                         .then(() => {
                             window.location.href = '/databank/employee';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.firstname) {
+                            this.errors.firstname = validationError.firstname[0];
+                        }
+                        if(validationError.lastname) {
+                            this.errors.lastname = validationError.lastname[0];
+                        }
+                        if(validationError.email_id) {
+                            this.errors.email_id = validationError.email_id[0];
+                        }
+                        if(validationError.user_group) {
+                            this.errors.user_group = validationError.user_group[0];
+                        }
+                        if(validationError.excel_access) {
+                            this.errors.excel_access = validationError.excel_access[0];
+                        }
+                        if(validationError.username) {
+                            this.errors.username = validationError.username[0];
+                        }
+                        if(validationError.password) {
+                            this.errors.password = validationError.password[0];
+                        }
                     })
                 } else {
                     this.form.post('/databank/employee/create')
                         .then(() => {
                             window.location.href = '/databank/employee';
                     })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.firstname) {
+                            this.errors.firstname = validationError.firstname[0];
+                        }
+                        if(validationError.lastname) {
+                            this.errors.lastname = validationError.lastname[0];
+                        }
+                        if(validationError.email_id) {
+                            this.errors.email_id = validationError.email_id[0];
+                        }
+                        if(validationError.user_group) {
+                            this.errors.user_group = validationError.user_group[0];
+                        }
+                        if(validationError.excel_access) {
+                            this.errors.excel_access = validationError.excel_access[0];
+                        }
+                        if(validationError.username) {
+                            this.errors.username = validationError.username[0];
+                        }
+                        if(validationError.password) {
+                            this.errors.password = validationError.password[0];
+                        }
+                    })
                 }
             },
+            getProfilePic(name){
+                var profile = '/upload/profilePic/' + name;
+                
+                return profile;
+            }
         },
         mounted() {
-            console.log("This is about component");
             switch (this.scope) {
                 case 'edit' :
                     axios.get(`/databank/employee/fetch-employee/${this.id}`)
@@ -332,6 +402,7 @@
                         this.form.username = gData.username;
                         this.form.password = gData.password;
                         this.form.password_confirmation = gData.password_confirmation;
+                        this.profilePic = gData.profile_pic;
                     });
                     break;
                 default:
@@ -342,6 +413,14 @@
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
+    .form-control-wrap img {
+        position: absolute;
+        width: 45px;
+    }
+    .form-control-wrap .custom-file.profilePic {
+        width: 85%;
+        float: right;
+    }
     .multiselect {
         height: calc(2.125rem + 2px);
         font-family: Roboto,sans-serif;

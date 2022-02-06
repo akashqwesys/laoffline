@@ -17,7 +17,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="company.id">
                                     <div class="preview-block">
                                         <span class="preview-title-lg overline-title">Company Details</span>
@@ -26,7 +26,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_name">Company Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="company.company_name" type="text" class="form-control" id="fw-company_name" required>
+                                                        <input v-model="company.company_name" type="text" class="form-control" id="fw-company_name">
+                                                        <span v-if="errors.company_name" class="invalid">{{errors.company_name}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -66,7 +67,7 @@
                                         </div>
                                         <hr class="preview-hr">
                                         <div class="row gy-4">
-                                            <div class="col-md-4">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_website">Website</label>
                                                     <div class="form-control-wrap">
@@ -74,19 +75,21 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_landline">Landline</label>
                                                     <div class="form-control-wrap">
                                                         <input v-model="company.company_landline" type="text" class="form-control" id="fw-company_landline">
+                                                        <span style="font-size: 11px; color: #6576ff;">Please enter multiple landline no with comma seperated type. (Example : 123456, 456789)</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_mobile">Mobile Number</label>
                                                     <div class="form-control-wrap">
                                                         <input v-model="company.company_mobile" type="text" class="form-control" id="fw-company_mobile">
+                                                        <span style="font-size: 11px; color: #6576ff;">Please enter multiple mobile no with comma seperated type. (Example : 123456, 456789)</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -132,7 +135,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_category">Company Category</label>
                                                     <div>
-                                                        <multiselect v-model="company.company_category" :options="companyCategoryList" placeholder="Select one" label="category_name" track-by="category_name"></multiselect>
+                                                        <multiselect v-model="company.company_category" :options="companyCategoryList" placeholder="Select one" label="category_name" track-by="category_name" :multiple="true" :taggable="true"></multiselect>
                                                     </div>
                                                 </div>
                                             </div>
@@ -149,7 +152,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_discount">Discount</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="company.company_discount" type="text" class="form-control" id="fw-company_discount">
+                                                        <input v-model="company.company_discount" type="number" class="form-control" id="fw-company_discount">
                                                     </div>
                                                 </div>
                                             </div>
@@ -157,7 +160,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_payment_terms_in_days">Payment Terms (Days)</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="company.company_payment_terms_in_days" type="text" class="form-control" id="fw-company_payment_terms_in_days">
+                                                        <input v-model="company.company_payment_terms_in_days" type="number" class="form-control" id="fw-company_payment_terms_in_days">
                                                     </div>
                                                 </div>
                                             </div>
@@ -165,7 +168,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_opening_balance">Opening Balance</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="company.company_opening_balance" type="text" class="form-control" id="fw-company_opening_balance">
+                                                        <input v-model="company.company_opening_balance" type="number" class="form-control" id="fw-company_opening_balance">
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,7 +201,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" :for="'fw-contact_person_profile_pic'+index">Photo</label>
                                                     <div class="form-control-wrap">
-                                                        <div class="custom-file">
+                                                        <img v-if="scope == 'edit'" :src="getContactProfilePic(contactDetail.contact_person_profile_pic)">
+                                                        <div :class="scope == 'edit' ? 'custom-file profilePic' : 'custom-file'">
                                                             <input type="file" class="custom-file-input" :id="'fv-contact_person_profile_pic'+index" @change="uploadContactPersonProfilePic(index, $event)">
                                                             <label class="custom-file-label" :for="'fv-contact_person_profile_pic'+index">Choose photo</label>
                                                         </div>
@@ -209,7 +213,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-contact_person_mobile">Mobile</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="contactDetail.contact_person_mobile" type="text" class="form-control" id="fw-contact_person_mobile" name="fw-contact_person_mobile">
+                                                        <input v-model="contactDetail.contact_person_mobile" type="number" class="form-control" id="fw-contact_person_mobile" name="fw-contact_person_mobile">
                                                     </div>
                                                 </div>
                                             </div>
@@ -232,7 +236,7 @@
                                                 <li class="dropdown-toggle btn btn-icon btn-primary" @click="addMultipleAddressesRow"><em class="icon ni ni-plus"></em></li>
                                             </div>
                                         </div>
-                                        <div v-for="(multipleAddress, index) in multipleAddresses" :key="index">
+                                        <div v-for="(multipleAddress, index) in multipleAddresses" :key="'A' + index">
                                             <div class="row gy-4">
                                                 <div class="col-md-3">
                                                     <div class="form-group code-block">
@@ -247,8 +251,8 @@
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-ma_mobile">Mobile</label>
                                                         <div class="form-control-wrap" style="position: relative; width: 100%;">
-                                                            <input v-model="multipleAddress.country_code" type="text" placeholder="+91" class="form-control" id="fv-company_country_code">
-                                                            <input v-model="multipleAddress.mobile" type="text" class="form-control" id="fw-ma_mobile">
+                                                            <input v-model="multipleAddress.country_code" type="number" placeholder="+91" class="form-control" id="fv-company_country_code">
+                                                            <input v-model="multipleAddress.mobile" type="number" class="form-control" id="fw-ma_mobile">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -270,8 +274,8 @@
                                                     <li class="dropdown-toggle btn btn-icon btn-primary" @click="addMultipleAddressOwnersRow(multipleAddress)"><em class="icon ni ni-plus"></em></li>
                                                 </div>
                                             </div>
-                                            <div class="row gy-4" v-for="(multipleAddressesOwner, key) in multipleAddress.multipleAddressesOwners" :key="key">
-                                                <div class="col-md-3">
+                                            <div class="row gy-4" v-for="(multipleAddressesOwner, key) in multipleAddress.multipleAddressesOwners" :key="'B' + key">
+                                                <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-mao_name">Name</label>
                                                         <div class="form-control-wrap">
@@ -279,11 +283,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-maodesignation">Designation</label>
                                                         <div>
-                                                            <multiselect v-model="multipleAddressesOwner.designation" :options="designationList" placeholder="Select one" label="name" track-by="name"></multiselect>
+                                                            <multiselect v-model="multipleAddressesOwner.designation" :options="designationList" placeholder="Select one" label="name" track-by="name" :multiple="true" :taggable="true"></multiselect>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -291,7 +295,8 @@
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-mao_profile_pic">Photo</label>
                                                         <div class="form-control-wrap">
-                                                            <div class="custom-file">
+                                                        <img v-if="scope == 'edit'" :src="getOwnerProfilePic(multipleAddressesOwner.profile_pic)">
+                                                        <div :class="scope == 'edit' ? 'custom-file profilePic' : 'custom-file'">
                                                                 <input type="file" class="custom-file-input" :id="'fv-mao_profile_pic'+index" @change="uploadMultipleAddressOwnerPic(index, key, $event)">
                                                                 <label class="custom-file-label" :for="'fv-mao_profile_pic'+index">Choose photo</label>
                                                             </div>
@@ -302,7 +307,7 @@
                                                     <div class="form-group">
                                                         <label class="form-label" for="fw-mao_mobile">Mobile</label>
                                                         <div class="form-control-wrap">
-                                                            <input v-model="multipleAddressesOwner.mobile" type="text" class="form-control" id="fw-mao_mobile">
+                                                            <input v-model="multipleAddressesOwner.mobile" type="number" class="form-control" id="fw-mao_mobile">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -326,7 +331,7 @@
                                                 <li class="dropdown-toggle btn btn-icon btn-primary" @click="addMultipleEmailsRow"><em class="icon ni ni-plus"></em></li>
                                             </div>
                                         </div>
-                                        <div class="row gy-4" v-for="(multipleEmail, index) in multipleEmails" :key="index">
+                                        <div class="row gy-4" v-for="(multipleEmail, index) in multipleEmails" :key="'C'+index">
                                             <div class="col-md-11">
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-company_person_name">Email Id</label>
@@ -346,7 +351,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-strength">Strength</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="swot.strength" type="text" class="form-control" id="fw-strength" name="fw-strength">
+                                                        <input v-model="swot.strength" type="number" class="form-control" id="fw-strength" name="fw-strength">
                                                     </div>
                                                 </div>
                                             </div>
@@ -354,7 +359,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-weakness">Weakness</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="swot.weakness" type="text" class="form-control" id="fw-weakness" name="fw-weakness">
+                                                        <input v-model="swot.weakness" type="number" class="form-control" id="fw-weakness" name="fw-weakness">
                                                     </div>
                                                 </div>
                                             </div>
@@ -362,7 +367,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-opportunity">Oppotunity</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="swot.opportunity" type="text" class="form-control" id="fw-opportunity" name="fw-opportunity">
+                                                        <input v-model="swot.opportunity" type="number" class="form-control" id="fw-opportunity" name="fw-opportunity">
                                                     </div>
                                                 </div>
                                             </div>
@@ -370,7 +375,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-threat">Threat</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="swot.threat" type="text" class="form-control" id="fw-threat" name="fw-threat">
+                                                        <input v-model="swot.threat" type="number" class="form-control" id="fw-threat" name="fw-threat">
                                                     </div>
                                                 </div>
                                             </div>
@@ -390,7 +395,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-ref_person_mobile">Mobile No</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="references.ref_person_mobile" type="text" class="form-control" id="fw-ref_person_mobile" name="fw-ref_person_mobile">
+                                                        <input v-model="references.ref_person_mobile" type="number" class="form-control" id="fw-ref_person_mobile" name="fw-ref_person_mobile">
                                                     </div>
                                                 </div>
                                             </div>
@@ -470,7 +475,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-account_no">Account Number</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="bank.account_no" type="text" class="form-control" id="fw-account_no" name="fw-account_no">
+                                                        <input v-model="bank.account_no" type="number" class="form-control" id="fw-account_no" name="fw-account_no">
                                                     </div>
                                                 </div>
                                             </div>
@@ -547,20 +552,9 @@
                 designationList: [],
                 typeOfAddress: [],
                 showAddCityModal: false,
-                companyTypes: [
-                    {
-                        'id' : 1,
-                        'name' : 'General',
-                    },
-                    {
-                        'id' : 2,
-                        'name' : 'Customer',
-                    },
-                    {
-                        'id' : 3,
-                        'name' : 'Supplier',
-                    },
-                ],
+                errors: {
+                    company_name: ''
+                },
                 company : {
                     id: '',
                     company_name: '',
@@ -576,9 +570,9 @@
                     company_about: '',
                     company_category: '',
                     company_transport: '',
-                    company_discount: '',
-                    company_payment_terms_in_days: '',
-                    company_opening_balance: '',
+                    company_discount: 0,
+                    company_payment_terms_in_days: 0,
+                    company_opening_balance: 0,
                 },
                 contactDetails : [{
                     contact_person_name: '',
@@ -591,7 +585,7 @@
                     address_type : '',
                     mobile : '',
                     address : '',
-                    country_code: '',
+                    country_code: '+91',
                     multipleAddressesOwners : [{
                         name : '',
                         designation : '',
@@ -604,10 +598,10 @@
                     email_id : ''
                 }],
                 swot : {
-                    strength : '',
-                    weakness : '',
-                    opportunity : '',
-                    threat : '',
+                    strength : 0,
+                    weakness : 0,
+                    opportunity : 0,
+                    threat : 0,
                 },
                 references : {
                     ref_person_name : '',
@@ -769,14 +763,38 @@
                     axios.post('/databank/companies/update', formData)
                     .then(response => {
                         window.location.href = '/databank/companies';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.company_name) {
+                            this.errors.company_name = validationError.company_name[0];
+                        }
                     });
                 } else {
                     axios.post('/databank/companies/create', formData)
                     .then(response => {
-                        // window.location.href = '/databank/companies';
+                        window.location.href = '/databank/companies';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.company_name) {
+                            this.errors.company_name = validationError.company_name[0];
+                        }
                     });
                 }
             },
+            getContactProfilePic(name){
+                var profile = '/upload/company/profilePic/' + name;
+                
+                return profile;
+            },
+            getOwnerProfilePic(name){
+                var profile = '/upload/company/multipleAddressProfilePic/' + name;
+                
+                return profile;
+            }
         },
         mounted() {
             switch (this.scope) {
@@ -818,6 +836,14 @@
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
+    .form-control-wrap img {
+        position: absolute;
+        width: 45px;
+    }
+    .form-control-wrap .custom-file.profilePic {
+        width: 75%;
+        float: right;
+    }
     .multiselect {
         height: calc(2.125rem + 2px);
         font-family: Roboto,sans-serif;

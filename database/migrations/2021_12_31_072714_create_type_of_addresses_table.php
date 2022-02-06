@@ -14,9 +14,10 @@ class CreateTypeOfAddressesTable extends Migration
     public function up()
     {
         Schema::create('type_of_addresses', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name')->nullable();
             $table->string('sort_order')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

@@ -11,10 +11,18 @@ use Illuminate\Support\Facades\Session;
 
 class PermissionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index() {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -63,6 +71,8 @@ class PermissionController extends Controller
     public function deletePermission($id){
         $user = Session::get('user');
         $permission = Permission::where('id', $id)->first();
+        $permission->is_delete = 1;
+        $permission->save();
 
         $user->revokePermissionTo($permission->name);
 
@@ -76,8 +86,6 @@ class PermissionController extends Controller
         $logs->log_subject = 'Company Type - '.$permission->company_name.' was deleted by"'.$user->username.'".';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $permission->delete();
     }
 
     public function insertPermissionData(Request $request) {

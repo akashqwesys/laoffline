@@ -15,10 +15,17 @@ class ProductCategoryController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -45,6 +52,7 @@ class ProductCategoryController extends Controller
     public function listProductCategory() {
         $productCategory = ProductCategory::join('product_default_categories','product_categories.product_default_category_id','=','product_default_categories.id')->
                                             where('product_categories.product_default_category_id', '!=', '0')->
+                                            where('product_categories.is_delete', '0')->
                                             get(['product_default_categories.name as default_category', 'product_categories.name as category_name', 'product_categories.id as category_id']);
 
         return $productCategory;
@@ -81,7 +89,9 @@ class ProductCategoryController extends Controller
     }
 
     public function deleteProductCategory($id){
-        $productCategoryData = ProductCategory::where('id',$id)->first();        
+        $productCategoryData = ProductCategory::where('id',$id)->first();
+        $productCategoryData->is_delete = 1;
+        $productCategoryData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -93,8 +103,6 @@ class ProductCategoryController extends Controller
         $logs->log_subject = 'Product Category - "'.$productCategoryData->category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $productCategoryData->delete();
     }
 
     public function insertProductCategoryData(Request $request) {

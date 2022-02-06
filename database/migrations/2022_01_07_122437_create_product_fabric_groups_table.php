@@ -14,8 +14,9 @@ class CreateProductFabricGroupsTable extends Migration
     public function up()
     {
         Schema::create('product_fabric_groups', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

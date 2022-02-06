@@ -14,9 +14,9 @@ class CreateCompanyAddressesTable extends Migration
     public function up()
     {
         Schema::create('company_addresses', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('company_id')->default('0');
-            $table->string('address_type')->nullable();
+            $table->integer('address_type')->nullable();
             $table->string('address')->nullable();
             $table->string('country_code')->nullable();
             $table->string('mobile')->nullable();

@@ -14,11 +14,12 @@ class CreateUserGroupsTable extends Migration
     public function up()
     {
         Schema::create('user_groups', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name');
             $table->string('access_permissions');
             $table->string('modify_permissions');
             $table->integer('roles_id');
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

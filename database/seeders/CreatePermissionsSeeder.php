@@ -140,6 +140,26 @@ class CreatePermissionsSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
+                'name' => 'access-countries',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'access-states',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'access-fabric-group',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'access-companytype',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'access-permission',
+                'guard_name' => 'web',
+            ],
+            [
                 'name' => 'modify-user-group',
                 'guard_name' => 'web',
             ],
@@ -261,6 +281,26 @@ class CreatePermissionsSeeder extends Seeder
             ],
             [
                 'name' => 'modify-attendance',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'modify-countries',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'modify-states',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'modify-fabric-group',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'modify-companytype',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'modify-permission',
                 'guard_name' => 'web',
             ],
         ];

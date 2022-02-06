@@ -14,15 +14,16 @@ class CreateProductCategoriesTable extends Migration
     public function up()
     {
         Schema::create('product_categories', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('product_default_category_id')->default('0');
             $table->string('name')->nullable();
             $table->integer('main_category_id')->default('0');
-            $table->text('company_id')->nullable();
-            $table->string('product_fabric_id')->nullable();
+            $table->json('company_id')->nullable();
+            $table->integer('product_fabric_id')->nullable();
             $table->integer('sort_order')->default('0');
             $table->integer('multiple_company')->default('0');
             $table->string('rate')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

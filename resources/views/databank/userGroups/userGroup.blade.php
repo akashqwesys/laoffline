@@ -2,7 +2,7 @@
 
 @section('content')
     <div id="app">
-        <user-group-component></user-group-component>
+        <user-group-component :excel-access="{{ $employees['excelAccess'] ?? 0 }}"></user-group-component>
     </div>
-    <script src="{{ asset('js/app.js') }}"></script> 
+    <script src="{{ asset('js/app.js') }}"></script>
 @endsection

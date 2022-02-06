@@ -22,10 +22,17 @@ class ProductsController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -50,55 +57,53 @@ class ProductsController extends Controller
     }
 
     public function listProducts() {
-        $product = Product::join('companies','products.company','=','companies.id')->
+        $products = Product::join('companies','products.company','=','companies.id')->
                             join('product_categories','products.category','=','product_categories.id')->
                             join('product_details','products.id','=','product_details.product_id')->
-                            get(['products.*','companies.company_name','product_categories.name as category_name','product_details.catalogue_price']);
+                            where('products.is_delete', 0)->
+                            get(['products.*','products.id as product_id','companies.company_name','product_categories.name as category_name','product_details.catalogue_price']);
 
-        return $product;
+        foreach($products as $product) {
+            if (!empty($product->main_image)) {
+                $product->main_image = '/upload/products/'.$product->main_image;
+            }
+        }
+
+        return $products;
     }
 
     public function mainCategory($id) {
-        $mainCategory = ProductCategory::where('main_category_id', '!=', '0')->get();
-        $categories = ProductCategory::where('main_category_id', '=', '0')->where('product_default_category_id', '=', '1')->get(['id', 'name']);
+        $mainCategory = ProductCategory::where('main_category_id', '!=', 0)->get();
         $mainCategoryData = [];
-        $categoryData = [];
-        $productCategoryData = [];
+        $category_array = [];
+        
 
         foreach($mainCategory as $key => $category) {
             if (is_array(json_decode($category->company_id))) {
                 $companyIds = json_decode($category->company_id);
-                foreach($companyIds as $companyId) {
-                    if($companyId == $id) {
-                        $mainCategoryData[$key]['id'] = $category->id;
-                        $mainCategoryData[$key]['name'] = $category->name;
-                        $mainCategoryData[$key]['main_category_id'] = $category->main_category_id;
-                        $categoryData[$key] = $category->main_category_id;
+                foreach($companyIds as $cId) {
+                    if($cId == $id) {
+                        array_push($category_array, $category->main_category_id);
                     }
                 }
-                
             } else {
-                if($category->company_id == $id) {
-                    $mainCategoryData[$key]['id'] = $category->id;
-                    $mainCategoryData[$key]['name'] = $category->name;
-                    $mainCategoryData[$key]['main_category_id'] = $category->main_category_id;
-                    $categoryData[$key] = $category->main_category_id;
+                $companyIds = json_decode($category->company_id);
+                if($companyIds == $id) {
+                    array_push($category_array, $category->main_category_id);
                 }
             }
         }
 
-        foreach($categories as $key => $category) {
-            if(in_array($category->id, $categoryData)) {
-                $productCategoryData[$key]['id'] = $category->id;
-                $productCategoryData[$key]['name'] = $category->name;
-            }
-        }
+        $categories = ProductCategory::where('main_category_id', 0)->where('product_default_category_id', 1)->get();
 
-        sort($mainCategoryData);
-        sort($categoryData);
-        sort($productCategoryData);
+        foreach ($categories as $key => $row_category) {
+			if(in_array($row_category->id, $category_array)) {
+				$mainCategoryData[$key]['id'] = $row_category->id;
+                $mainCategoryData[$key]['name'] = $row_category->name;
+			}
+		}
 
-        return $productCategoryData;
+        return $mainCategoryData;
     }
 
     public function subCategory($id, $companyId) {
@@ -108,27 +113,30 @@ class ProductsController extends Controller
         foreach($subCategories as $key => $category) {
             if (is_array(json_decode($category->company_id))) {
                 $companyIds = json_decode($category->company_id);
-                foreach($companyIds as $companyId) {
-                    if($companyId == $companyId) {
+                foreach($companyIds as $cId) {
+                    if($cId == $companyId) {
                         $subCategoryData[$key]['id'] = $category->id;
                         $subCategoryData[$key]['name'] = $category->name;
                         $subCategoryData[$key]['fabric_id'] = $category->product_fabric_id;
                     }
                 }
             } else {
-                if($category->company_id == $companyId) {
+                $companyIds = json_decode($category->company_id);
+                if($companyIds == $companyId) {
                     $subCategoryData[$key]['id'] = $category->id;
                     $subCategoryData[$key]['name'] = $category->name;
                     $subCategoryData[$key]['fabric_id'] = $category->product_fabric_id;
                 }
             }
         }
+        sort($subCategoryData);
 
         return $subCategoryData;
     }
 
     public function fabricField($id) {
         $fabricId = json_decode($id);
+        $fabricGroup = [];
         $i = 0;
 
         foreach($fabricId as $key => $fabric) {
@@ -207,9 +215,8 @@ class ProductsController extends Controller
 
     public function deleteProducts($id){
         $productData = Product::where('id',$id)->first();
-        ProductDetails::where('product_id',$id)->delete();
-        ProductsImages::where('product_id',$id)->delete();
-        ProductFabricDetails::where('product_id',$id)->delete();
+        $productData->is_delete = 1;
+        $productData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -221,8 +228,6 @@ class ProductsController extends Controller
         $logs->log_subject = 'Product - "'.$productData->product_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $productData->delete();
     }
 
     public function insertCompaniesData(Request $request) {
@@ -287,10 +292,18 @@ class ProductsController extends Controller
     }
 
     public function insertProductsData(Request $request) {
+        $this->validate($request, [
+            'product_name' => 'required',
+            'company' => 'required',
+            'category' => 'required',
+            'sub_category' => 'required',
+        ]);
+
         $productData = json_decode($request->product_data);
         $AdditionalImage = json_decode($request->additionalImages);
         $fabricsData = json_decode($request->fabricsData);
-        $fabrics = [];        
+        $fabrics = [];
+        $i = 0;
 
         foreach($fabricsData as $key => $data) {
             $fabrics[$key] = $data;
@@ -306,19 +319,16 @@ class ProductsController extends Controller
             mkdir(public_path('upload/products'), 0777, true);
         }
 
-        $dirName = date('YmdHis') . "_" . $productData->product_name;
-        mkdir(public_path('upload/products/'.$dirName), 0777, true);
-        
         if ($image = $request->mainImage) {
             $profileImage = date('YmdHis') . "_mainImage." . $image->getClientOriginalExtension();
             $productData->main_image = $profileImage;
-            $image->move(public_path('upload/products/'.$dirName), $profileImage);
+            $image->move(public_path('upload/products/'), $profileImage);
         }
         
         if ($image = $request->priceListImage) {
             $profileImage = date('YmdHis') . "_priceListImage." . $image->getClientOriginalExtension();
             $productData->price_list_image = $profileImage;
-            $image->move(public_path('upload/products/'.$dirName), $profileImage);
+            $image->move(public_path('upload/products/'), $profileImage);
         }
 
         if(is_array($request->product_additional_images) && !empty($request->product_additional_images)) {
@@ -329,7 +339,7 @@ class ProductsController extends Controller
                     if(!is_string($image)) {
                         $profileImage = date('YmdHis') . "_additionalImage_" . $i . "." . $image->getClientOriginalExtension();
                         $AdditionalImage[$i]->product_pic = $profileImage;
-                        $image->move(public_path('upload/products/'.$dirName), $profileImage);
+                        $image->move(public_path('upload/products/'), $profileImage);
 
                     } else {
                         $AdditionalImage[$i]->product_pic = '';
@@ -394,28 +404,28 @@ class ProductsController extends Controller
         $productFabrics = new ProductFabricDetails;
         $productFabrics->id = $productFabricsId;
         $productFabrics->product_id = $productsId;
-        $productFabrics->saree_fabric = isset($fabrics['saree_fabric']) ? $fabrics['saree_fabric'] : 0;
-        $productFabrics->saree_cut = isset($fabrics['saree_cut']) ? $fabrics['saree_cut'] : 0;
-        $productFabrics->blouse_fabric = isset($fabrics['blouse_fabric']) ? $fabrics['blouse_fabric'] : 0;
-        $productFabrics->blouse_cut = isset($fabrics['blouse_cut']) ? $fabrics['blouse_cut'] : 0;
-        $productFabrics->top_fabric = isset($fabrics['top_fabric']) ? $fabrics['top_fabric'] : 0;
-        $productFabrics->top_cut = isset($fabrics['top_cut']) ? $fabrics['top_cut'] : 0;
-        $productFabrics->bottom_fabric = isset($fabrics['bottom_fabric']) ? $fabrics['bottom_fabric'] : 0;
-        $productFabrics->bottom_cut = isset($fabrics['bottom_cut']) ? $fabrics['bottom_cut'] : 0;
-        $productFabrics->dupatta_fabric = isset($fabrics['dupatta_fabric']) ? $fabrics['dupatta_fabric'] : 0;
-        $productFabrics->dupatta_cut = isset($fabrics['dupatta_cut']) ? $fabrics['dupatta_cut'] : 0;
-        $productFabrics->inner_fabric = isset($fabrics['inner_fabric']) ? $fabrics['inner_fabric'] : 0;
-        $productFabrics->inner_cut = isset($fabrics['inner_cut']) ? $fabrics['inner_cut'] : 0;
-        $productFabrics->sleeves_fabric = isset($fabrics['sleeves_fabric']) ? $fabrics['sleeves_fabric'] : 0;
-        $productFabrics->sleeves_cut = isset($fabrics['sleeves_cut']) ? $fabrics['sleeves_cut'] : 0;
-        $productFabrics->choli_fabric = isset($fabrics['choli_fabric']) ? $fabrics['choli_fabric'] : 0;
-        $productFabrics->choli_cut = isset($fabrics['choli_cut']) ? $fabrics['choli_cut'] : 0;
-        $productFabrics->lehenga_fabric = isset($fabrics['lehenga_fabric']) ? $fabrics['lehenga_fabric'] : 0;
-        $productFabrics->lehenga_cut = isset($fabrics['lehenga_cut']) ? $fabrics['lehenga_cut'] : 0;
-        $productFabrics->lining_fabric = isset($fabrics['lining_fabric']) ? $fabrics['lining_fabric'] : 0;
-        $productFabrics->lining_cut = isset($fabrics['lining_cut']) ? $fabrics['lining_cut'] : 0;
-        $productFabrics->gown_fabric = isset($fabrics['gown_fabric']) ? $fabrics['gown_fabric'] : 0;
-        $productFabrics->gown_cut = isset($fabrics['gown_cut']) ? $fabrics['gown_cut'] : 0;
+        $productFabrics->saree_fabric = !empty($fabrics['saree_fabric']) ? $fabrics['saree_fabric'] : '';
+        $productFabrics->saree_cut = !empty($fabrics['saree_cut']) ? $fabrics['saree_cut'] : 0;
+        $productFabrics->blouse_fabric = !empty($fabrics['blouse_fabric']) ? $fabrics['blouse_fabric'] : '';
+        $productFabrics->blouse_cut = !empty($fabrics['blouse_cut']) ? $fabrics['blouse_cut'] : 0;
+        $productFabrics->top_fabric = !empty($fabrics['top_fabric']) ? $fabrics['top_fabric'] : '';
+        $productFabrics->top_cut = !empty($fabrics['top_cut']) ? $fabrics['top_cut'] : 0;
+        $productFabrics->bottom_fabric = !empty($fabrics['bottom_fabric']) ? $fabrics['bottom_fabric'] : '';
+        $productFabrics->bottom_cut = !empty($fabrics['bottom_cut']) ? $fabrics['bottom_cut'] : 0;
+        $productFabrics->dupatta_fabric = !empty($fabrics['dupatta_fabric']) ? $fabrics['dupatta_fabric'] : '';
+        $productFabrics->dupatta_cut = !empty($fabrics['dupatta_cut']) ? $fabrics['dupatta_cut'] : 0;
+        $productFabrics->inner_fabric = !empty($fabrics['inner_fabric']) ? $fabrics['inner_fabric'] : '';
+        $productFabrics->inner_cut = !empty($fabrics['inner_cut']) ? $fabrics['inner_cut'] : 0;
+        $productFabrics->sleeves_fabric = !empty($fabrics['sleeves_fabric']) ? $fabrics['sleeves_fabric'] : '';
+        $productFabrics->sleeves_cut = !empty($fabrics['sleeves_cut']) ? $fabrics['sleeves_cut'] : 0;
+        $productFabrics->choli_fabric = !empty($fabrics['choli_fabric']) ? $fabrics['choli_fabric'] : '';
+        $productFabrics->choli_cut = !empty($fabrics['choli_cut']) ? $fabrics['choli_cut'] : 0;
+        $productFabrics->lehenga_fabric = !empty($fabrics['lehenga_fabric']) ? $fabrics['lehenga_fabric'] : '';
+        $productFabrics->lehenga_cut = !empty($fabrics['lehenga_cut']) ? $fabrics['lehenga_cut'] : 0;
+        $productFabrics->lining_fabric = !empty($fabrics['lining_fabric']) ? $fabrics['lining_fabric'] : '';
+        $productFabrics->lining_cut = !empty($fabrics['lining_cut']) ? $fabrics['lining_cut'] : 0;
+        $productFabrics->gown_fabric = !empty($fabrics['gown_fabric']) ? $fabrics['gown_fabric'] : '';
+        $productFabrics->gown_cut = !empty($fabrics['gown_cut']) ? $fabrics['gown_cut'] : 0;
         $productFabrics->save();
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
@@ -431,6 +441,13 @@ class ProductsController extends Controller
     }
 
     public function updateProductsData(Request $request) {
+        $this->validate($request, [
+            'product_name' => 'required',
+            'company' => 'required',
+            'category' => 'required',
+            'sub_category' => 'required',
+        ]);
+
         $productData = json_decode($request->product_data);
         $AdditionalImage = json_decode($request->additionalImages);
         $fabricsData = json_decode($request->fabricsData);
@@ -455,37 +472,34 @@ class ProductsController extends Controller
             mkdir(public_path('upload/products'), 0777, true);
         }
 
-        $dirName = date('YmdHis') . "_" . $productData->product_name;
-        mkdir(public_path('upload/products/'.$dirName), 0777, true);
-        
         if ($image = $request->mainImage) {
             $profileImage = date('YmdHis') . "_mainImage." . $image->getClientOriginalExtension();
             $productData->main_image = $profileImage;
-            $image->move(public_path('upload/products/'.$dirName), $profileImage);
+            $image->move(public_path('upload/products/'), $profileImage);
         } else {
-            $productData->main_image = '';
+            $productData->main_image = $productData->main_image;
         }
         
         if ($image = $request->priceListImage) {
             $profileImage = date('YmdHis') . "_priceListImage." . $image->getClientOriginalExtension();
             $productData->price_list_image = $profileImage;
-            $image->move(public_path('upload/products/'.$dirName), $profileImage);
+            $image->move(public_path('upload/products/'), $profileImage);
         } else {
-            $productData->price_list_image = '';
+            $productData->price_list_image = $productData->price_list_image;
         }
 
-        if(is_array($request->product_additional_images) && !empty($request->product_additional_images)) {
+        if(is_array($request->product_additional_images) && !empty($request->product_additional_images) ) {
             $length = count($request->product_additional_images);
 
             for ($i=0; $i<$length; $i++) {                
                 if ($image = $request->product_additional_images[$i]) {
                     if(!is_string($image)) {
                         $profileImage = date('YmdHis') . "_additionalImage_" . $i . "." . $image->getClientOriginalExtension();
-                        $AdditionalImage[$i]->product_pic = $profileImage;
-                        $image->move(public_path('upload/products/'.$dirName), $profileImage);
+                        $AdditionalImage[$i]->image = $profileImage;
+                        $image->move(public_path('upload/products/'), $profileImage);
 
                     } else {
-                        $AdditionalImage[$i]->product_pic = '';
+                        $AdditionalImage[$i]->image = $AdditionalImage[$i]->image;
                     }
                 }
             }
@@ -507,7 +521,6 @@ class ProductsController extends Controller
         $products->save();
         
         $productDetails = ProductDetails::where('product_id', $id)->first();
-        $productDetails->product_id = $products->id;
         $productDetails->catalogue_price = $productData->catalogue_price;
         $productDetails->average_price = $productData->average_price;
         $productDetails->wholesale_discount = $productData->wholesale_discount;
@@ -516,14 +529,17 @@ class ProductsController extends Controller
         $productDetails->retail_brokerage = $productData->retail_brokerage;
         $productDetails->save();
 
-        
         $productImages = ProductsImages::where('product_id', $id)->delete();
-        foreach($AdditionalImage as $image) {
+        foreach($AdditionalImage as $image) {            
+            $productImageId = ProductsImages::orderBy('id', 'DESC')->first('id');
+            $piId = !empty($productImageId) ? $productImageId->id + 1 : 1;
+                            
             $productImages = new ProductsImages;
+            $productImages->id = $piId;
             $productImages->product_id = $products->id;
             $productImages->supplier_code = $image->supplier_code;
             $productImages->product_code = $image->product_code;
-            $productImages->image = $image->product_pic;
+            $productImages->image = $image->image;
             $productImages->price = $image->price;
             $productImages->sort_order = $image->sort_order;
             $productImages->save();

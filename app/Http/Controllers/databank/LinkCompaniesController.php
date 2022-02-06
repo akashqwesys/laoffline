@@ -17,11 +17,18 @@ class LinkCompaniesController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index() {
         $user = Session::get('user');
 
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;

@@ -12,12 +12,19 @@ use Illuminate\Support\Facades\Session;
 
 class FabricGroupController extends Controller
 {
-    use HasRoles;    
+    use HasRoles;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -65,7 +72,9 @@ class FabricGroupController extends Controller
     }
 
     public function deleteFabricGroup($id){
-        $fabricGroupData = ProductFabricGroup::where('id',$id)->first();        
+        $fabricGroupData = ProductFabricGroup::where('id',$id)->first();
+        $fabricGroupData->is_delete = 1;
+        $fabricGroupData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -77,8 +86,6 @@ class FabricGroupController extends Controller
         $logs->log_subject = 'Fabric Group - "'.$fabricGroupData->name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $fabricGroupData->delete();
     }
 
     public function insertFabricGroupData(Request $request) {

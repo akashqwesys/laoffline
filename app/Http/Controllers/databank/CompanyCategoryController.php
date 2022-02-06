@@ -14,10 +14,17 @@ class CompanyCategoryController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -42,7 +49,7 @@ class CompanyCategoryController extends Controller
     }
 
     public function listCompanyCategory() {
-        $companyCategory = CompanyCategory::all();
+        $companyCategory = CompanyCategory::where('is_delete', 0)->get();
 
         return $companyCategory;
     }
@@ -65,7 +72,9 @@ class CompanyCategoryController extends Controller
     }
 
     public function deleteCompanyCategory($id){
-        $companyCategoryData = CompanyCategory::where('id',$id)->first();        
+        $companyCategoryData = CompanyCategory::where('id',$id)->first();
+        $companyCategoryData->is_delete = 1;
+        $companyCategoryData->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -77,14 +86,11 @@ class CompanyCategoryController extends Controller
         $logs->log_subject = 'Company Category - "'.$companyCategoryData->category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $companyCategoryData->delete();
     }
 
     public function insertCompanyCategoryData(Request $request) {
         $this->validate($request, [
             'category_name' => 'required',
-            'sort_order' => 'required',
         ]);
 
         $comapnyCategoryLastId = CompanyCategory::orderBy('id', 'DESC')->first('id');
@@ -111,7 +117,6 @@ class CompanyCategoryController extends Controller
     public function updateCompanyCategoryData(Request $request) {
         $this->validate($request, [
             'category_name' => 'required',
-            'sort_order' => 'required',
         ]);
         
         $id = $request->id;

@@ -14,21 +14,19 @@ class CreateCompaniesTable extends Migration
     public function up()
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('company_name')->nullable();
             $table->string('company_type')->nullable();
             $table->string('company_country')->nullable();
             $table->string('company_state')->nullable();
             $table->string('company_city')->nullable();
             $table->string('company_website')->nullable();
-            $table->text('company_landline')->nullable();
-            $table->string('company_mobile')->nullable();
+            $table->json('company_landline')->nullable();
+            $table->json('company_mobile')->nullable();
             $table->string('company_watchout')->nullable();
             $table->text('company_remark_watchout')->nullable();
             $table->text('company_about')->nullable();
-            $table->string('company_category')->nullable();
-            $table->string('product_category')->nullable();
-            $table->string('product_sub_category')->nullable();
+            $table->json('company_category')->nullable();
             $table->integer('company_transport')->default('0');
             $table->string('company_discount')->nullable();
             $table->integer('company_payment_terms_in_days')->default('0');
@@ -41,6 +39,7 @@ class CreateCompaniesTable extends Migration
             $table->integer('is_linked')->default('0');
             $table->integer('is_active')->default('0');
             $table->timestamp('verified_date')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

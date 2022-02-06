@@ -17,10 +17,17 @@ class EmployeesController extends Controller
 {
     use HasRoles;
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request) {
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        
+        $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -50,9 +57,15 @@ class EmployeesController extends Controller
         return $permissions;
     }
 
-    public function listEmployee() {
+    public function listEmployee() {        
+        $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
-                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->get();
+                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->
+                                where('employees.id', '!=', $user->employee_id)->
+                                where('employees.user_group', '!=', 1)->
+                                where('employees.is_delete', '=', 0)->
+                                orderby('employees.id')->
+                                get();
 
         return $employees;
     }
@@ -76,8 +89,13 @@ class EmployeesController extends Controller
     }
 
     public function deleteEmployee($id){
-        $employeeData = Employee::where('id',$id)->first();        
+        $employeeData = Employee::where('id',$id)->first();
+        $employeeData->is_delete = 1;
+        $employeeData->save();
+
         $user = User::where('employee_id',$id)->first();
+        $user->is_delete = 1;
+        $user->save();
         
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
@@ -89,9 +107,6 @@ class EmployeesController extends Controller
         $logs->log_subject = 'Employee - '.$user->username.' was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
-
-        $employeeData->delete();
-        $user->delete();
     }
 
     public function insertEmployeeData(Request $request) {
@@ -102,12 +117,10 @@ class EmployeesController extends Controller
         $this->validate($request, [
             'firstname' => 'required',
             'lastname' => 'required',
-            'email_id' => 'required|email',
-            'mobile' => 'required',
-            'address' => 'required',
+            'email_id' => 'required|email|unique:employees',
             'user_group' => 'required',
             'excel_access' => 'required',
-            'username' => 'required',
+            'username' => 'required|unique:users',
             'password' => 'required|confirmed',
         ]);
 
@@ -129,6 +142,9 @@ class EmployeesController extends Controller
         $employeeLastId = Employee::orderBy('id', 'DESC')->first('id');
         $employeeId = !empty($employeeLastId) ? $employeeLastId->id + 1 : 1;
 
+        $userLastId = User::orderBy('id', 'DESC')->first('id');
+        $userId = !empty($userLastId) ? $userLastId->id + 1 : 1;
+
         $employee = new Employee;
         $employee->id = $employeeId;
         $employee->firstname = $request->firstname;
@@ -145,15 +161,13 @@ class EmployeesController extends Controller
         $employee->ref_pass_pic = $referencePassPicName;
         $employee->ref_mobile = $request->ref_mobile;
         $employee->ref_address = $request->ref_address;
+        $employee->web_login = '';
         $employee->save();
-
-        $userLastId = User::orderBy('id', 'DESC')->first('id');
-        $userId = !empty($userLastId) ? $userLastId->id + 1 : 1;
 
         $user = new User;
         $user->id = $userId;
         $user->employee_id = $employeeId;
-        $user->username = $request->username;
+        $user->username = trim($request->username);
         $user->password = bcrypt($request->password);
         $user->is_active = 1;
         $user->save();
@@ -185,8 +199,6 @@ class EmployeesController extends Controller
             'firstname' => 'required',
             'lastname' => 'required',
             'email_id' => 'required|email',
-            'mobile' => 'required',
-            'address' => 'required',
             'user_group' => 'required',
             'excel_access' => 'required',
             'username' => 'required',
@@ -213,15 +225,15 @@ class EmployeesController extends Controller
         $employee->firstname = $request->firstname ? $request->firstname : '';
         $employee->middlename = $request->middlename ? $request->middlename : ''; 
         $employee->lastname = $request->lastname ? $request->lastname : '';
-        $employee->profile_pic = $profileImage;
+        $employee->profile_pic = $profileImage == '' ? $employee->profile_pic : $profileImage;
         $employee->email_id = $request->email_id ? $request->email_id : '';
         $employee->mobile = $request->mobile ? $request->mobile : '';
         $employee->address = $request->address ? $request->address : '';
         $employee->user_group = $request->user_group['id'] ? $request->user_group['id'] : '';
         $employee->excel_access = $request->excel_access ? $request->excel_access : 0;
-        $employee->id_proof = $idProofName;
+        $employee->id_proof = $idProofName == '' ? $employee->id_proof : $idProofName;
         $employee->ref_full_name = $request->ref_full_name ? $request->ref_full_name : '';
-        $employee->ref_pass_pic = $referencePassPicName;
+        $employee->ref_pass_pic = $referencePassPicName == '' ? $employee->ref_pass_pic : $referencePassPicName ;
         $employee->ref_mobile = $request->ref_mobile ? $request->ref_mobile : '';
         $employee->ref_address = $request->ref_address ? $request->ref_address : '';
         $employee->save();

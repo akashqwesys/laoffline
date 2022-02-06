@@ -14,7 +14,7 @@ class CreateProductFabricDetailsTable extends Migration
     public function up()
     {
         Schema::create('product_fabric_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('product_id');
             $table->string('saree_fabric')->nullable();
             $table->float('saree_cut')->default('0');

@@ -14,9 +14,10 @@ class CreateTransportDetailsTable extends Migration
     public function up()
     {
         Schema::create('transport_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name')->nullable();
             $table->string('gstin')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

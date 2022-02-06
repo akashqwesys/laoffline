@@ -2,7 +2,7 @@
 
 @section('content')
     <div id="app">
-        <product-component></product-component>
+        <product-component :excel-access="{{ $employees['excelAccess'] ?? 0 }}"></product-component>
     </div>
     <script src="{{ asset('js/app.js') }}"></script> 
 @endsection

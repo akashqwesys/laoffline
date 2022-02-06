@@ -2,7 +2,7 @@
 
 @section('content')
     <div id="app">
-        <permission-component></permission-component>
+        <permission-component :excel-access="{{ $employees['excelAccess'] ?? 0 }}"></permission-component>
     </div>
     <script src="{{ asset('js/app.js') }}"></script> 
 @endsection

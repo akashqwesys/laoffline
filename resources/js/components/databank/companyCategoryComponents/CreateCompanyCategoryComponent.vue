@@ -18,7 +18,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="form.id">
                                     <div class="preview-block">
                                         <div class="row gy-4">
@@ -26,7 +26,8 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-category-name">Category Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-category-name" v-model="form.category_name" required>
+                                                        <input type="text" class="form-control" id="fv-category-name" v-model="form.category_name">
+                                                        <span v-if="errors.category_name" class="invalid">{{errors.category_name}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -34,7 +35,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-sort-order">Sort Order</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-sort-order" v-model="form.sort_order" required>
+                                                        <input type="number" class="form-control" id="fv-sort-order" v-model="form.sort_order">
                                                     </div>
                                                 </div>
                                             </div> 
@@ -70,10 +71,13 @@
         data() {
             return {
                 cancel_url: '/databank/companyCategory',
+                errors: {
+                    category_name: ''
+                },
                 form: new Form({
                     id: '',
                     category_name: '',
-                    sort_order: '',
+                    sort_order: 0,
                 })
             }
         },
@@ -84,10 +88,24 @@
                         .then(( response ) => {
                             window.location.href = '/databank/companyCategory';
                     })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.category_name) {
+                            this.errors.category_name = validationError.category_name[0];
+                        }
+                    })
                 } else {
                     this.form.post('/databank/companyCategory/create')
                         .then(( response ) => {
                             window.location.href = '/databank/companyCategory';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.category_name) {
+                            this.errors.category_name = validationError.category_name[0];
+                        }
                     })
                 }
             },

@@ -17,7 +17,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="productData.id">
                                     <div class="preview-block">
                                         <span class="preview-title-lg overline-title">Product Details</span>
@@ -26,7 +26,8 @@
                                                 <div>
                                                     <label class="form-label" for="fv-name">Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-name" v-model="productData.product_name" required>
+                                                        <input type="text" class="form-control" id="fv-name" v-model="productData.product_name">
+                                                        <span v-if="errors.product_name" class="invalid">{{errors.product_name}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -34,7 +35,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-catalogue-name">Catalogue Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-catalogue-name" v-model="productData.catalogue_name" required>
+                                                        <input type="text" class="form-control" id="fv-catalogue-name" v-model="productData.catalogue_name">
                                                     </div>
                                                 </div>
                                             </div>
@@ -42,7 +43,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-brand-name">Brand Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-brand-name" v-model="productData.brand_name" required>
+                                                        <input type="text" class="form-control" id="fv-brand-name" v-model="productData.brand_name">
                                                     </div>
                                                 </div>
                                             </div> 
@@ -50,7 +51,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fv-model-name">Model / Acctress Name</label>
                                                     <div class="form-control-wrap">
-                                                        <input type="text" class="form-control" id="fv-model-name" v-model="productData.model" required>
+                                                        <input type="text" class="form-control" id="fv-model-name" v-model="productData.model">
                                                     </div>
                                                 </div>
                                             </div> 
@@ -68,6 +69,7 @@
                                                     <button type="button" class="btn btn-sm clipboard-init" data-toggle="modal" data-target="#addCompany" title="Add new company"><span class="clipboard-text">Add New</span></button>
                                                     <div>
                                                         <multiselect v-model="productData.company" :options="companies" placeholder="Select one" label="company_name" track-by="company_name" @input="getProductCategory"></multiselect>
+                                                        <span v-if="errors.company" class="invalid">{{errors.company}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -76,6 +78,7 @@
                                                     <label class="form-label" for="fw-company">Category</label>
                                                     <div>
                                                         <multiselect v-model="productData.category" :options="productCategories" placeholder="Select one" label="name" track-by="name" @input="getProductSubCategory"></multiselect>
+                                                        <span v-if="errors.category" class="invalid">{{errors.category}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -84,6 +87,7 @@
                                                     <label class="form-label" for="fw-company">Sub Category</label>
                                                     <div>
                                                         <multiselect v-model="productData.sub_category" :options="productSubCategories" placeholder="Select one" label="name" track-by="name" :multiple="true" :taggable="true" @input="getFabricField"></multiselect>
+                                                        <span v-if="errors.sub_category" class="invalid">{{errors.sub_category}}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -233,7 +237,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-sort_order">Sort Order</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="productAdditionalImage.sort_order" type="text" class="form-control" id="fw-sort_order" name="fw-sort_order">
+                                                        <input v-model="productAdditionalImage.sort_order" type="number" class="form-control" id="fw-sort_order" name="fw-sort_order">
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,7 +260,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-saree_cut">Saree Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.saree_cut" type="text" class="form-control" id="fw-saree_cut" name="fw-saree_cut">
+                                                        <input v-model="fabricsData.saree_cut" type="number" class="form-control" id="fw-saree_cut" name="fw-saree_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -272,7 +276,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-blouse_cut">Blouse Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.blouse_cut" type="text" class="form-control" id="fw-blouse_cut" name="fw-blouse_cut">
+                                                        <input v-model="fabricsData.blouse_cut" type="number" class="form-control" id="fw-blouse_cut" name="fw-blouse_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -288,7 +292,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-top_cut">Top Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.top_cut" type="text" class="form-control" id="fw-top_cut" name="fw-top_cut">
+                                                        <input v-model="fabricsData.top_cut" type="number" class="form-control" id="fw-top_cut" name="fw-top_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -304,7 +308,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-bottom_cut">Bottom Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.bottom_cut" type="text" class="form-control" id="fw-bottom_cut" name="fw-bottom_cut">
+                                                        <input v-model="fabricsData.bottom_cut" type="number" class="form-control" id="fw-bottom_cut" name="fw-bottom_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -320,7 +324,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-dupatta_cut">Dupatta Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.dupatta_cut" type="text" class="form-control" id="fw-dupatta_cut" name="fw-dupatta_cut">
+                                                        <input v-model="fabricsData.dupatta_cut" type="number" class="form-control" id="fw-dupatta_cut" name="fw-dupatta_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -336,7 +340,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-inner_cut">Inner Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.inner_cut" type="text" class="form-control" id="fw-inner_cut" name="fw-inner_cut">
+                                                        <input v-model="fabricsData.inner_cut" type="number" class="form-control" id="fw-inner_cut" name="fw-inner_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -352,7 +356,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-sleeves_cut">Sleeves Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.sleeves_cut" type="text" class="form-control" id="fw-sleeves_cut" name="fw-sleeves_cut">
+                                                        <input v-model="fabricsData.sleeves_cut" type="number" class="form-control" id="fw-sleeves_cut" name="fw-sleeves_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -368,7 +372,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-choli_cut">Choli Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.choli_cut" type="text" class="form-control" id="fw-choli_cut" name="fw-choli_cut">
+                                                        <input v-model="fabricsData.choli_cut" type="number" class="form-control" id="fw-choli_cut" name="fw-choli_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -384,7 +388,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-lehenga_cut">Lehenga Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.lehenga_cut" type="text" class="form-control" id="fw-lehenga_cut" name="fw-lehenga_cut">
+                                                        <input v-model="fabricsData.lehenga_cut" type="number" class="form-control" id="fw-lehenga_cut" name="fw-lehenga_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -400,7 +404,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-lining_cut">Lining Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.lining_cut" type="text" class="form-control" id="fw-lining_cut" name="fw-lining_cut">
+                                                        <input v-model="fabricsData.lining_cut" type="number" class="form-control" id="fw-lining_cut" name="fw-lining_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -416,7 +420,7 @@
                                                 <div class="form-group">
                                                     <label class="form-label" for="fw-gown_cut">Gown Cut</label>
                                                     <div class="form-control-wrap">
-                                                        <input v-model="fabricsData.gown_cut" type="text" class="form-control" id="fw-gown_cut" name="fw-gown_cut">
+                                                        <input v-model="fabricsData.gown_cut" type="number" class="form-control" id="fw-gown_cut" name="fw-gown_cut">
                                                     </div>
                                                 </div>
                                             </div>
@@ -469,7 +473,7 @@
                     product_code: '',
                     product_pic: '',
                     price: '',
-                    sort_order: '',
+                    sort_order: 0,
                 }],
                 fabricFields : [],
                 fabrics : {
@@ -487,31 +491,37 @@
                 },
                 fabricsData : {                    
                     saree_fabric: '',
-                    saree_cut: '',                    
+                    saree_cut: 0,
                     blouse_fabric: '',
-                    blouse_cut: '',                    
+                    blouse_cut: 0,
                     top_fabric: '',
-                    top_cut: '',                    
+                    top_cut: 0,
                     bottom_fabric: '',
-                    bottom_cut: '',                    
+                    bottom_cut: 0,
                     dupatta_fabric: '',
-                    dupatta_cut: '',                    
+                    dupatta_cut: 0,
                     inner_fabric: '',
-                    inner_cut: '',                    
+                    inner_cut: 0,
                     sleeves_fabric: '',
-                    sleeves_cut: '',                    
+                    sleeves_cut: 0,
                     choli_fabric: '',
-                    choli_cut: '',                    
+                    choli_cut: 0,
                     lehenga_fabric: '',
-                    lehenga_cut: '',                    
+                    lehenga_cut: 0,
                     lining_fabric: '',
-                    lining_cut: '',                    
+                    lining_cut: 0,
                     gown_fabric: '',
-                    gown_cut: '',
+                    gown_cut: 0,
                 },
                 fabricFieldData : [],
                 mainImage: [],
                 priceListImage: [],
+                errors: {
+                    product_name: '',
+                    company: '',
+                    category: '',
+                    sub_category: '',
+                },
                 productData: {
                     id: '',
                     product_name: '',
@@ -542,7 +552,6 @@
             axios.get('/databank/catalog/list-companies')
             .then(response => {
                 this.companies = response.data;
-                console.log("COMPANY:- ", this.companies);
             });
         },
         methods: {
@@ -569,7 +578,7 @@
             },
             getProductCategory: function(event) {
                 if(event != null) {
-                    axios.get(`/databank/catalog/main-category/${event.id}`)
+                    axios.get('/databank/catalog/main-category/'+event.id)
                     .then(response => { 
                         this.productCategories = response.data;
                     });
@@ -577,16 +586,15 @@
             },
             getProductSubCategory: function(event) {
                 if(event != null) {
-                    axios.get(`/databank/catalog/sub-category/${event.id}/${this.productData.company.id}`)
+                    axios.get('/databank/catalog/sub-category/'+event.id+'/'+ this.productData.company.id)
                     .then(response => {
-                            this.productSubCategories = response.data;
+                        this.productSubCategories = response.data;
                     });
                 }                
             },
             getFabricField: function(event) {
                 if(event.length != 0) {
                     var fabricId = [];
-                    var fData = [];
                     event.forEach(function(e, index){
                         if(e.fabric_id != 0) {
                             fabricId.push(e.fabric_id);
@@ -604,7 +612,6 @@
                             this.fabrics[fabric_fields[i]] = 1;                        
                         }
                     });
-                    console.log(this.fabrics);
                 }
 
             },
@@ -637,16 +644,47 @@
                     }
                 })
 
-
                 if (this.scope == 'edit') {
                     axios.post('/databank/catalog/update', formData)
                     .then(response => {
                         window.location.href = '/databank/catalog';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.product_name) {
+                            this.errors.product_name = validationError.product_name[0];
+                        }
+                        if(validationError.company) {
+                            this.errors.company = validationError.company[0];
+                        }
+                        if(validationError.category) {
+                            this.errors.category = validationError.category[0];
+                        }
+                        if(validationError.sub_category) {
+                            this.errors.sub_category = validationError.sub_category[0];
+                        }
                     });
                 } else {
                     axios.post('/databank/catalog/create', formData)
                     .then(response => {
                         window.location.href = '/databank/catalog';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.product_name) {
+                            this.errors.product_name = validationError.product_name[0];
+                        }
+                        if(validationError.company) {
+                            this.errors.company = validationError.company[0];
+                        }
+                        if(validationError.category) {
+                            this.errors.category = validationError.category[0];
+                        }
+                        if(validationError.sub_category) {
+                            this.errors.sub_category = validationError.sub_category[0];
+                        }
                     });
                 }
             },

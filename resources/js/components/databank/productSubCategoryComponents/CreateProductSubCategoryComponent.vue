@@ -17,7 +17,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered">
                             <div class="card-inner">
-                                <form action="#" @submit.prevent="register()">
+                                <form action="#" class="form-validate" @submit.prevent="register()">
                                     <input type="hidden" v-if="scope == 'edit'" id="fv-group-id" v-model="form.id">
                                     <div class="preview-block">
                                         <div class="row gy-4">
@@ -49,6 +49,7 @@
                                                         <label class="form-label" for="fv-main_category">Main Category</label>
                                                         <div>
                                                             <multiselect v-model="form.main_category" :options="productCategories" placeholder="Select one" label="category_name" track-by="category_name" @input="getFiber"></multiselect>
+                                                            <span v-if="errors.mainCategory" class="invalid">{{errors.mainCategory}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -57,12 +58,13 @@
                                                         <label class="form-label" for="fv-company">company</label>
                                                         <div>
                                                             <multiselect v-model="form.company" tag-placeholder="Select Company" placeholder="Search Company" label="company_name" track-by="id" :options="companies" :multiple="true" :taggable="true"></multiselect>
+                                                            <span v-if="errors.companies" class="invalid">{{errors.companies}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div v-if="fabric == true" class="col-md-4">
                                                     <div>
-                                                        <label class="form-label" for="fv-company">Fabric Group</label>
+                                                        <label class="form-label" for="fv-fabricGroup">Fabric Group</label>
                                                         <div>
                                                             <multiselect v-model="form.fabric_group" tag-placeholder="Select Fabric group" placeholder="Search Fabric Group" label="name" track-by="id" :options="fabricGroup"></multiselect>
                                                         </div>
@@ -70,9 +72,10 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label class="form-label" for="fv-category-name">Sub Category Name</label>
+                                                        <label class="form-label" for="fv-sub-category-name">Sub Category Name</label>
                                                         <div class="form-control-wrap">
-                                                            <input type="text" class="form-control" id="fv-category-name" v-model="form.sub_category_name" required>
+                                                            <input type="text" class="form-control" id="fv-sub-category-name" v-model="form.sub_category_name">
+                                                            <span v-if="errors.subCategoryName" class="invalid">{{errors.subCategoryName}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -80,7 +83,7 @@
                                                     <div class="form-group">
                                                         <label class="form-label" for="fv-sort-order">Sort Order</label>
                                                         <div class="form-control-wrap">
-                                                            <input type="text" class="form-control" id="fv-sort-order" v-model="form.sort_order" required>
+                                                            <input type="number" class="form-control" id="fv-sort-order" v-model="form.sort_order">
                                                         </div>
                                                     </div>
                                                 </div> 
@@ -93,6 +96,7 @@
                                                         <label class="form-label" for="fv-company">company</label>
                                                         <div>
                                                             <multiselect v-model="form.singleCompany" :options="companies" placeholder="Select one" label="company_name" track-by="company_name"></multiselect>
+                                                            <span v-if="errors.singleCompany" class="invalid">{{errors.singleCompany}}</span>
                                                         </div>
                                                     </div>
                                                 </div>                                                
@@ -110,6 +114,7 @@
                                                         <label class="form-label" for="fv-mainCategory">Main Category</label>
                                                         <div>
                                                             <multiselect v-model="productSubCategory.mainCategory" :options="productCategories" placeholder="Select one" label="category_name" track-by="category_name" @input="getMFiber($event, index)"></multiselect>
+                                                            <span v-if="errors.mainCate" class="invalid">{{errors.mainCate}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -125,7 +130,8 @@
                                                     <div>
                                                         <label class="form-label" for="fv-company">Sub Category Name</label>
                                                         <div class="form-control-wrap">
-                                                            <input type="text" class="form-control" id="fv-category-name" v-model="productSubCategory.sub_category_name" required>
+                                                            <input type="text" class="form-control" id="fv-category-name" v-model="productSubCategory.sub_category_name">
+                                                            <span v-if="errors.subCategoryName" class="invalid">{{errors.subCategoryName}}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -133,7 +139,7 @@
                                                     <div>
                                                         <label class="form-label" for="fv-company">Rate</label>
                                                         <div class="form-control-wrap">
-                                                            <input type="number" class="form-control" id="fv-category-name" v-model="productSubCategory.rate" required>
+                                                            <input type="number" class="form-control" id="fv-category-name" v-model="productSubCategory.rate">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -141,7 +147,7 @@
                                                     <div>
                                                         <label class="form-label" for="fv-company">Sort Order</label>
                                                         <div class="form-control-wrap">
-                                                            <input type="text" class="form-control" id="fv-category-name" v-model="productSubCategory.sort_order" required>
+                                                            <input type="number" class="form-control" id="fv-category-name" v-model="productSubCategory.sort_order">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -197,9 +203,17 @@
                     mainCategory: '',
                     mfabric_group: '',
                     sub_category_name: '',
-                    rate: '',
-                    sort_order: '',
+                    rate: 0,
+                    sort_order: 0,
                 }],
+                errors: {
+                    mainCategory: '',
+                    companies: '',
+                    subCategoryName: '',
+                    mainCate: '',
+                    singleCompany: '',
+                    subCateName: '',
+                },
                 form: new Form({
                     id: '',
                     multiple_company: 1,
@@ -208,7 +222,7 @@
                     company: [],
                     singleCompany: [],
                     sub_category_name: '',
-                    sort_order: '',
+                    sort_order: 0,
                     productSubCategory: '',
                 })
             }
@@ -263,12 +277,34 @@
                 if (this.scope == 'edit') {
                     this.form.post('/databank/productsub-category/update')
                         .then(( response ) => {
-                            window.location.href = '/databank/productsub-category';
+                            window.location.href = '/databank/productsub-category';                            
                     })
                 } else {
                     this.form.post('/databank/productsub-category/create')
                         .then(( response ) => {
                             window.location.href = '/databank/productsub-category';
+                    })
+                    .catch((error) => {
+                        var validationError = error.response.data.errors;
+
+                        if(validationError.main_category) {
+                            this.errors.mainCategory = validationError.main_category[0];
+                        }
+                        if(validationError.company) {
+                            this.errors.companies = validationError.company[0];
+                        }
+                        if(validationError.sub_category_name) {
+                            this.errors.subCategoryName = validationError.sub_category_name[0];
+                        }
+                        if(validationError.mainCategory) {
+                            this.errors.mainCate = validationError.mainCategory[0];
+                        }
+                        if(validationError.singleCompany) {
+                            this.errors.singleCompany = validationError.singleCompany[0];
+                        }
+                        if(validationError.sub_category_name) {
+                            this.errors.subCateName = validationError.sub_category_name[0];
+                        }
                     })
                 }
             },
@@ -290,6 +326,11 @@
                             this.form.sub_category_name = productSubCategories.sub_category_name;                            
                             this.form.fabric_group = productSubCategories.fabric_group;
                             this.form.sort_order = productSubCategories.sort_order;
+                            if (this.form.fabric_group) {
+                                this.fabric = true;
+                            } else {
+                                this.fabric = false;
+                            }
 
                         } else if (productSubCategories.multiple_company == 0) {
                             this.multipleCompanies = false;

@@ -14,7 +14,7 @@ class CreateTransportMultipleAddressDetailsTable extends Migration
     public function up()
     {
         Schema::create('transport_multiple_address_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('transport_details')->nullable();
             $table->string('contact_person_name')->nullable();
             $table->string('contact_person_address')->nullable();

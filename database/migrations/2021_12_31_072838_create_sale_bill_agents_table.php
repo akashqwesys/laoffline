@@ -14,9 +14,10 @@ class CreateSaleBillAgentsTable extends Migration
     public function up()
     {
         Schema::create('sale_bill_agents', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name')->nullable();
             $table->string('default')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

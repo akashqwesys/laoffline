@@ -29,7 +29,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export table" data-export-title="Export">
+                                <table id="productSubCategory" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -47,18 +47,9 @@
                                             <td>{{ productSubCategory.categoryName }}</td>
                                             <td>{{ productSubCategory.fabricGroupName }}</td>
                                             <td>{{ productSubCategory.companyName }}</td>
-                                            <!-- <td v-if="productSubCategory.company_id != ''">{{ getCompanyName(productSubCategory.company_id) }}</td> -->
-                                            <!-- <td else></td> -->
                                             <td>
-                                                <div class="dropdown">
-                                                    <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
-                                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
-                                                        <ul class="link-list-opt no-bdr">
-                                                            <li><a href="#" @click="edit_data(productSubCategory.id)"><em class="icon ni ni-edit-alt"></em><span>update</span></a></li>
-                                                            <li><a href="#" @click="delete_data(productSubCategory.id)"><em class="icon ni ni-trash"></em><span>Remove</span></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                <a href="#" @click="edit_data(productSubCategory.id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+                                                <a href="#" @click="delete_data(productSubCategory.id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>                                                
                                             </td>
                                         </tr>
                                     </tbody>
@@ -77,6 +68,9 @@
 
     export default {
         name: 'productSubCategory',
+        props: {
+            excelAccess: Number,
+        },
         components: { 
             VueLoader,
         },

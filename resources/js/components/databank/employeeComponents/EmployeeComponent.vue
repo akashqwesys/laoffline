@@ -1,6 +1,5 @@
 <template>
     <div class="nk-content ">
-        <vue-loader v-if="showLoader"></vue-loader>
         <div class="container-fluid">
             <div class="nk-content-inner">
                 <div class="nk-content-body">
@@ -29,7 +28,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export nowrap table" data-export-title="Export">
+                                <table id="employee" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -61,15 +60,8 @@
                                             <td v-if="employee.is_active == '1'" ><span class="badge badge-dot badge-dot-xs badge-success">Yes</span></td>
                                             <td v-else ><span class="badge badge-dot badge-dot-xs badge-danger">No</span></td>
                                             <td>
-                                                <div class="dropdown">
-                                                    <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
-                                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
-                                                        <ul class="link-list-plain">
-                                                            <li><a href="#" @click="edit_data(employee.employee_id)"><em class="icon ni ni-edit-alt"></em><span>update</span></a></li>
-                                                            <li><a href="#" @click="delete_data(employee.employee_id)"><em class="icon ni ni-trash"></em><span>Remove</span></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                <a href="#" @click="edit_data(employee.employee_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+                                                <a href="#" @click="delete_data(employee.employee_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>                                                
                                             </td>
                                         </tr>
                                     </tbody>
@@ -84,26 +76,22 @@
 </template>
 
 <script>
-    import VueLoader from './../../../VueLoader';
 
     export default {
         name: 'employee',
-        components: { 
-            VueLoader,
+        props: {
+            excelAccess: Number,
         },
         data() {
             return {
                 employees: [],
-                showLoader:false,
                 create_employee: 'employee/create-employee',
             }
         },
         created() {
-            this.showLoader = true;
             axios.get('./employee/list')
             .then(response => {
                 this.employees = response.data;
-                this.showLoader = false;
             });
         },
         methods: {
@@ -117,10 +105,17 @@
                 });
             },
             getProfilePic(name){
-                return '/upload/profilePic/' + name;
+                var profilePic = '/upload/profilePic/' + name;
+                
+                return profilePic;
             }
         },
         mounted() {
         },
     };
 </script>
+<style>
+    .user-avatar img{
+        width: 100%;
+    }
+</style>

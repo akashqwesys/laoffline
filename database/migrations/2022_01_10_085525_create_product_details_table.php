@@ -14,7 +14,7 @@ class CreateProductDetailsTable extends Migration
     public function up()
     {
         Schema::create('product_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('product_id')->default('0');
             $table->integer('catalogue_price')->default('0');
             $table->integer('average_price')->default('0');

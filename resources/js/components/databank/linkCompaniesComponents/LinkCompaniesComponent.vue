@@ -29,7 +29,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export nowrap table" data-export-title="Export">
+                                <table id="linkCompanies" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -113,7 +113,10 @@
     import VueLoader from './../../../VueLoader';
 
     export default {
-        name: 'linkCompany',        
+        name: 'linkCompany',
+        props: {
+            excelAccess: Number,
+        },
         components: {
             Multiselect,
             VueLoader,

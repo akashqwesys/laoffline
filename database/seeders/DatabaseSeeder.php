@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             CreateUsersSeeder::class,
             CreateCountriesSeeder::class,
             CreateStatesSeeder::class,
+            CreateCompanyType::class,
+            CreateFabricFieldSeeder::class,
+            CreateFabricGroupSeeder::class,
+            CreateProductDefaultCategorySeeder::class,
         ]);
     }
 }

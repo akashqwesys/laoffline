@@ -14,13 +14,14 @@ class CreateAgentsTable extends Migration
     public function up()
     {
         Schema::create('agents', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('name')->nullable();
             $table->string('pan_no')->nullable();
             $table->string('gst_no')->nullable();
             $table->string('default')->nullable();
             $table->string('include_tax')->nullable();
             $table->string('inv_prefix')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

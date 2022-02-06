@@ -14,7 +14,7 @@ class CreateEmployeesTable extends Migration
     public function up()
     {
         Schema::create('employees', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->string('firstname')->nullable();
             $table->string('middlename')->nullable();
             $table->string('lastname')->nullable();
@@ -30,6 +30,7 @@ class CreateEmployeesTable extends Migration
             $table->string('ref_mobile')->nullable();
             $table->text('ref_address')->nullable();
             $table->string('web_login')->nullable();
+            $table->integer('is_delete')->default('0');
             $table->timestamps();
         });
     }

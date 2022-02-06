@@ -14,7 +14,7 @@ class CreateCompanyBankDetailsTable extends Migration
     public function up()
     {
         Schema::create('company_bank_details', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('company_id')->default('0');
             $table->string('bank_name')->nullable();
             $table->string('account_holder_name')->nullable();

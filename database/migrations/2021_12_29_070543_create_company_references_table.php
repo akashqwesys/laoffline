@@ -14,7 +14,7 @@ class CreateCompanyReferencesTable extends Migration
     public function up()
     {
         Schema::create('company_references', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('company_id')->default('0');
             $table->string('ref_person_name')->nullable();
             $table->string('ref_person_mobile')->nullable();

@@ -14,7 +14,7 @@ class CreateLinkCompaniesLogsTable extends Migration
     public function up()
     {
         Schema::create('link_companies_logs', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id');
             $table->integer('company_id')->default('0');
             $table->string('subject')->nullable();
             $table->timestamps();

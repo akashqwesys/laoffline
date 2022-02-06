@@ -29,7 +29,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table class="datatable-init-export table" data-export-title="Export">
+                                <table id="product" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -55,12 +55,12 @@
                                             <td>
                                                 <div class="user-card">
                                                     <div class="user-avatar user-avatar-sm product">
-                                                        <img class="product_image" v-if="product.main_image != ''" v-bind:src="getProfilePic(product.product_name, product.main_image)" alt="">
+                                                        <img class="product_image" v-if="product.main_image != ''" :src="product.main_image" alt="">
                                                         <span v-if="product.main_image == ''">{{ product.product_name.charAt(0) }}</span>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td> {{ product.product_name }} </td>
+                                            <td>{{ product.product_name }}</td>
                                             <td>{{ product.catalogue_name }}</td>
                                             <td>{{ product.brand_name }}</td>
                                             <td>{{ product.model }}</td>
@@ -68,16 +68,9 @@
                                             <td>{{ product.category_name }}</td>
                                             <td>{{ product.catalogue_price }}</td>
                                             <td>
-                                                <div class="dropdown">
-                                                    <a class="text-soft dropdown-toggle btn btn-icon btn-trigger" data-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
-                                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-xs">
-                                                        <ul class="link-list-opt no-bdr">
-                                                            <li><a href="#" @click="view_data(product.id)"><em class="icon ni ni-eye"></em><span>View</span></a></li>
-                                                            <li><a href="#" @click="edit_data(product.id)"><em class="icon ni ni-edit-alt"></em><span>update</span></a></li>
-                                                            <li><a href="#" @click="delete_data(product.id)"><em class="icon ni ni-trash"></em><span>Remove</span></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
+                                                <a href="#" @click="view_data(product.product_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
+                                                <a href="#" @click="edit_data(product.product_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+                                                <a href="#" @click="delete_data(product.product_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>                                                
                                             </td>
                                         </tr>
                                     </tbody>
@@ -96,6 +89,9 @@
 
     export default {
         name: 'product',
+        props: {
+            excelAccess: Number,
+        },
         components: { 
             VueLoader,
         },
@@ -103,6 +99,7 @@
             return {
                 products: [],
                 showLoader:false,
+                findImage: '',
                 create_product_category: 'catalog/create-products',
             }
         },
@@ -118,17 +115,14 @@
             edit_data(id){
                 window.location.href = './catalog/edit-products/'+id;
             },
+            view_data(id){
+                // window.location.href = './catalog/edit-products/'+id;
+            },
             delete_data(id){
                 axios.delete('./catalog/delete/'+id)
                 .then(response => {                    
                     location.reload();
                 });
-            },
-            getProfilePic(pname, name){
-                var d = name.split('_')[0];
-                var path = d + '_' + pname.replace(/ /g,"_") + '/' + name;
-
-                return '/upload/products/' + path;
             }
         },
         mounted() {

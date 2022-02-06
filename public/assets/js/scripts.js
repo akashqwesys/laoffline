@@ -458,23 +458,36 @@
             });
         }
     };
-
+    var pathname = window.location.pathname;
     // DataTable Init @v1.0
-    NioApp.DataTable.init = function () {
-        NioApp.DataTable('.datatable-init', {
-            responsive: {
-                details: true
-            }
-        });
-
-        NioApp.DataTable('.datatable-init-export', {
-            responsive: {
-                details: true
-            },
-            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
-        });
-        $.fn.DataTable.ext.pager.numbers_length = 7;
-    }
+        NioApp.DataTable.init = function () {
+            NioApp.DataTable('.datatable-init', {
+                responsive: {
+                    details: true
+                }
+            });
+        
+        if (pathname == '/databank/productsub-category' || pathname == '/databank/companies') {            
+            setTimeout(function(){
+                NioApp.DataTable('.datatable-init-export', {
+                    responsive: {
+                        details: true
+                    },
+                    buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+                });
+            },7000);
+        } else {            
+            setTimeout(function(){
+                NioApp.DataTable('.datatable-init-export', {
+                    responsive: {
+                        details: true
+                    },
+                    buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+                });
+            },3000);
+        }
+            $.fn.DataTable.ext.pager.numbers_length = 7;
+        }
 
 
     // BootStrap Extended
