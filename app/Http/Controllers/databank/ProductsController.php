@@ -56,20 +56,92 @@ class ProductsController extends Controller
         return view('databank.products.createProduct')->with('employees', $employees);
     }
 
-    public function listProducts() {
+    public function listProducts(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = Product::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = Product::select('count(*) as allcount')->
+                                           where('product_name', 'like', '%' .$searchValue . '%')->
+                                           count();
+
+        // Fetch records
         $products = Product::join('companies','products.company','=','companies.id')->
-                            join('product_categories','products.category','=','product_categories.id')->
-                            join('product_details','products.id','=','product_details.product_id')->
-                            where('products.is_delete', 0)->
-                            get(['products.*','products.id as product_id','companies.company_name','product_categories.name as category_name','product_details.catalogue_price']);
+                             join('product_categories','products.category','=','product_categories.id')->
+                             join('product_details','products.id','=','product_details.product_id')->
+                             orderBy('products.'.$columnName,$columnSortOrder)->
+                             where('products.product_name', 'like', '%' .$searchValue . '%')->
+                             where('products.is_delete', 0)->
+                             skip($start)->
+                             take($rowperpage)->
+                             get(['products.*','products.id as product_id','companies.company_name','product_categories.name as category_name','product_details.catalogue_price']);
+
+        $data_arr = array();
+        $sno = $start+1;
 
         foreach($products as $product) {
-            if (!empty($product->main_image)) {
-                $product->main_image = '/upload/products/'.$product->main_image;
+            $id = $product->product_id;
+            $f = substr($product->product_name, 0, 1);
+
+            if (!empty($product->complete_flag)) {
+                $flag = '<em class="icon ni ni-check-thick"></em>';
+            } else {
+                $flag = '<em class="icon ni ni-alert-fill"></em>';
             }
+
+            if (!empty($product->main_image)) {
+                $mainImage = '<img src="/upload/products/'.$product->main_image.'" alt="">';
+            } else {
+                $mainImage = '<span>'.strtoupper($f).'</span>';
+            }
+
+            $name = $product->product_name;
+            $catalogue_name = $product->catalogue_name;
+            $brand_name = $product->brand_name;
+            $model = $product->model;
+            $company_name = $product->company_name;
+            $category_name = $product->category_name;
+            $catalogue_price = $product->catalogue_price;
+            // <a href="#" @click="view_data(product.product_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
+            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            $data_arr[] = array(
+                "id" => $id,
+                "flag" => $flag,
+                "image" => $mainImage,
+                "name" => $name,
+                "catalogue_name" => $catalogue_name,
+                "brand_name" => $brand_name,
+                "model" => $model,
+                "company_name" => $company_name,
+                "category_name" => $category_name,
+                "catalogue_price" => $catalogue_price,
+                "action" => $action
+            );            
         }
 
-        return $products;
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function mainCategory($id) {

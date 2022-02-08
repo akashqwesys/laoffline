@@ -49,13 +49,65 @@ class ProductCategoryController extends Controller
         return view('databank.productCategories.createProductCategory')->with('employees', $employees);
     }
 
-    public function listProductCategory() {
+    public function listProductCategory(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = ProductCategory::where('product_default_category_id', '!=', '0')->select('count(*) as allcount')->count();
+        $totalRecordswithFilter = ProductCategory::select('count(*) as allcount')->
+                                                   where('product_default_category_id', '!=', '0')->
+                                                   where('name', 'like', '%' .$searchValue . '%')->
+                                                   count();
+
+        // Fetch records
         $productCategory = ProductCategory::join('product_default_categories','product_categories.product_default_category_id','=','product_default_categories.id')->
+                                            orderBy('product_categories.'.$columnName,$columnSortOrder)->
+                                            where('product_categories.name', 'like', '%' .$searchValue . '%')->
                                             where('product_categories.product_default_category_id', '!=', '0')->
                                             where('product_categories.is_delete', '0')->
+                                            skip($start)->
+                                            take($rowperpage)->
                                             get(['product_default_categories.name as default_category', 'product_categories.name as category_name', 'product_categories.id as category_id']);
 
-        return $productCategory;
+        $data_arr = array();
+        $sno = $start+1;
+
+        foreach($productCategory as $record){            
+            $id = $record->category_id;
+            $name = $record->category_name;
+            $default_category = $record->default_category;
+            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            $data_arr[] = array(
+                "id" => $id,
+                "name" => $name,
+                "default_category" => $default_category,
+                "action" => $action
+            );
+        }
+
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function listProductDefaultCategoriesCategory() {

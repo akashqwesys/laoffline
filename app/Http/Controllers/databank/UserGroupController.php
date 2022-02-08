@@ -57,10 +57,59 @@ class UserGroupController extends Controller
         return $permissions;
     }
 
-    public function listUserGroup() {
-        $userGroups = UserGroup::where('is_delete', 0)->get();
+    public function listUserGroup(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
 
-        return $userGroups;
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = UserGroup::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = UserGroup::select('count(*) as allcount')->where('name', 'like', '%' .$searchValue . '%')->count();
+
+        // Fetch records
+        $records = UserGroup::orderBy($columnName,$columnSortOrder)->
+                         where('name', 'like', '%' .$searchValue . '%')->
+                         where('is_delete', 0)->
+                         select('*')->
+                         skip($start)->
+                         take($rowperpage)->
+                         get();
+
+        $data_arr = array();
+        $sno = $start+1;
+
+        foreach($records as $record){
+            $id = $record->id;
+            $name = $record->name;
+            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            $data_arr[] = array(
+                "id" => $id,
+                "name" => $name,
+                "action" => $action
+            );
+        }
+
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function editUserGroup($id) {

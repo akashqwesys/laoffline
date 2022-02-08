@@ -8,7 +8,7 @@
                             <div class="nk-block-head-content">
                                 <h3 class="nk-block-title page-title">Employee Lists</h3>
                                 <div class="nk-block-des text-soft">
-                                    <p>You have total {{employees.length}} employee.</p>
+                                    <!-- <p>You have total {{employees.length}} employee.</p> -->
                                 </div>
                             </div><!-- .nk-block-head-content -->
                             <div class="nk-block-head-content">
@@ -28,7 +28,7 @@
                     <div class="nk-block">
                         <div class="card card-bordered card-stretch">
                             <div class="card-inner">
-                                <table id="employee" :class="excelAccess == 1 ? 'datatable-init-export table' : 'datatable-init table'" :data-export-title="excelAccess == 1 ? 'Export' : ''">
+                                <table id="employee" class="table table-hover table-bordered">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -41,30 +41,6 @@
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr v-for="(employee, index) in employees" :key="index">
-                                            <td>{{ index + 1 }}</td>
-                                            <td>
-                                                <div class="user-card">
-                                                    <div class="user-avatar user-avatar-sm bg-warning">
-                                                        <img v-if="employee.profile_pic != ''" v-bind:src="getProfilePic(employee.profile_pic)" alt="">
-                                                        <span v-if="employee.profile_pic == ''">{{ employee.firstname.charAt(0) }}{{ employee.lastname.charAt(0) }}</span>
-                                                    </div>
-                                                    <div class="user-name"><span class="tb-lead">{{ employee.firstname }} {{ employee.middlename }} {{ employee.lastname }}</span></div>                                                    
-                                                </div>
-                                            </td>
-                                            <td>{{ employee.email_id }}</td>
-                                            <td>{{ employee.mobile }}</td>
-                                            <td>{{ employee.name }}</td>
-                                            <td>{{ employee.web_login }}</td>
-                                            <td v-if="employee.is_active == '1'" ><span class="badge badge-dot badge-dot-xs badge-success">Yes</span></td>
-                                            <td v-else ><span class="badge badge-dot badge-dot-xs badge-danger">No</span></td>
-                                            <td>
-                                                <a href="#" @click="edit_data(employee.employee_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-                                                <a href="#" @click="delete_data(employee.employee_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>                                                
-                                            </td>
-                                        </tr>
-                                    </tbody>
                                 </table>
                             </div><!-- .card -->
                         </div>
@@ -76,6 +52,14 @@
 </template>
 
 <script>
+    import 'jquery/dist/jquery.min.js';
+    import "datatables.net-dt/js/dataTables.dataTables";
+    import "datatables.net-buttons/js/dataTables.buttons.js";
+    import "datatables.net-buttons/js/buttons.colVis.js";
+    import "datatables.net-buttons/js/buttons.flash.js";
+    import "datatables.net-buttons/js/buttons.html5.js";
+    import "datatables.net-buttons/js/buttons.print.js";
+    import $ from 'jquery';
 
     export default {
         name: 'employee',
@@ -84,15 +68,8 @@
         },
         data() {
             return {
-                employees: [],
                 create_employee: 'employee/create-employee',
             }
-        },
-        created() {
-            axios.get('./employee/list')
-            .then(response => {
-                this.employees = response.data;
-            });
         },
         methods: {
             edit_data(id){
@@ -104,18 +81,134 @@
                     location.reload();
                 });
             },
-            getProfilePic(name){
-                var profilePic = '/upload/profilePic/' + name;
-                
-                return profilePic;
-            }
         },
         mounted() {
+            if(this.excelAccess == 1) {
+                $('#employee').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "./employee/list",
+                    pagingType: 'full_numbers',
+                    dom: 'Bfrtip',
+                    columns: [
+                        { data: 'id' },
+                        { data: 'name' },
+                        { data: 'email' },
+                        { data: 'mobile' },
+                        { data: 'user_group' },
+                        { data: 'web_login' },
+                        { data: 'active' },
+                        { data: 'action' },
+                    ],
+                    buttons: ['copy', 'csv', 'excel', 'print']
+                });
+            } else {
+                $('#employee').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "./employee/list",
+                    pagingType: 'full_numbers',
+                    dom: 'Bfrtip',
+                    columns: [
+                        { data: 'id' },
+                        { data: 'name' },
+                        { data: 'email' },
+                        { data: 'mobile' },
+                        { data: 'user_group' },
+                        { data: 'web_login' },
+                        { data: 'active' },
+                        { data: 'action' },
+                    ],
+                    buttons: []
+                });
+            }
         },
     };
 </script>
 <style>
     .user-avatar img{
         width: 100%;
+    }
+    .dataTables_filter {
+        padding: 10px;
+    }
+    .dataTables_filter input {
+        margin-left: 10px;
+    }
+    .dt-buttons {
+        position: relative;
+        display: inline-flex;
+        vertical-align: middle;
+        flex-wrap: wrap;        
+        float: right;
+    }
+    .dt-buttons .dt-button {    
+        position: relative;
+        flex: 1 1 auto;
+        display: inline-flex;
+        font-family: Nunito, sans-serif;
+        font-weight: 700;
+        color: #526484;
+        text-align: center;
+        vertical-align: middle;
+        user-select: none;
+        background-color: transparent;
+        border: 1px solid #dbdfea;
+        padding: 0.4375rem 0;
+        font-size: 0.8125rem;
+        line-height: 1.25rem;
+        border-radius: 4px;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .dt-buttons .dt-button::before {
+        font-size: 1.125rem;
+        font-weight: normal;
+        font-style: normal;
+        width: 2.125rem;
+        font-family: "Nioicon";
+    }
+    .dt-buttons .dt-button span {
+        display: none;
+    }
+    .dataTables_paginate {
+        display: flex;
+        padding-left: 0;
+        list-style: none;
+        border-radius: 4px;
+        margin: 2px 0;
+        justify-content: flex-end;
+    }
+    .dataTables_paginate .paginate_button.disabled,
+    .dataTables_paginate .paginate_button.disabled {
+        color: #dbdfea;
+        pointer-events: none;
+        background-color: #fff;
+        border-color: #e5e9f2;
+    }
+    .dataTables_paginate .paginate_button.first,
+    .dataTables_paginate .paginate_button.previous,
+    .dataTables_paginate .paginate_button.next,
+    .dataTables_paginate .paginate_button.last {
+        margin-left: 0;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    .dataTables_paginate .paginate_button {
+        font-size: 0.8125rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: calc(1rem + 1.125rem + 2px);
+        position: relative;
+        padding: 0.5625rem 0.625rem;
+        line-height: 1rem;
+        border: 1px solid #e5e9f2;
+        cursor: pointer;
+    }
+    .dataTables_paginate .paginate_button.current {
+        z-index: 3;
+        color: #fff;
+        background-color: #6576ff;
+        border-color: #6576ff;
     }
 </style>

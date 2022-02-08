@@ -48,10 +48,60 @@ class CompanyCategoryController extends Controller
         return view('databank.companyCategories.createCompanyCategory')->with('employees', $employees);
     }
 
-    public function listCompanyCategory() {
-        $companyCategory = CompanyCategory::where('is_delete', 0)->get();
+    public function listCompanyCategory(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
 
-        return $companyCategory;
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = CompanyCategory::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = CompanyCategory::select('count(*) as allcount')->
+                                           where('category_name', 'like', '%' .$searchValue . '%')->
+                                           count();
+
+        // Fetch records
+        $companyCategory = CompanyCategory::orderBy($columnName,$columnSortOrder)->
+                                            where('is_delete', 0)->
+                                            skip($start)->
+                                            take($rowperpage)->
+                                            get();
+
+        $data_arr = array();
+        $sno = $start+1;
+
+        foreach($companyCategory as $category) {
+            $id = $category->id;
+            $name = $category->category_name;
+
+            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            $data_arr[] = array(
+                "id" => $id,
+                "name" => $name,
+                "action" => $action
+            ); 
+        }
+
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function editCompanyCategory($id) {

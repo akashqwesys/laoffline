@@ -51,38 +51,102 @@ class ProductSubCategoryController extends Controller
         return view('databank.productSubCategories.createProductSubCategory')->with('employees', $employees);
     }
 
-    public function listProductSubCategory() {
-        $productSubCategory = ProductCategory::join('product_categories as pc','product_categories.main_category_id','=','pc.id')->
-                                               where('product_categories.main_category_id', '!=', '0')->
-                                               where('product_categories.is_delete', '0')->
-                                               get(['product_categories.*', 'pc.name as categoryName']);
+    public function listProductSubCategory(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
 
-        foreach($productSubCategory as $category) {
-            $id = $category->company_id;
-            if (!empty($id)) {
-                if(is_array(json_decode($id))) {
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = ProductCategory::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = ProductCategory::select('count(*) as allcount')->
+                                            where('name', 'like', '%' .$searchValue . '%')->
+                                            count();
+
+        // Fetch records
+        $records = ProductCategory::join('product_categories as pc','product_categories.main_category_id','=','pc.id')->
+                                    orderBy('product_categories.'.$columnName,$columnSortOrder)->
+                                    where('product_categories.name', 'like', '%' .$searchValue . '%')->
+                                    where('product_categories.main_category_id', '!=', '0')->
+                                    where('product_categories.is_delete', '0')->
+                                    skip($start)->
+                                    take($rowperpage)->
+                                    get(['product_categories.*', 'pc.name as categoryName']);
+
+        $data_arr = array();
+        $sno = $start+1;
+
+        foreach($records as $record){
+            $id = $record->id;
+
+            $companyId = $record->company_id;
+            if (!empty($companyId)) {
+                if(is_array(json_decode($companyId))) {
                     $companyName = [];
-                    $companyArr = json_decode($id);
+                    $companyArr = json_decode($companyId);
 
                     foreach($companyArr as $key => $c) {
                         $company = Company::where('id', $c)->first('company_name');
                         $companyName[$key] = $company->company_name;
                     }                
+                } else {
+                    $cId = json_decode($companyId);
+                    $company = Company::where('id', $cId)->first('company_name');
+                    $companyName = $company->company_name;
                 }
-                $category['companyName'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+                $record['companyName'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
-                $category['companyName'] = '';
+                $record['companyName'] = '';
             }
             
-            if ($category->product_fabric_id != 0) {
-                $fabricGroup = productFabricGroup::where('id', $category->product_fabric_id)->first('name');
-                $category['fabricGroupName'] = $fabricGroup->name;
+            if ($record->product_fabric_id != 0) {
+                $fabricGroup = productFabricGroup::where('id', $record->product_fabric_id)->first('name');
+                $record['fabricGroupName'] = $fabricGroup->name;
             } else {
-                $category['fabricGroupName'] = '';
+                $record['fabricGroupName'] = '';
             }
+
+            $name = $record->name;
+            $main_category = $record->categoryName;
+            $fabric_group = $record->fabricGroupName;
+            $company_name = $record->companyName;
+
+            if ($record->is_active == 1) {
+                $active = '<span class="badge badge-dot badge-dot-xs badge-success">Yes</span>';
+            } else {
+                $active = '<span class="badge badge-dot badge-dot-xs badge-danger">No</span>';
+            }
+            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            $data_arr[] = array(
+                "id" => $id,
+                "name" => $name,
+                "main_category" => $main_category,
+                "fabric_group" => $fabric_group,
+                "company" => $company_name,
+                "action" => $action
+            );
         }
 
-        return $productSubCategory;
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function getCompanyName($id) {    

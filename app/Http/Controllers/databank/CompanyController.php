@@ -85,16 +85,47 @@ class CompanyController extends Controller
         return view('databank.companies.createCompany')->with('employees', $employees);
     }
 
-    public function listCompany() {
-        $company = Company::where('is_delete', 0)->get();
+    public function listCompany(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = Company::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = Company::select('count(*) as allcount')->
+                                           where('company_name', 'like', '%' .$searchValue . '%')->
+                                           count();
+
+        // Fetch records
+        $company = Company::orderBy($columnName,$columnSortOrder)->
+                            where('company_name', 'like', '%' .$searchValue . '%')->
+                            where('is_delete', 0)->
+                            skip($start)->
+                            take($rowperpage)->
+                            get();
+        
+        $data_arr = array();
+        $sno = $start+1;
 
         foreach($company as $cmp) {
+            $id = $cmp->id;
+
             if($cmp->company_type == 1) {
-                $cmp['company_type'] = 'General';
+                $companyType = 'General';
             } elseif($cmp->company_type == 2) {
-                $cmp['company_type'] = 'Customer';
+                $companyType = 'Customer';
             } elseif($cmp->company_type == 3) {
-                $cmp['company_type'] = 'Supplier';
+                $companyType = 'Supplier';
             }
 
             if(!empty($cmp->company_category)) {
@@ -113,9 +144,9 @@ class CompanyController extends Controller
                     $companyCat = CompanyCategory::where('id', $companyCatId)->first('category_name');
                     $companyName = $companyCat->category_name;
                 }
-                $cmp['company_category'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+                $companyCategory = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
-                $cmp['company_category'] = '';
+                $companyCategory = '';
             }
 
             if(!empty($cmp->company_landline)){
@@ -144,34 +175,112 @@ class CompanyController extends Controller
 
             if(!is_numeric($cmp->company_city)) {
                 if($cmp->company_city == 0) {                    
-                    $cmp['company_city'] = '';
+                    $city = '';
                 } else {
-                    $cmp['company_city'] = $cmp->company_city;
+                    $city = $cmp->company_city;
                 }
             } else {
                 if($cmp->company_city == 0) {
-                    $cmp['company_city'] = '';
+                    $city = '';
                 } else {
                     $cityname = Cities::where('id', $cmp->company_city)->first('name');
 
-                    $cmp['company_city'] = $cityname->name;
+                    $city = $cityname->name;
                 }
             }
+
+            $name = '<a href="./companies/view-company/'.$id.'">'.$cmp->company_name.'</a>';
+            
+            $officeNo = '<ul>
+                            <li><b>L: </b> '.$cmp->company_landline.' </li>
+                            <li><b>M: </b> '.$cmp->company_mobile.' </li>
+                        </ul>';
+
+            $action = '<a href="./companies/view-company/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
+            <a href="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            if($cmp->favorite_flag == 0) {
+                $flag = '<em class="icon ni ni-star"></em>';
+                // $action .= '<a href="./companies/favorite/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Add into Favorite"><em class="icon ni ni-star"></em></a>';
+            } else {
+                $flag = '<em class="icon ni ni-star-fill"></em>';
+                // $action .= '<a href="./companies/favorite/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove from Favorite"><em class="icon ni ni-star-fill"></em></a>';
+            }
+
+            if($cmp->is_verified == 0) {
+                $isvarified = '<em class="icon ni ni-alert-fill"></em>';
+                // $action .= '<a href="./companies/verify/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Verify"><em class="icon ni ni-check-thick"></em></a>';
+            } else {
+                $isvarified = '<em class="icon ni ni-check-thick"></em>';
+            }
+
+            $data_arr[] = array(
+                "id" => $id,
+                "flag" => $flag,
+                "varified" => $isvarified,
+                "name" => $name,
+                "office_no" => $officeNo,
+                "company_type" => $companyType,
+                "company_category" => $companyCategory,
+                "city" => $city,
+                "action" => $action
+            );  
         }
 
-        return $company;
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
-    public function listEssentialCompany() {        
-        $company = Company::where('favorite_flag', '1')->where('is_delete', 0)->get();
+    public function listEssentialCompany(Request $request) {
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+
+        // Total records
+        $totalRecords = Company::select('count(*) as allcount')->count();
+        $totalRecordswithFilter = Company::select('count(*) as allcount')->
+                                           where('company_name', 'like', '%' .$searchValue . '%')->
+                                           count();
+
+        // Fetch records
+        $company = Company::orderBy($columnName,$columnSortOrder)->
+                            where('company_name', 'like', '%' .$searchValue . '%')->
+                            where('favorite_flag', '1')->
+                            where('is_delete', 0)->
+                            skip($start)->
+                            take($rowperpage)->
+                            get();
+        
+        $data_arr = array();
+        $sno = $start+1;
 
         foreach($company as $cmp) {
+            $id = $cmp->id;
+
             if($cmp->company_type == 1) {
-                $cmp['company_type'] = 'General';
+                $companyType = 'General';
             } elseif($cmp->company_type == 2) {
-                $cmp['company_type'] = 'Customer';
+                $companyType = 'Customer';
             } elseif($cmp->company_type == 3) {
-                $cmp['company_type'] = 'Supplier';
+                $companyType = 'Supplier';
             }
 
             if(!empty($cmp->company_category)) {
@@ -190,9 +299,9 @@ class CompanyController extends Controller
                     $companyCat = CompanyCategory::where('id', $companyCatId)->first('category_name');
                     $companyName = $companyCat->category_name;
                 }
-                $cmp['company_category'] = is_array($companyName) ? implode(", ", $companyName) : $companyName;
+                $companyCategory = is_array($companyName) ? implode(", ", $companyName) : $companyName;
             } else {
-                $cmp['company_category'] = '';
+                $companyCategory = '';
             }
 
             if(!empty($cmp->company_landline)){
@@ -221,22 +330,68 @@ class CompanyController extends Controller
 
             if(!is_numeric($cmp->company_city)) {
                 if($cmp->company_city == 0) {                    
-                    $cmp['company_city'] = '';
+                    $city = '';
                 } else {
-                    $cmp['company_city'] = $cmp->company_city;
+                    $city = $cmp->company_city;
                 }
             } else {
                 if($cmp->company_city == 0) {
-                    $cmp['company_city'] = '';
+                    $city = '';
                 } else {
                     $cityname = Cities::where('id', $cmp->company_city)->first('name');
 
-                    $cmp['company_city'] = $cityname->name;
+                    $city = $cityname->name;
                 }
             }
+
+            $name = '<a href="./companies/view-company/'.$id.'">'.$cmp->company_name.'</a>';
+            
+            $officeNo = '<ul>
+                            <li><b>L: </b> '.$cmp->company_landline.' </li>
+                            <li><b>M: </b> '.$cmp->company_mobile.' </li>
+                        </ul>';
+
+            $action = '<a href="./companies/view-company/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
+            <a href="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+
+            if($cmp->favorite_flag == 0) {
+                $flag = '<em class="icon ni ni-star"></em>';
+                // $action .= '<a href="./companies/favorite/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Add into Favorite"><em class="icon ni ni-star"></em></a>';
+            } else {
+                $flag = '<em class="icon ni ni-star-fill"></em>';
+                // $action .= '<a href="./companies/favorite/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove from Favorite"><em class="icon ni ni-star-fill"></em></a>';
+            }
+
+            if($cmp->is_verified == 0) {
+                $isvarified = '<em class="icon ni ni-alert-fill"></em>';
+                // $action .= '<a href="./companies/verify/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Verify"><em class="icon ni ni-check-thick"></em></a>';
+            } else {
+                $isvarified = '<em class="icon ni ni-check-thick"></em>';
+            }
+
+            $data_arr[] = array(
+                "id" => $id,
+                "flag" => $flag,
+                "varified" => $isvarified,
+                "name" => $name,
+                "office_no" => $officeNo,
+                "company_type" => $companyType,
+                "company_category" => $companyCategory,
+                "city" => $city,
+                "action" => $action
+            );  
         }
 
-        return $company;
+        $response = array(
+            "draw" => intval($draw),
+            "iTotalRecords" => $totalRecords,
+            "iTotalDisplayRecords" => $totalRecordswithFilter,
+            "aaData" => $data_arr
+        ); 
+
+        echo json_encode($response);
+        exit;
     }
 
     public function isVerify($id) {
