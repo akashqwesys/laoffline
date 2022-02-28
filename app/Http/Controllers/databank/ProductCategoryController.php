@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\ProductCategory;
 use App\Models\ProductDefaultCategory;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use Illuminate\Support\Facades\Session;
 
 class ProductCategoryController extends Controller
@@ -21,6 +22,7 @@ class ProductCategoryController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -38,15 +40,32 @@ class ProductCategoryController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.productCategories.productCategory')->with('employees', $employees);
+        return view('databank.productCategories.productCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createProductCategory() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.productCategories.createProductCategory')->with('employees', $employees);
+        return view('databank.productCategories.createProductCategory',compact('financialYear'))->with('employees', $employees);
+    }
+
+    public function listCategory() {
+        $productCategory = ProductCategory::where('product_default_category_id', '!=', '0')->
+                                            where('is_delete', '0')->
+                                            get(['id', 'name as category_name']);
+
+        return $productCategory;                                            
+    }
+
+    public function listData() {
+        $productCategory = ProductCategory::where('product_default_category_id', '!=', '0')->
+                                            where('is_delete', '0')->
+                                            get(['id', 'name as category_name']);
+
+        return $productCategory;                                            
     }
 
     public function listProductCategory(Request $request) {
@@ -68,13 +87,13 @@ class ProductCategoryController extends Controller
         $totalRecords = ProductCategory::where('product_default_category_id', '!=', '0')->select('count(*) as allcount')->count();
         $totalRecordswithFilter = ProductCategory::select('count(*) as allcount')->
                                                    where('product_default_category_id', '!=', '0')->
-                                                   where('name', 'like', '%' .$searchValue . '%')->
+                                                   where('name', 'ILIKE', '%' .$searchValue . '%')->
                                                    count();
 
         // Fetch records
         $productCategory = ProductCategory::join('product_default_categories','product_categories.product_default_category_id','=','product_default_categories.id')->
                                             orderBy('product_categories.'.$columnName,$columnSortOrder)->
-                                            where('product_categories.name', 'like', '%' .$searchValue . '%')->
+                                            where('product_categories.name', 'ILIKE', '%' .$searchValue . '%')->
                                             where('product_categories.product_default_category_id', '!=', '0')->
                                             where('product_categories.is_delete', '0')->
                                             skip($start)->
@@ -88,8 +107,8 @@ class ProductCategoryController extends Controller
             $id = $record->category_id;
             $name = $record->category_name;
             $default_category = $record->default_category;
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./product-category/edit-product-category/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./product-category/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -117,6 +136,7 @@ class ProductCategoryController extends Controller
     }
 
     public function editProductCategory($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -124,7 +144,7 @@ class ProductCategoryController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.productCategories.editProductCategory')->with('employees', $employees);
+        return view('databank.productCategories.editProductCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchProductCategory($id) {        
@@ -155,6 +175,8 @@ class ProductCategoryController extends Controller
         $logs->log_subject = 'Product Category - "'.$productCategoryData->category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('product-category');
     }
 
     public function insertProductCategoryData(Request $request) {

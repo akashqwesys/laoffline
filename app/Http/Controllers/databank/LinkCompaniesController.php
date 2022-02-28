@@ -11,6 +11,7 @@ use App\Models\Company\CompanyContactDetails;
 use App\Models\linkCompanies;
 use App\Models\linkCompaniesLog;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use Illuminate\Support\Facades\Session;
 
 class LinkCompaniesController extends Controller
@@ -23,6 +24,7 @@ class LinkCompaniesController extends Controller
     }
 
     public function index() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
 
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
@@ -41,15 +43,16 @@ class LinkCompaniesController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.linkCompanies.linkCompany')->with('employees', $employees);
+        return view('databank.linkCompanies.linkCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createLinkCompanies() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.linkCompanies.createLinkCompany')->with('employees', $employees);
+        return view('databank.linkCompanies.createLinkCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function listLinkCompanies() {
@@ -94,6 +97,7 @@ class LinkCompaniesController extends Controller
     }
 
     public function editLinkCompanies($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -101,7 +105,7 @@ class LinkCompaniesController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.linkCompanies.editLinkCompany')->with('employees', $employees);
+        return view('databank.linkCompanies.editLinkCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchLinkCompanies($id) { 

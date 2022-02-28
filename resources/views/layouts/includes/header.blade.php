@@ -6,8 +6,8 @@
             </div>
             <div class="nk-header-brand d-xl-none">
                 <a href="{{ route('home') }}" class="logo-link">
-                    <img class="logo-light logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" srcset="{{ asset('assets/images/logo2x.png') }} 2x" alt="logo">
-                    <img class="logo-dark logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" srcset="{{ asset('assets/images/logo2x.png') }} 2x" alt="logo-dark">
+                    <img class="logo-light logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" alt="logo">
+                    <img class="logo-dark logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" alt="logo-dark">
                 </a>
             </div><!-- .nk-header-brand -->
             <div class="nk-header-news d-none d-xl-block">
@@ -25,6 +25,22 @@
             </div><!-- .nk-header-news -->
             <div class="nk-header-tools">
                 <ul class="nk-quick-nav">
+                    <li class="dropdown language-dropdown d-none d-sm-block mr-n1">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <div class="border-light">
+                                <span class="user-name dropdown-indicator">2021-2022</span>
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-s1">
+                            <ul class="language-list">
+                                @foreach ( $financialYear as $data)
+                                <li>
+                                    <span class="language-item">{{ $data -> name }}</span>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li><!-- .dropdown -->
                     <li class="dropdown language-dropdown d-none d-sm-block mr-n1">
                         <a href="#" class="dropdown-toggle nk-quick-nav-icon" data-toggle="dropdown">
                             <div class="user-avatar sm border border-light">

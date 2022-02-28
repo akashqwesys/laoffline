@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Employee;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use App\Models\Settings\DefaultSettings;
 use Illuminate\Support\Facades\Session;
 
@@ -20,6 +21,7 @@ class DefaultSettingsController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -38,10 +40,11 @@ class DefaultSettingsController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('settings.defaultSettings.createDefaultSetting')->with('employees', $employees);
+        return view('settings.defaultSettings.createDefaultSetting',compact('financialYear'))->with('employees', $employees);
     }
 
     public function editDefaultSettings($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -49,7 +52,7 @@ class DefaultSettingsController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('settings.defaultSettings.editDefaultSetting')->with('employees', $employees);
+        return view('settings.defaultSettings.editDefaultSetting',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchDefaultSettings($id) {

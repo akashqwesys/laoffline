@@ -477,39 +477,48 @@ class ConnectionController extends Controller
             
             
                              
-            // $cosql = "SELECT * FROM company_owner";
-            // $coquery = mysqli_query($conn, $cosql);
+            $cosql = "SELECT * FROM company_owner";
+            $coquery = mysqli_query($conn, $cosql);
             
-            // if(mysqli_num_rows($coquery) != 0) {
-            //     $i = 0;
-            //     while($result = mysqli_fetch_assoc($coquery)) {
-            //         $des = $result['designation'];
+            if(mysqli_num_rows($coquery) != 0) {
+                $i = 0;
+                while($result = mysqli_fetch_assoc($coquery)) {
+                    $des = $result['designation'];
 
-            //         if (is_numeric($des)) {
-            //             $result['designation'] = $des;
-            //         } else {
-            //             $designation = "SELECT * FROM designation WHERE designation_name = '$des'";
-            //             $designationData = mysqli_query($conn, $designation);
-                        
-            //             $dResult = mysqli_fetch_row($designationData);
-                        
-            //             if ($dResult != NULL) {
-            //                 $result['designation'] = $dResult[0];
-            //             } else {
-            //                 $result['designation'] = 0;
-            //             }                        
-            //         }
+                    if (is_numeric($des)) {
+                        $result['designation'] = json_encode($des);
+                    } else {
+                        $desg = @unserialize($result['designation']);
+                        if (is_array($desg)) {
+                            if($desg) {
+                                $result['designation'] = json_encode($desg);
+                            } else {
+                                $result['designation'] = 0;                            
+                            }
+                        } else {
+                            $designation = "SELECT * FROM designation WHERE designation_name = '$des'";
+                            $designationData = mysqli_query($conn, $designation);
+                            
+                            $dResult = mysqli_fetch_row($designationData);
+                            
+                            if ($dResult != NULL) {
+                                $result['designation'] = json_encode($dResult[0]);
+                            } else {
+                                $result['designation'] = 0;
+                            }
+                        }                        
+                    }
                     
-            //         $companyOwnerData[$i]['id'] = $result['company_owner_id'];
-            //         $companyOwnerData[$i]['company_id'] = $result['company_id'];
-            //         $companyOwnerData[$i]['contact_person_name'] = $result['name'];
-            //         $companyOwnerData[$i]['contact_person_designation'] = $result['designation'];
-            //         $companyOwnerData[$i]['contact_person_profile_pic'] = $result['image'];
-            //         $companyOwnerData[$i]['contact_person_mobile'] = $result['mobile_no'];
-            //         $companyOwnerData[$i]['contact_person_email'] = $result['email_id'];
-            //         $i++;
-            //     }
-            // }
+                    $companyOwnerData[$i]['id'] = $result['company_owner_id'];
+                    $companyOwnerData[$i]['company_id'] = $result['company_id'];
+                    $companyOwnerData[$i]['contact_person_name'] = $result['name'];
+                    $companyOwnerData[$i]['contact_person_designation'] = $result['designation'];
+                    $companyOwnerData[$i]['contact_person_profile_pic'] = $result['image'];
+                    $companyOwnerData[$i]['contact_person_mobile'] = $result['mobile_no'];
+                    $companyOwnerData[$i]['contact_person_email'] = $result['email_id'];
+                    $i++;
+                }
+            }
 
             // $asql = "SELECT * FROM agent";
             // $aquery = mysqli_query($conn, $asql);
@@ -871,19 +880,19 @@ class ConnectionController extends Controller
         //     }
         // }
 
-        // if(!empty($companyOwnerData)) {
-        //     foreach($companyOwnerData as $coData) {
-        //         $companyContactDetails = new CompanyContactDetails;
-        //         $companyContactDetails->id = $coData['id'];
-        //         $companyContactDetails->company_id = $coData['company_id'];
-        //         $companyContactDetails->contact_person_name = $coData['contact_person_name'];
-        //         $companyContactDetails->contact_person_designation = $coData['contact_person_designation'];
-        //         $companyContactDetails->contact_person_profile_pic = $coData['contact_person_profile_pic'];
-        //         $companyContactDetails->contact_person_mobile = $coData['contact_person_mobile'];
-        //         $companyContactDetails->contact_person_email = $coData['contact_person_email'];
-        //         $companyContactDetails->save();
-        //     }
-        // }
+        if(!empty($companyOwnerData)) {
+            foreach($companyOwnerData as $coData) {
+                $companyContactDetails = new CompanyContactDetails;
+                $companyContactDetails->id = $coData['id'];
+                $companyContactDetails->company_id = $coData['company_id'];
+                $companyContactDetails->contact_person_name = $coData['contact_person_name'];
+                $companyContactDetails->contact_person_designation = $coData['contact_person_designation'];
+                $companyContactDetails->contact_person_profile_pic = $coData['contact_person_profile_pic'];
+                $companyContactDetails->contact_person_mobile = $coData['contact_person_mobile'];
+                $companyContactDetails->contact_person_email = $coData['contact_person_email'];
+                $companyContactDetails->save();
+            }
+        }
 
         // if(!empty($agentData)) {
         //     foreach($agentData as $agents) {

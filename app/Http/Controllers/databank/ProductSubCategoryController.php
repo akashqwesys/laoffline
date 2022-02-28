@@ -9,6 +9,7 @@ use App\Models\Employee;
 use App\Models\ProductFabricGroup;
 use App\Models\ProductCategory;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use App\Models\Company\Company;
 use Illuminate\Support\Facades\Session;
 use DB;
@@ -23,6 +24,7 @@ class ProductSubCategoryController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -40,15 +42,22 @@ class ProductSubCategoryController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.productSubCategories.productSubCategory')->with('employees', $employees);
+        return view('databank.productSubCategories.productSubCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createProductSubCategory() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.productSubCategories.createProductSubCategory')->with('employees', $employees);
+        return view('databank.productSubCategories.createProductSubCategory',compact('financialYear'))->with('employees', $employees);
+    }
+
+    public function listData(Request $request) {
+        $productSubCategory = ProductCategory::where('main_category_id', '!=', '0')->where('is_delete', '0')->get();
+
+        return $productSubCategory;
     }
 
     public function listProductSubCategory(Request $request) {
@@ -69,13 +78,14 @@ class ProductSubCategoryController extends Controller
         // Total records
         $totalRecords = ProductCategory::select('count(*) as allcount')->count();
         $totalRecordswithFilter = ProductCategory::select('count(*) as allcount')->
-                                            where('name', 'like', '%' .$searchValue . '%')->
+                                            where('product_categories.main_category_id', '!=', '0')->
+                                            where('name', 'ILIKE', '%' .$searchValue . '%')->
                                             count();
 
         // Fetch records
         $records = ProductCategory::join('product_categories as pc','product_categories.main_category_id','=','pc.id')->
                                     orderBy('product_categories.'.$columnName,$columnSortOrder)->
-                                    where('product_categories.name', 'like', '%' .$searchValue . '%')->
+                                    where('product_categories.name', 'ILIKE', '%' .$searchValue . '%')->
                                     where('product_categories.main_category_id', '!=', '0')->
                                     where('product_categories.is_delete', '0')->
                                     skip($start)->
@@ -125,8 +135,8 @@ class ProductSubCategoryController extends Controller
             } else {
                 $active = '<span class="badge badge-dot badge-dot-xs badge-danger">No</span>';
             }
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./productsub-category/edit-productsub-category/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./productsub-category/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -180,6 +190,7 @@ class ProductSubCategoryController extends Controller
     }
 
     public function editProductSubCategory($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -187,7 +198,7 @@ class ProductSubCategoryController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.productSubCategories.editProductSubCategory')->with('employees', $employees);
+        return view('databank.productSubCategories.editProductSubCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchProductSubCategory($id) {
@@ -264,6 +275,8 @@ class ProductSubCategoryController extends Controller
         $logs->log_subject = 'Product Sub Category - "'.$productCategoryData->sub_category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('productsub-category');
     }
 
     public function insertProductSubCategoryData(Request $request) {

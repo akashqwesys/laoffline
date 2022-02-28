@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Models\Logs;
 use App\Models\Employee;
+use App\Models\FinancialYear;
 use Carbon;
 
 class LoginController extends Controller
@@ -59,9 +60,14 @@ class LoginController extends Controller
         ]);
    
         if(auth()->attempt(array('username' => $input['email'], 'password' => $input['password']))) {
+            $financialYear = FinancialYear::where('current_year_flag', '1')->first();
+
             $user = Auth::User();
             $employee = Employee::where('id', $user->employee_id)->first();
             $user['excel_access'] = $employee->excel_access;
+            $user['financial_year'] = $financialYear->name;
+            $user['financial_year_id'] = $financialYear->id;
+            $user['extension_port_id'] = $employee->extension_port_id;
             
             Session::put('user', $user);
             

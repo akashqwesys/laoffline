@@ -625,7 +625,7 @@
             }
         },
         created() {
-            axios.get('/settings/companyType/list')
+            axios.get('/settings/companyType/list-data')
             .then(response => {
                 this.companyType = response.data;
             });
@@ -633,19 +633,19 @@
             .then(response => {
                 this.countryList = response.data;
             });
-            axios.get('/databank/companyCategory/list')
+            axios.get('/databank/companyCategory/list-data')
             .then(response => {
                 this.companyCategoryList = response.data;
             });
-            axios.get('/settings/transport-details/list')
+            axios.get('/settings/transport-details/list-data')
             .then(response => {
                 this.transportList = response.data;
             });
-            axios.get('/settings/designation/list')
+            axios.get('/settings/designation/list-data')
             .then(response => {
                 this.designationList = response.data;
             });
-            axios.get('/settings/type-of-address/list')
+            axios.get('/settings/type-of-address/list-data')
             .then(response => {
                 this.typeOfAddress = response.data;
             });

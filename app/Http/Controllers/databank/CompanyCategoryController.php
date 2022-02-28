@@ -8,6 +8,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Employee;
 use App\Models\CompanyCategory;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use Illuminate\Support\Facades\Session;
 
 class CompanyCategoryController extends Controller
@@ -20,6 +21,7 @@ class CompanyCategoryController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -37,15 +39,22 @@ class CompanyCategoryController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.companyCategories.companyCategory')->with('employees', $employees);
+        return view('databank.companyCategories.companyCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createCompanyCategory() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.companyCategories.createCompanyCategory')->with('employees', $employees);
+        return view('databank.companyCategories.createCompanyCategory',compact('financialYear'))->with('employees', $employees);
+    }
+
+    public function listData(Request $request) {
+        $companyCategory = CompanyCategory::where('is_delete', '0')->get();
+
+        return $companyCategory;
     }
 
     public function listCompanyCategory(Request $request) {
@@ -66,11 +75,12 @@ class CompanyCategoryController extends Controller
         // Total records
         $totalRecords = CompanyCategory::select('count(*) as allcount')->count();
         $totalRecordswithFilter = CompanyCategory::select('count(*) as allcount')->
-                                           where('category_name', 'like', '%' .$searchValue . '%')->
+                                           where('category_name', 'ILIKE', '%' .$searchValue . '%')->
                                            count();
 
         // Fetch records
         $companyCategory = CompanyCategory::orderBy($columnName,$columnSortOrder)->
+                                            where('category_name', 'ILIKE', '%' .$searchValue . '%')->
                                             where('is_delete', 0)->
                                             skip($start)->
                                             take($rowperpage)->
@@ -83,8 +93,8 @@ class CompanyCategoryController extends Controller
             $id = $category->id;
             $name = $category->category_name;
 
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./companyCategory/edit-company-category/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./companyCategory/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -105,6 +115,7 @@ class CompanyCategoryController extends Controller
     }
 
     public function editCompanyCategory($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -112,7 +123,7 @@ class CompanyCategoryController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.companyCategories.editCompanyCategory')->with('employees', $employees);
+        return view('databank.companyCategories.editCompanyCategory',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchCompanyCategory($id) {        
@@ -136,6 +147,8 @@ class CompanyCategoryController extends Controller
         $logs->log_subject = 'Company Category - "'.$companyCategoryData->category_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('companyCategory');
     }
 
     public function insertCompanyCategoryData(Request $request) {

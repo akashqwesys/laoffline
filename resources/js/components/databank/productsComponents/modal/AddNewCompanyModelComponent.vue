@@ -106,6 +106,10 @@
 
     export default {
         name: 'createCompany',
+        props: {
+            ctype: String,
+            id: Number,
+        },
         components: { 
             Multiselect
         },
@@ -113,20 +117,7 @@
             return {
                 countries: [],
                 cities: [],
-                companyTypes: [
-                    {
-                        'id' : 1,
-                        'name' : 'General',
-                    },
-                    {
-                        'id' : 2,
-                        'name' : 'Customer',
-                    },
-                    {
-                        'id' : 3,
-                        'name' : 'Supplier',
-                    },
-                ],
+                companyTypes: [],
                 form: new Form({
                     name: '',
                     company_type: '',
@@ -140,15 +131,34 @@
             }
         },
         created() {
-            axios.get('/settings/cities/list-country')
+            axios.get('/settings/companyType/list-data')
+            .then(response => {
+                console.log(this.ctype);
+                var comType = [];
+                response.data.forEach(element => {
+                    if(this.ctype == '1-2') {
+                        if (element.id != 3) {
+                            comType.push(element);
+                        }
+                    } else if(this.ctype == '3') {
+                        if (element.id == 3) {
+                            comType.push(element);
+                        }
+                    } else if(this.ctype == '') {
+                        comType.push(element);
+                    }
+                });
+                this.companyTypes = comType;          
+            });
+            axios.get('/databank/catalog/list-country')
             .then(response => {
                 this.countries = response.data;
             });
-            axios.get('/settings/cities/list')
+            axios.get('/databank/catalog/list-cities')
             .then(response => {
                 this.cities = response.data;
             });
-            axios.get('/settings/cities/list-state')
+            axios.get('/databank/catalog/list-state')
             .then(response => {
                 this.states = response.data;
             });
@@ -165,7 +175,7 @@
             },
         },
         mounted() {
-
+            
         },
     };
 </script>

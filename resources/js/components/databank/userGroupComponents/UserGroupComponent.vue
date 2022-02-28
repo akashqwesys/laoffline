@@ -85,12 +85,13 @@
                     pagingType: 'full_numbers',
                     dom: 'Bfrtip',
                     columns: [
-                        { data: 'id' },
+                        { data: 'id', searchable: 'true' },
                         { data: 'name' },
                         { data: 'action' },
                     ],
                     buttons: ['copy', 'csv', 'excel', 'print']
                 });
+
             } else {
                 $('#userGroup').DataTable({
                     processing: true,
@@ -110,6 +111,9 @@
     };
 </script>
 <style>
+    tfoot {
+        display: table-header-group;
+    }
     .dataTables_filter {
         padding: 10px;
     }

@@ -548,7 +548,7 @@
                 }
             }
         },
-        created() {            
+        created() {
             axios.get('/databank/catalog/list-companies')
             .then(response => {
                 this.companies = response.data;
@@ -668,7 +668,7 @@
                 } else {
                     axios.post('/databank/catalog/create', formData)
                     .then(response => {
-                        window.location.href = '/databank/catalog';
+                        // window.location.href = '/databank/catalog';
                     })
                     .catch((error) => {
                         var validationError = error.response.data.errors;

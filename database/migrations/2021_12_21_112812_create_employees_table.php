@@ -29,6 +29,8 @@ class CreateEmployeesTable extends Migration
             $table->text('ref_pass_pic')->nullable();
             $table->string('ref_mobile')->nullable();
             $table->text('ref_address')->nullable();
+            $table->string('extension_port_id')->nullable();
+            $table->string('extension_port_password')->nullable();
             $table->string('web_login')->nullable();
             $table->integer('is_delete')->default('0');
             $table->timestamps();

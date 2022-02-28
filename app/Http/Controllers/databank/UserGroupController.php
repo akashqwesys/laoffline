@@ -5,6 +5,7 @@ namespace App\Http\Controllers\databank;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\FinancialYear;
 use App\Models\UserGroup;
 use App\Models\Employee;
 use App\Models\Logs;
@@ -22,6 +23,7 @@ class UserGroupController extends Controller
     }
 
     public function index() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
 
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
@@ -40,21 +42,28 @@ class UserGroupController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.userGroups.userGroup')->with('employees', $employees);
+        return view('databank.userGroups.userGroup',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createUserGroup() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.userGroups.createUserGroup')->with('employees', $employees);
+        return view('databank.userGroups.createUserGroup',compact('financialYear'))->with('employees', $employees);
     }
 
     public function getPermissions() {
         $permissions = Permission::all();
 
         return $permissions;
+    }
+
+    public function listData(Request $request) {
+        $userGroup = UserGroup::where('is_delete', '0')->get();
+
+        return $userGroup;
     }
 
     public function listUserGroup(Request $request) {
@@ -74,16 +83,19 @@ class UserGroupController extends Controller
 
         // Total records
         $totalRecords = UserGroup::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = UserGroup::select('count(*) as allcount')->where('name', 'like', '%' .$searchValue . '%')->count();
+        $totalRecordswithFilter = UserGroup::select('count(*) as allcount')->
+                                             where('is_delete', 0)->
+                                             Where('name', 'ILIKE', '%' .$searchValue . '%')->
+                                             count();
 
         // Fetch records
         $records = UserGroup::orderBy($columnName,$columnSortOrder)->
-                         where('name', 'like', '%' .$searchValue . '%')->
-                         where('is_delete', 0)->
-                         select('*')->
-                         skip($start)->
-                         take($rowperpage)->
-                         get();
+                              where('is_delete', 0)->
+                              where('name', 'ILIKE', '%' .$searchValue . '%')->
+                              select('*')->
+                              skip($start)->
+                              take($rowperpage)->
+                              get();
 
         $data_arr = array();
         $sno = $start+1;
@@ -91,8 +103,8 @@ class UserGroupController extends Controller
         foreach($records as $record){
             $id = $record->id;
             $name = $record->name;
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -113,6 +125,7 @@ class UserGroupController extends Controller
     }
 
     public function editUserGroup($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -120,7 +133,7 @@ class UserGroupController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.userGroups.editUserGroup')->with('employees', $employees);
+        return view('databank.userGroups.editUserGroup',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchUserGroup($id) { 
@@ -143,7 +156,9 @@ class UserGroupController extends Controller
         $logs->log_path = 'Usergroup / Delete';
         $logs->log_subject = 'Usergroup - '.$userGroupData->name.' was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $logs->save();        
+        $logs->save();
+
+        return redirect()->route('users-group');
     }
 
     public function insertUserGroupData(Request $request) {

@@ -57,6 +57,20 @@ Vue.component('create-product-component', require('./components/databank/product
 
 
 
+Vue.component('reference-id-component', require('./components/referenceId/ReferenceIdComponent.vue').default);
+Vue.component('create-reference-id-component', require('./components/referenceId/CreateReferenceIdComponent.vue').default);
+Vue.component('view-reference-id-component', require('./components/referenceId/ViewReferenceIdComponent.vue').default);
+Vue.component('view-company-component',require('./components/referenceId/viewCompanyComponent.vue').default);
+Vue.component('update-reference-id-component',require('./components/referenceId/UpdateReferenceIdComponent.vue').default);
+
+
+
+Vue.component('register-component', require('./components/register/RegisterComponent.vue').default);
+Vue.component('create-inward-component', require('./components/register/inward/CreateInwardComponent.vue').default);
+Vue.component('insert-inward-component', require('./components/register/inward/InsertInwardComponent.vue').default);
+Vue.component('create-outward-component', require('./components/register/outward/CreateOutwardComponent.vue').default);
+
+
 Vue.component('agent-component', require('./components/settings/agentComponents/AgentComponent.vue').default);
 Vue.component('create-agent-component', require('./components/settings/agentComponents/CreateAgentComponent.vue').default);
 

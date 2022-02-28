@@ -25,5 +25,7 @@ class Employee extends Model
         'ref_pass_pic',
         'ref_mobile',
         'ref_address',
+        'extension_port_id',
+        'extension_port_password',
     ];
 }

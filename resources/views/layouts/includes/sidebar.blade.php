@@ -6,8 +6,8 @@
         </div>
         <div class="nk-sidebar-brand">
             <a href="{{ route('home') }}" class="logo-link nk-sidebar-logo">
-                <img class="logo-light logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" srcset="{{ asset('assets/images/logo2x.png') }} 2x" alt="logo">
-                <img class="logo-dark logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" srcset="{{ asset('assets/images/logo2x.png') }} 2x" alt="logo-dark">
+                <img class="logo-light logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" alt="logo">
+                <img class="logo-dark logo-img" src="{{ asset('assets/images/laveshlogo.png') }}" alt="logo-dark">
             </a>
         </div>
     </div><!-- .nk-sidebar-element -->
@@ -70,13 +70,13 @@
                         </ul><!-- .nk-menu-sub -->
                     </li><!-- .nk-menu-item -->
                     <li class="nk-menu-item">
-                        <a href="html/pricing-table.html" class="nk-menu-link">
+                        <a href="{{ route('reference') }}" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-view-col"></em></span>
                             <span class="nk-menu-text">Reference Id</span>
                         </a>
                     </li><!-- .nk-menu-item -->
                     <li class="nk-menu-item">
-                        <a href="html/pricing-table.html" class="nk-menu-link">
+                        <a href="{{ route('register') }}" class="nk-menu-link">
                             <span class="nk-menu-icon"><em class="icon ni ni-view-col"></em></span>
                             <span class="nk-menu-text">Register</span>
                         </a>

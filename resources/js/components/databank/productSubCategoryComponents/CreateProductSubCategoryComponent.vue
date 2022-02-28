@@ -228,10 +228,9 @@
             }
         },
         created() {
-            axios.get('/databank/product-category/list')
+            axios.get('/databank/product-category/list-category')
             .then(response => {
                 this.productCategories = response.data;
-                console.log(this.productCategories);
             });
             axios.get('/databank/productsub-category/listCompanies')
             .then(response => {

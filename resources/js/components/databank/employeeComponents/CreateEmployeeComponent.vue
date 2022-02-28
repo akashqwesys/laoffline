@@ -217,6 +217,26 @@
                                             </div>
                                         </div>
                                         <hr class="preview-hr">
+                                        <span class="preview-title-lg overline-title">Extension Port Details</span>
+                                        <div class="row gy-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="fv-extension_port_id">Extension Port Id</label>
+                                                    <div class="form-control-wrap">
+                                                        <input type="text" class="form-control" id="fv-extension_port_id" v-model="form.extension_port_id">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="fv-extension_port_password">Extension Port Password</label>
+                                                    <div class="form-control-wrap">
+                                                        <input type="password" class="form-control" id="fv-extension_port_password" v-model="form.extension_port_password">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="preview-hr">
                                         <div class="row gy-4">                                        
                                             <div class="col-md-12">
                                                 <div class="form-group">
@@ -282,6 +302,8 @@
                     ref_full_name: '',
                     ref_mobile: '',
                     ref_address: '',
+                    extension_port_id: '',
+                    extension_port_password: '',
                     username: '',
                     password: '',
                     password_confirmation: '',
@@ -289,7 +311,7 @@
             }
         },
         created() {
-            axios.get('/databank/users-group/list')
+            axios.get('/databank/users-group/list-data')
             .then(response => {
                 userGroup = response.data;
                 this.userGroups = userGroup;

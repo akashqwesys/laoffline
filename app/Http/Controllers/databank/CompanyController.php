@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\CompanyCategory;
+use App\Models\FinancialYear;
 use App\Models\Logs;
 use App\Models\Company\Company;
 use App\Models\Company\CompanyAddress;
@@ -34,6 +35,7 @@ class CompanyController extends Controller
     }
 
     public function index() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -52,10 +54,11 @@ class CompanyController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.companies.company')->with('employees', $employees);
+        return view('databank.companies.company',compact('financialYear'))->with('employees', $employees);
     }
 
     public function essentialCompany() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -74,15 +77,22 @@ class CompanyController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.companies.essentialCompany')->with('employees', $employees);
+        return view('databank.companies.essentialCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createCompany() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.companies.createCompany')->with('employees', $employees);
+        return view('databank.companies.createCompany',compact('financialYear'))->with('employees', $employees);
+    }
+
+    public function listData(Request $request) {
+        $company = Company::where('is_delete', '0')->get();
+
+        return $company;
     }
 
     public function listCompany(Request $request) {
@@ -119,6 +129,7 @@ class CompanyController extends Controller
 
         foreach($company as $cmp) {
             $id = $cmp->id;
+            $companyType = '';
 
             if($cmp->company_type == 1) {
                 $companyType = 'General';
@@ -196,9 +207,13 @@ class CompanyController extends Controller
                             <li><b>M: </b> '.$cmp->company_mobile.' </li>
                         </ul>';
 
-            $action = '<a href="./companies/view-company/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
-            <a href="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="#" class="btn btn-trigger btn-icon icon-verify" onclick="showModal('.$id.')" title="View Company"><em class="icon ni ni-eye"></em></a>
+            <a href="./companies/edit-company/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./companies/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            
+            // $action = "<a href='#' class='btn btn-trigger btn-icon icon-verify' data-toggle='modal' data-target='#viewCompany".$id."' @click='showModal(".$id.")' title='View Company'><em class='icon ni ni-eye'></em></a>
+            // <a href='./users-group/edit-user-group/".$id."' class='btn btn-trigger btn-icon' data-toggle='tooltip' data-placement='top' title='Update'><em class='icon ni ni-edit-alt'></em></a>
+            // <a href='./users-group/delete/".$id."' class='btn btn-trigger btn-icon' data-toggle='tooltip' data-placement='top' title='Remove'><em class='icon ni ni-trash'></em></a>";
 
             if($cmp->favorite_flag == 0) {
                 $flag = '<em class="icon ni ni-star"></em>';
@@ -351,7 +366,7 @@ class CompanyController extends Controller
                             <li><b>M: </b> '.$cmp->company_mobile.' </li>
                         </ul>';
 
-            $action = '<a href="./companies/view-company/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
+            $action = '<a href="./companies/view-company/'.$id.'" onclick="showModal('.$id.')" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
             <a href="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
             <a href="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
@@ -460,6 +475,7 @@ class CompanyController extends Controller
     }
 
     public function viewCompany($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -467,10 +483,11 @@ class CompanyController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.companies.viewCompany')->with('employees', $employees);
+        return view('databank.companies.viewCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function editCompany($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -478,7 +495,7 @@ class CompanyController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.companies.editCompany')->with('employees', $employees);
+        return view('databank.companies.editCompany',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchCompany($id) {
@@ -575,6 +592,8 @@ class CompanyController extends Controller
         $logs->log_subject = 'Company - '.$company->company_name.' was deleted by"'.Session::get('user')->username.'".';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('companies');
     }
 
     public function insertCompanyData(Request $request) {

@@ -9,6 +9,7 @@ use App\Models\UserGroup;
 use App\Models\Employee;
 use App\Models\User;
 use App\Models\Logs;
+use App\Models\FinancialYear;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Session;
@@ -23,6 +24,7 @@ class EmployeesController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -40,21 +42,28 @@ class EmployeesController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.employees.employee')->with('employees', $employees);
+        return view('databank.employees.employee',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createEmployee() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.employees.createEmployee')->with('employees', $employees);
+        return view('databank.employees.createEmployee',compact('financialYear'))->with('employees', $employees);
     }
 
     public function getPermissions() {
         $permissions = Permission::all();
 
         return $permissions;
+    }
+
+    public function listData(Request $request) {
+        $employee = Employee::where('is_delete', '0')->get();
+
+        return $employee;
     }
 
     public function listEmployee(Request $request) {        
@@ -73,28 +82,41 @@ class EmployeesController extends Controller
         $columnName = $columnName_arr[$columnIndex]['data']; // Column name
         $columnSortOrder = $order_arr[0]['dir']; // asc or desc
         $searchValue = $search_arr['value']; // Search value
-
+        if($columnName == 'active') {
+            $columnName = 'users.is_active';
+        } else {
+            $columnName = 'employees.'.$columnName;
+        }
         // Total records
         $totalRecords = Employee::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = Employee::select('count(*) as allcount')->
-                                            where('firstname', 'like', '%' .$searchValue . '%')->
-                                            orWhere('middlename', 'like', '%' .$searchValue . '%')->
-                                            orWhere('lastname', 'like', '%' .$searchValue . '%')->
+        $totalRecordswithFilter = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
+                                            join('user_groups', 'employees.user_group', '=', 'user_groups.id')->
+                                            select('count(*) as allcount')->
+                                            where('employees.id', 'LIKE', '%' .$searchValue . '%')->
+                                            orwhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')->
+                                            orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')->
                                             count();
 
         // Fetch records
         $records = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                              join('user_groups', 'employees.user_group', '=', 'user_groups.id')->
-                             orderBy('employees.'.$columnName,$columnSortOrder)->
-                             where('employees.firstname', 'like', '%' .$searchValue . '%')->
-                             orWhere('employees.middlename', 'like', '%' .$searchValue . '%')->
-                             orWhere('employees.lastname', 'like', '%' .$searchValue . '%')->
-                             orWhere('employees.email_id', 'like', '%' .$searchValue . '%')->
-                             orWhere('employees.mobile', 'like', '%' .$searchValue . '%')->
-                             orWhere('user_groups.name', 'like', '%' .$searchValue . '%')->
+                             orderBy($columnName,$columnSortOrder)->
                              where('employees.id', '!=', $user->employee_id)->
                              where('employees.user_group', '!=', 1)->
                              where('employees.is_delete', '=', 0)->
+                             where('employees.id', 'LIKE', '%' .$searchValue . '%')->
+                             orwhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')->
+                             orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')->
                              select('*')->
                              skip($start)->
                              take($rowperpage)->
@@ -126,8 +148,8 @@ class EmployeesController extends Controller
             } else {
                 $active = '<span class="badge badge-dot badge-dot-xs badge-danger">No</span>';
             }
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./employee/edit-employee/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./employee/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -153,6 +175,7 @@ class EmployeesController extends Controller
     }
 
     public function editEmployee($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -160,10 +183,10 @@ class EmployeesController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.employees.editEmployee')->with('employees', $employees);
+        return view('databank.employees.editEmployee',compact('financialYear'))->with('employees', $employees);
     }
 
-    public function fetchEmployee($id) {        
+    public function fetchEmployee($id) {
         $employeeData = Employee::join('users', 'employees.id', '=', 'users.employee_id')->where('employees.id', $id)->first(['users.*', 'employees.*', 'employees.id as employee_id']);
         $employeeData['user_group'] = UserGroup::where('id', $employeeData->user_group)->first();
 
@@ -189,6 +212,8 @@ class EmployeesController extends Controller
         $logs->log_subject = 'Employee - '.$user->username.' was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('employee');
     }
 
     public function insertEmployeeData(Request $request) {
@@ -243,6 +268,8 @@ class EmployeesController extends Controller
         $employee->ref_pass_pic = $referencePassPicName;
         $employee->ref_mobile = $request->ref_mobile;
         $employee->ref_address = $request->ref_address;
+        $employee->extension_port_id = $request->extension_port_id;
+        $employee->extension_port_password = $request->extension_port_password;
         $employee->web_login = '';
         $employee->save();
 
@@ -318,6 +345,8 @@ class EmployeesController extends Controller
         $employee->ref_pass_pic = $referencePassPicName == '' ? $employee->ref_pass_pic : $referencePassPicName ;
         $employee->ref_mobile = $request->ref_mobile ? $request->ref_mobile : '';
         $employee->ref_address = $request->ref_address ? $request->ref_address : '';
+        $employee->extension_port_id = $request->extension_port_id ? $request->extension_port_id : '';
+        $employee->extension_port_password = $request->extension_port_password ? $request->extension_port_password : '';
         $employee->save();
 
         $user = User::where('employee_id', $id)->first();

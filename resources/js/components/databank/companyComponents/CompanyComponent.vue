@@ -52,10 +52,13 @@
                 </div>
             </div>
         </div>
+        <ViewCompanyDetails></ViewCompanyDetails>
     </div>
 </template>
 
 <script>
+    import ViewCompanyDetails from './modal/ViewCompanyDetailsModelComponent';
+
     import 'jquery/dist/jquery.min.js';
     import "datatables.net-dt/js/dataTables.dataTables";
     import "datatables.net-buttons/js/dataTables.buttons.js";
@@ -70,6 +73,9 @@
         props: {
             excelAccess: Number,
         },
+        components: {
+            ViewCompanyDetails
+        },
         data() {
             return {
                 create_company: 'companies/create-company',
@@ -77,6 +83,20 @@
             }
         },
         methods: {
+            showModal(id) {
+                console.log("MODAL-ID:- ", id);
+                $("#viewCompany1").modal('show');
+                $('<div class="modal-backdrop fade show"></div>').appendTo(document.body);
+                $('body').addClass('modal-open');
+                $('body').css('overflow', 'hidden');
+                $('body').css('padding-right', '17px');
+            },
+            closeModel() {
+                $('#viewCompany1').modal('hide');
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+                $('body').removeAttr('style');
+            },
             getEssentialCompany() {
                 window.location.href = './companies/essential/';
             },
@@ -109,7 +129,10 @@
                 .then(response => {                    
                     location.reload();
                 });
-            }
+            },
+            getProfilePic(name){
+                return '/upload/company/multipleAddressProfilePic/' + name;
+            },
         },
         mounted() {
             if(this.excelAccess == 1) {
@@ -155,7 +178,12 @@
             }
         },
     };
+
+function showModal(id) {
+    console.log("MODAL-ID:- ", id);
+}
 </script>
+
 <style>
     .icon.ni.ni-star, .icon.ni.ni-star-fill,
     .icon.ni.ni-alert-fill, .icon.ni.ni-check-thick {
@@ -246,5 +274,8 @@
         color: #fff;
         background-color: #6576ff;
         border-color: #6576ff;
+    }
+    .viewCompany .modal-dialog{
+        max-width: 1550px;
     }
 </style>

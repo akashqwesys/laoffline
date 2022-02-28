@@ -12,9 +12,13 @@ use App\Models\ProductCategory;
 use App\Models\Company\Company;
 use App\Models\Company\CompanyContactDetails;
 use App\Models\Product;
+use App\Models\FinancialYear;
 use App\Models\ProductDetails;
 use App\Models\ProductsImages;
 use App\Models\ProductFabricDetails;
+use App\Models\Settings\Cities;
+use App\Models\Settings\Country;
+use App\Models\Settings\State;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
@@ -28,6 +32,7 @@ class ProductsController extends Controller
     }
 
     public function index(Request $request) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -45,15 +50,40 @@ class ProductsController extends Controller
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
 
-        return view('databank.products.product')->with('employees', $employees);
+        return view('databank.products.product',compact('financialYear'))->with('employees', $employees);
     }
 
     public function createProducts() {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
 
-        return view('databank.products.createProduct')->with('employees', $employees);
+        return view('databank.products.createProduct',compact('financialYear'))->with('employees', $employees);
+    }
+
+    public function listCountries() {
+        $countries = Country::all();
+
+        return $countries;
+    }
+
+    public function listState() {
+        $state = State::all();
+
+        return $state;
+    }
+
+    public function listCities() {
+        $countries = Cities::all();
+
+        return $countries;
+    }
+
+    public function listData(Request $request) {
+        $products = Product::where('is_delete', '0')->get();
+
+        return $products;
     }
 
     public function listProducts(Request $request) {
@@ -74,7 +104,7 @@ class ProductsController extends Controller
         // Total records
         $totalRecords = Product::select('count(*) as allcount')->count();
         $totalRecordswithFilter = Product::select('count(*) as allcount')->
-                                           where('product_name', 'like', '%' .$searchValue . '%')->
+                                           where('product_name', 'ILIKE', '%' .$searchValue . '%')->
                                            count();
 
         // Fetch records
@@ -82,7 +112,7 @@ class ProductsController extends Controller
                              join('product_categories','products.category','=','product_categories.id')->
                              join('product_details','products.id','=','product_details.product_id')->
                              orderBy('products.'.$columnName,$columnSortOrder)->
-                             where('products.product_name', 'like', '%' .$searchValue . '%')->
+                             where('products.product_name', 'ILIKE', '%' .$searchValue . '%')->
                              where('products.is_delete', 0)->
                              skip($start)->
                              take($rowperpage)->
@@ -115,8 +145,8 @@ class ProductsController extends Controller
             $category_name = $product->category_name;
             $catalogue_price = $product->catalogue_price;
             // <a href="#" @click="view_data(product.product_id)" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="View"><em class="icon ni ni-eye"></em></a>
-            $action = '<a href="#" @click="./users-group/edit-user-group/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
-            <a href="#" @click="./users-group/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
+            $action = '<a href="./catalog/edit-products/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Update"><em class="icon ni ni-edit-alt"></em></a>
+            <a href="./catalog/delete/'.$id.'" class="btn btn-trigger btn-icon" data-toggle="tooltip" data-placement="top" title="Remove"><em class="icon ni ni-trash"></em></a>';
 
             $data_arr[] = array(
                 "id" => $id,
@@ -231,6 +261,7 @@ class ProductsController extends Controller
     }
 
     public function editProducts($id) {
+        $financialYear = FinancialYear::get();
         $user = Session::get('user');
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
@@ -238,7 +269,7 @@ class ProductsController extends Controller
         $employees['scope'] = 'edit';
         $employees['editedId'] = $id;
 
-        return view('databank.products.editProduct')->with('employees', $employees);
+        return view('databank.products.editProduct',compact('financialYear'))->with('employees', $employees);
     }
 
     public function fetchProducts($id) {
@@ -300,6 +331,8 @@ class ProductsController extends Controller
         $logs->log_subject = 'Product - "'.$productData->product_name.'" was deleted.';
         $logs->log_url = 'https://'.$_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         $logs->save();
+
+        return redirect()->route('catalog');
     }
 
     public function insertCompaniesData(Request $request) {
@@ -317,14 +350,12 @@ class ProductsController extends Controller
         $company->company_state = $request->city['state'];
         $company->company_city = $request->city['id'];
         $company->company_website = '';
-        $company->company_landline = '';
-        $company->company_mobile = '';
+        $company->company_landline = 0;
+        $company->company_mobile = 0;
         $company->company_watchout = 0;
         $company->company_remark_watchout = '';
         $company->company_about = $request->about_company;
         $company->company_category = 0;
-        $company->product_category = 0;
-        $company->product_sub_category = 0;
         $company->company_transport = 0;
         $company->company_discount = 0;
         $company->company_payment_terms_in_days = 0;
@@ -343,7 +374,7 @@ class ProductsController extends Controller
         $companyContactDetails->id = $companyContactDetailsId;
         $companyContactDetails->company_id = $companyId;
         $companyContactDetails->contact_person_name = $request->owner_name;
-        $companyContactDetails->contact_person_designation = '';
+        $companyContactDetails->contact_person_designation = 0;
         $companyContactDetails->contact_person_profile_pic = '';
         $companyContactDetails->contact_person_mobile = $request->owner_mobile;
         $companyContactDetails->contact_person_email = $request->owner_email;
@@ -364,12 +395,8 @@ class ProductsController extends Controller
     }
 
     public function insertProductsData(Request $request) {
-        $this->validate($request, [
-            'product_name' => 'required',
-            'company' => 'required',
-            'category' => 'required',
-            'sub_category' => 'required',
-        ]);
+        $total_image = 0; 
+        $inserted_image = 0;
 
         $productData = json_decode($request->product_data);
         $AdditionalImage = json_decode($request->additionalImages);
@@ -395,8 +422,9 @@ class ProductsController extends Controller
             $profileImage = date('YmdHis') . "_mainImage." . $image->getClientOriginalExtension();
             $productData->main_image = $profileImage;
             $image->move(public_path('upload/products/'), $profileImage);
+            $inserted_image++;
         }
-        
+        $total_image++;
         if ($image = $request->priceListImage) {
             $profileImage = date('YmdHis') . "_priceListImage." . $image->getClientOriginalExtension();
             $productData->price_list_image = $profileImage;
@@ -412,12 +440,18 @@ class ProductsController extends Controller
                         $profileImage = date('YmdHis') . "_additionalImage_" . $i . "." . $image->getClientOriginalExtension();
                         $AdditionalImage[$i]->product_pic = $profileImage;
                         $image->move(public_path('upload/products/'), $profileImage);
-
+                        $inserted_image++;
                     } else {
                         $AdditionalImage[$i]->product_pic = '';
                     }
+                    $total_image++;
                 }
             }
+        }
+
+        $complete_flag = 0;
+        if($total_image != $inserted_image) {
+            $complete_flag = 1;
         }
 
         $productsLastId = Product::orderBy('id', 'DESC')->first('id');
@@ -436,7 +470,7 @@ class ProductsController extends Controller
         $products->main_image = $productData->main_image;
         $products->price_list_image = $productData->price_list_image;
         $products->description = $productData->description;
-        $products->complete_flag = 1;
+        $products->complete_flag = $complete_flag;
         $products->generated_by = Session::get('user')->employee_id;
         $products->updated_by = 0;
         $products->save();
@@ -513,12 +547,8 @@ class ProductsController extends Controller
     }
 
     public function updateProductsData(Request $request) {
-        $this->validate($request, [
-            'product_name' => 'required',
-            'company' => 'required',
-            'category' => 'required',
-            'sub_category' => 'required',
-        ]);
+        $total_image = 0; 
+        $inserted_image = 0;
 
         $productData = json_decode($request->product_data);
         $AdditionalImage = json_decode($request->additionalImages);
@@ -548,9 +578,12 @@ class ProductsController extends Controller
             $profileImage = date('YmdHis') . "_mainImage." . $image->getClientOriginalExtension();
             $productData->main_image = $profileImage;
             $image->move(public_path('upload/products/'), $profileImage);
+            $inserted_image++;
         } else {
             $productData->main_image = $productData->main_image;
+            $inserted_image++;
         }
+        $total_image++;
         
         if ($image = $request->priceListImage) {
             $profileImage = date('YmdHis') . "_priceListImage." . $image->getClientOriginalExtension();
@@ -569,12 +602,20 @@ class ProductsController extends Controller
                         $profileImage = date('YmdHis') . "_additionalImage_" . $i . "." . $image->getClientOriginalExtension();
                         $AdditionalImage[$i]->image = $profileImage;
                         $image->move(public_path('upload/products/'), $profileImage);
+                        $inserted_image++;
 
                     } else {
                         $AdditionalImage[$i]->image = $AdditionalImage[$i]->image;
+                        $inserted_image++;
                     }
+                    $total_image++;
                 }
             }
+        }
+        
+        $complete_flag = 0;
+        if($total_image != $inserted_image) {
+            $complete_flag = 1;
         }
 
         $products = Product::where('id', $id)->first();
@@ -589,6 +630,7 @@ class ProductsController extends Controller
         $products->main_image = $productData->main_image;
         $products->price_list_image = $productData->price_list_image;
         $products->description = $productData->description;
+        $products->complete_flag = $complete_flag;
         $products->updated_by = Session::get('user')->employee_id;
         $products->save();
         
