@@ -28,9 +28,11 @@ class DashboardController extends Controller
         $financialYear = FinancialYear::get();
         $user = Session::get('user');
 
-        $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
-                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
+        $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')
+            ->join('user_groups', 'employees.user_group', '=', 'user_groups.id')
+            ->where('employees.id', $user->employee_id)
+            ->first();
 
-        return view('dashboard',compact('financialYear'))->with('employees', $employees);
+        return view('dashboard', compact('financialYear'))->with('employees', $employees);
     }
 }

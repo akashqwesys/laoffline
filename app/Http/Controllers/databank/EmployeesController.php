@@ -26,14 +26,16 @@ class EmployeesController extends Controller
     public function index(Request $request) {
         $financialYear = FinancialYear::get();
         $user = Session::get('user');
-        $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
-                                join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
-        
+        $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')
+            -> join('user_groups', 'employees.user_group', '=', 'user_groups.id')
+            ->where('employees.id', $user->employee_id)
+            ->first();
+
         $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -66,9 +68,9 @@ class EmployeesController extends Controller
         return $employee;
     }
 
-    public function listEmployee(Request $request) {        
+    public function listEmployee(Request $request) {
         $user = Session::get('user');
-        
+
         $draw = $request->get('draw');
         $start = $request->get("start");
         $rowperpage = $request->get("length"); // Rows display per page
@@ -89,38 +91,38 @@ class EmployeesController extends Controller
         }
         // Total records
         $totalRecords = Employee::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
-                                            join('user_groups', 'employees.user_group', '=', 'user_groups.id')->
-                                            select('count(*) as allcount')->
-                                            where('employees.id', 'LIKE', '%' .$searchValue . '%')->
-                                            orwhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')->
-                                            orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')->
-                                            count();
+        $totalRecordswithFilter = Employee::join('users', 'employees.id', '=', 'users.employee_id')
+            ->join('user_groups', 'employees.user_group', '=', 'user_groups.id')
+            ->select('count(*) as allcount')
+            ->where('employees.id', 'LIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')
+            ->count();
 
         // Fetch records
-        $records = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
-                             join('user_groups', 'employees.user_group', '=', 'user_groups.id')->
-                             orderBy($columnName,$columnSortOrder)->
-                             where('employees.id', '!=', $user->employee_id)->
-                             where('employees.user_group', '!=', 1)->
-                             where('employees.is_delete', '=', 0)->
-                             where('employees.id', 'LIKE', '%' .$searchValue . '%')->
-                             orwhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')->
-                             orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')->
-                             select('*')->
-                             skip($start)->
-                             take($rowperpage)->
-                             get();
+        $records = Employee::join('users', 'employees.id', '=', 'users.employee_id')
+            ->join('user_groups', 'employees.user_group', '=', 'user_groups.id')
+            ->select('*')
+            ->where('employees.id', '!=', $user->employee_id)
+            ->where('employees.user_group', '!=', 1)
+            ->where('employees.is_delete', '=', 0)
+            ->where('employees.id', 'LIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.firstname', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.middlename', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.lastname', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.email_id', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.mobile', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('employees.web_login', 'ILIKE', '%' .$searchValue . '%')
+            ->orWhere('user_groups.name', 'ILIKE', '%' .$searchValue . '%')
+            ->orderBy($columnName,$columnSortOrder)
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
         $data_arr = array();
         $sno = $start+1;
@@ -132,7 +134,7 @@ class EmployeesController extends Controller
             if($record->profile_pic != '') {
                 $profilePic = '<img src="/upload/profilePic/'.$record->profile_pic.'" alt="">';
             } else {
-                $profilePic = '<span>'.strtoupper($f.''.$l).'</span>';                
+                $profilePic = '<span>'.strtoupper($f.''.$l).'</span>';
             }
             $name = '<div class="user-card">';
             $name .= '<div class="user-avatar user-avatar-sm bg-warning">';
@@ -168,7 +170,7 @@ class EmployeesController extends Controller
             "iTotalRecords" => $totalRecords,
             "iTotalDisplayRecords" => $totalRecordswithFilter,
             "aaData" => $data_arr
-        ); 
+        );
 
         echo json_encode($response);
         exit;
@@ -201,10 +203,10 @@ class EmployeesController extends Controller
         $user = User::where('employee_id',$id)->first();
         $user->is_delete = 1;
         $user->save();
-        
+
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -286,10 +288,10 @@ class EmployeesController extends Controller
         $role = Role::where('id', $userGroupData['roles_id'])->first();
 
         $user->assignRole($role);
-        
+
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -312,8 +314,8 @@ class EmployeesController extends Controller
             'excel_access' => 'required',
             'username' => 'required',
         ]);
-        
-        $id = $request->id;        
+
+        $id = $request->id;
 
         if ($image = $request->file('profile_pic')) {
             $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
@@ -332,7 +334,7 @@ class EmployeesController extends Controller
 
         $employee = Employee::where('id', $id)->first();
         $employee->firstname = $request->firstname ? $request->firstname : '';
-        $employee->middlename = $request->middlename ? $request->middlename : ''; 
+        $employee->middlename = $request->middlename ? $request->middlename : '';
         $employee->lastname = $request->lastname ? $request->lastname : '';
         $employee->profile_pic = $profileImage == '' ? $employee->profile_pic : $profileImage;
         $employee->email_id = $request->email_id ? $request->email_id : '';
@@ -355,14 +357,14 @@ class EmployeesController extends Controller
         $user->save();
 
         $userGroupData = UserGroup::where('id', $request->user_group['id'])->first();
-        
+
         $role = Role::where('id', $userGroupData['roles_id'])->first();
 
         $user->assignRole($role);
-        
+
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;

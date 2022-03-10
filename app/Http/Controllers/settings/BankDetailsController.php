@@ -67,10 +67,10 @@ class BankDetailsController extends Controller
         $order_arr = $request->get('order');
         $search_arr = $request->get('search');
 
-        $columnIndex = $columnIndex_arr[0]['column']; // Column index
-        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
-        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
-        $searchValue = $search_arr['value']; // Search value
+        $columnIndex = $columnIndex_arr[0]['column'] ?? 1; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data'] ?? null; // Column name
+        $columnSortOrder = $order_arr[0]['dir'] ?? 'asc'; // asc or desc
+        $searchValue = $search_arr['value'] ?? null; // Search value
 
         $totalRecords = BankDetails::where('id', '!=', '0')->select('count(*) as allcount')->count();
         $totalRecordswithFilter = BankDetails::select('count(*) as allcount')->
@@ -78,12 +78,12 @@ class BankDetailsController extends Controller
                                                    where('name', 'like', '%' .$searchValue . '%')->
                                                    count();
 
-        $BankDetails = BankDetails::orderBy('bank_details.'.$columnName,$columnSortOrder)->
-                where('bank_details.name', 'like', '%' .$searchValue . '%')->
-                where('bank_details.is_delete', '0')->
-                skip($start)->
-                take($rowperpage)->
-                get();
+        $BankDetails = BankDetails::where('bank_details.name', 'like', '%' . $searchValue . '%')
+            ->where('bank_details.is_delete', '0');
+        if ($columnName) {
+            $BankDetails = $BankDetails->orderBy('bank_details.' . $columnName, $columnSortOrder);
+        }
+        $BankDetails = $BankDetails->skip($start)->take($rowperpage)->get();
 
         $data_arr = array();
         $sno = $start+1;

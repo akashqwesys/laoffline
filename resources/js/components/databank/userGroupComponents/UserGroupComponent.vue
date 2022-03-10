@@ -15,7 +15,7 @@
                                 <div class="toggle-wrap nk-block-tools-toggle">
                                     <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
                                     <div class="toggle-expand-content" data-content="pageMenu">
-                                        <ul class="nk-block-tools g-3">                                            
+                                        <ul class="nk-block-tools g-3">
                                             <li class="nk-block-tools-opt">
                                                 <a v-bind:href="create_user_group" class="dropdown-toggle btn btn-icon btn-primary"><em class="icon ni ni-plus"></em></a>
                                             </li>
@@ -53,7 +53,7 @@
     import "datatables.net-buttons/js/buttons.flash.js";
     import "datatables.net-buttons/js/buttons.html5.js";
     import "datatables.net-buttons/js/buttons.print.js";
-    import $ from 'jquery'; 
+    import $ from 'jquery';
 
     export default {
         name: 'userGroup',
@@ -77,36 +77,26 @@
             }
         },
         mounted() {
+            var buttons = [];
             if(this.excelAccess == 1) {
-                $('#userGroup').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: "./users-group/list",
-                    pagingType: 'full_numbers',
-                    dom: 'Bfrtip',
-                    columns: [
-                        { data: 'id', searchable: 'true' },
-                        { data: 'name' },
-                        { data: 'action' },
-                    ],
-                    buttons: ['copy', 'csv', 'excel', 'print']
-                });
-
-            } else {
-                $('#userGroup').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: "./users-group/list",
-                    pagingType: 'full_numbers',
-                    dom: 'Bfrtip',
-                    columns: [
-                        { data: 'id' },
-                        { data: 'name' },
-                        { data: 'action' },
-                    ],
-                    buttons: []
-                });                
+                buttons = ['copy', 'csv', 'excel', 'print'];
             }
+            $('#userGroup').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "./users-group/list",
+                pagingType: 'full_numbers',
+                dom: 'Bfrtip',
+                columns: [
+                    { data: 'id' },
+                    { data: 'name' },
+                    { data: 'action' },
+                ],
+                search: {
+                    return: true
+                },
+                buttons: buttons
+            });
         },
     };
 </script>
@@ -124,10 +114,10 @@
         position: relative;
         display: inline-flex;
         vertical-align: middle;
-        flex-wrap: wrap;        
+        flex-wrap: wrap;
         float: right;
     }
-    .dt-buttons .dt-button {    
+    .dt-buttons .dt-button {
         position: relative;
         flex: 1 1 auto;
         display: inline-flex;

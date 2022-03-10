@@ -15,7 +15,7 @@
                                 <div class="toggle-wrap nk-block-tools-toggle">
                                     <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-menu-alt-r"></em></a>
                                     <div class="toggle-expand-content" data-content="pageMenu">
-                                        <ul class="nk-block-tools g-3">                                            
+                                        <ul class="nk-block-tools g-3">
                                             <li class="nk-block-tools-opt">
                                                 <a v-bind:href="create_employee" class="dropdown-toggle btn btn-icon btn-primary"><em class="icon ni ni-plus"></em></a>
                                             </li>
@@ -77,51 +77,34 @@
             },
             delete_data(id){
                 axios.delete('./employee/delete/'+id)
-                .then(response => {                    
+                .then(response => {
                     location.reload();
                 });
             },
         },
         mounted() {
+            var buttons = [];
             if(this.excelAccess == 1) {
-                $('#employee').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: "./employee/list",
-                    pagingType: 'full_numbers',
-                    dom: 'Bfrtip',
-                    columns: [
-                        { data: 'id' },
-                        { data: 'name' },
-                        { data: 'email' },
-                        { data: 'mobile' },
-                        { data: 'user_group' },
-                        { data: 'web_login' },
-                        { data: 'active' },
-                        { data: 'action' },
-                    ],
-                    buttons: ['copy', 'csv', 'excel', 'print']
-                });
-            } else {
-                $('#employee').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: "./employee/list",
-                    pagingType: 'full_numbers',
-                    dom: 'Bfrtip',
-                    columns: [
-                        { data: 'id' },
-                        { data: 'name' },
-                        { data: 'email' },
-                        { data: 'mobile' },
-                        { data: 'user_group' },
-                        { data: 'web_login' },
-                        { data: 'active' },
-                        { data: 'action' },
-                    ],
-                    buttons: []
-                });
+                buttons = ['copy', 'csv', 'excel', 'print'];
             }
+            $('#employee').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "./employee/list",
+                pagingType: 'full_numbers',
+                dom: 'Brtip',
+                columns: [
+                    { data: 'id' },
+                    { data: 'name' },
+                    { data: 'email' },
+                    { data: 'mobile' },
+                    { data: 'user_group' },
+                    { data: 'web_login' },
+                    { data: 'active' },
+                    { data: 'action' },
+                ],
+                buttons: buttons
+            });
         },
     };
 </script>
@@ -139,10 +122,10 @@
         position: relative;
         display: inline-flex;
         vertical-align: middle;
-        flex-wrap: wrap;        
+        flex-wrap: wrap;
         float: right;
     }
-    .dt-buttons .dt-button {    
+    .dt-buttons .dt-button {
         position: relative;
         flex: 1 1 auto;
         display: inline-flex;

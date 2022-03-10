@@ -28,12 +28,12 @@ class UserGroupController extends Controller
 
         $employees = Employee::join('users', 'employees.id', '=', 'users.employee_id')->
                                 join('user_groups', 'employees.user_group', '=', 'user_groups.id')->where('employees.id', $user->employee_id)->first();
-        
+
         $employees['excelAccess'] = $user->excel_access;
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -83,22 +83,27 @@ class UserGroupController extends Controller
 
         // Total records
         $totalRecords = UserGroup::select('count(*) as allcount')->count();
-        $totalRecordswithFilter = UserGroup::select('count(*) as allcount')->
-                                             where('is_delete', 0)->
-                                             Where('name', 'ILIKE', '%' .$searchValue . '%')->
-                                             count();
+        if (!empty(trim($searchValue))) {
+            $totalRecordswithFilter = UserGroup::select('count(*) as allcount')
+                ->where('is_delete', 0)
+                ->where('name', 'ILIKE', '%' .$searchValue . '%')
+                ->count();
+        } else {
+            $totalRecordswithFilter = $totalRecords;
+        }
 
         // Fetch records
-        $records = UserGroup::orderBy($columnName,$columnSortOrder)->
-                              where('is_delete', 0)->
-                              where('name', 'ILIKE', '%' .$searchValue . '%')->
-                              select('*')->
-                              skip($start)->
-                              take($rowperpage)->
-                              get();
+        $records = UserGroup::select('*')
+            ->where('is_delete', 0);
+        if (!empty(trim($searchValue))) {
+            $records = $records->where('name', 'ILIKE', '%' .$searchValue . '%');
+        }
+        $records = $records->orderBy($columnName, $columnSortOrder)
+            ->skip($start)
+            ->take($rowperpage)
+            ->get();
 
         $data_arr = array();
-        $sno = $start+1;
 
         foreach($records as $record){
             $id = $record->id;
@@ -118,7 +123,7 @@ class UserGroupController extends Controller
             "iTotalRecords" => $totalRecords,
             "iTotalDisplayRecords" => $totalRecordswithFilter,
             "aaData" => $data_arr
-        ); 
+        );
 
         echo json_encode($response);
         exit;
@@ -136,7 +141,7 @@ class UserGroupController extends Controller
         return view('databank.userGroups.editUserGroup',compact('financialYear'))->with('employees', $employees);
     }
 
-    public function fetchUserGroup($id) { 
+    public function fetchUserGroup($id) {
         $userGroupData = UserGroup::where('id', $id)->first();
 
         return $userGroupData;
@@ -149,7 +154,7 @@ class UserGroupController extends Controller
 
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -162,15 +167,15 @@ class UserGroupController extends Controller
     }
 
     public function insertUserGroupData(Request $request) {
-        
-        $this->validate($request, [ 
+
+        $this->validate($request, [
             'name' => 'required',
             'access_permission' => 'required',
             'modify_permission' => 'required',
         ]);
 
         $permissions = array_merge($request->access_permission,$request->modify_permission);
-        
+
         $roleLastId = Role::orderBy('id', 'DESC')->first('id');
         $roleId = !empty($roleLastId) ? $roleLastId->id + 1 : 1;
 
@@ -192,10 +197,10 @@ class UserGroupController extends Controller
         $userGroup->access_permissions = json_encode($request->access_permission);
         $userGroup->modify_permissions = json_encode($request->modify_permission);
         $userGroup->save();
-        
+
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
@@ -206,14 +211,14 @@ class UserGroupController extends Controller
     }
 
     public function updateUserGroupData(Request $request) {
-        $this->validate($request, [ 
+        $this->validate($request, [
             'name' => 'required',
             'access_permission' => 'required',
             'modify_permission' => 'required',
         ]);
-        
-        $id = $request->id;        
-        
+
+        $id = $request->id;
+
         $userGroup = UserGroup::where('id', $id)->first();
         $userGroup->name = $request->name;
         $userGroup->access_permissions = json_encode($request->access_permission);
@@ -226,10 +231,10 @@ class UserGroupController extends Controller
 
         $permissions = array_merge($request->access_permission,$request->modify_permission);
         $role->syncPermissions($permissions);
-        
+
         $logsLastId = Logs::orderBy('id', 'DESC')->first('id');
         $logsId = !empty($logsLastId) ? $logsLastId->id + 1 : 1;
-                        
+
         $logs = new Logs;
         $logs->id = $logsId;
         $logs->employee_id = Session::get('user')->employee_id;
